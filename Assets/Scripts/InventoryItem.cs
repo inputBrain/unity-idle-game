@@ -1,3 +1,4 @@
+ using ScriptableObjects;
  using TMPro;
  using UnityEditor;
  using UnityEngine;
@@ -12,8 +13,8 @@
 
     public TextMeshProUGUI QuantityText;
 
-    // [HideInInspector]
-    // public Item item;
+    [HideInInspector]
+    public Item Item;
     // Start is called before the first frame update
     void Start()
     {
