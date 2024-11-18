@@ -645,5 +645,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConjureButton: {fileID: 6807576869450214740}
-  Renderer: {fileID: 9107644321548151891}
+  Renderer: {fileID: 3734346975465286418}
   QuantityText: {fileID: 4924361266853329400}
+  Item: {fileID: 0}

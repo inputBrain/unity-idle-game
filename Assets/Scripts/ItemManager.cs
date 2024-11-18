@@ -20,4 +20,12 @@ public class ItemManager : MonoBehaviour
             Debug.Log($"Item name: {item.Name}");
         }
     }
+
+
+    public void AddItem(string id)
+    {
+        var item = Items.FirstOrDefault(x => x.Id == id);
+
+        var updatedItems = Items[Items.Length + 1];
+    }
 }

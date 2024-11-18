@@ -15,7 +15,7 @@ MonoBehaviour:
   Id: 2
   Name: Hydrogen
   CanConjure: 1
-  Icon: {fileID: 21300000, guid: 638bffb7a35f7e547bba3d7991f44b4b, type: 3}
+  Icon: {fileID: 21300000, guid: aef9ba2891e77a3458ac775d2fa20266, type: 3}
   IsLocked: 0
   Quantity: 0
   PerSecond: 2
