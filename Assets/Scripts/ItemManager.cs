@@ -15,10 +15,10 @@ public class ItemManager : MonoBehaviour
         Items = Utils.GetAllInstances<Item>();
 
         Items = Items.OrderBy(x => x.Id).ToArray();
-        foreach (var item in Items)
-        {
-            Debug.Log($"Item name: {item.Name}");
-        }
+        // foreach (var item in Items)
+        // {
+        //     Debug.Log($"Item name: {item.Name}");
+        // }
     }
 
 

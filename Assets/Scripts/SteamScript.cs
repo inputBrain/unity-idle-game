@@ -2,10 +2,26 @@
 using UnityEngine;
 
 public class SteamScript : MonoBehaviour {
-    void Start() {
-        if(SteamManager.Initialized) {
-            string name = SteamFriends.GetPersonaName();
-            Debug.Log(name);
+    private void Start()
+    {
+        if (!SteamAPI.Init())
+        {
+            Debug.LogError("Steam API initialization failed!");
+            return;
         }
+
+        Debug.Log($"Steam API initialized successfully! User: {SteamFriends.GetPersonaName()}");
+    }
+
+    private void Update()
+    {
+        // Steam API должен обрабатывать коллбэки в каждом кадре
+        SteamAPI.RunCallbacks();
+    }
+
+    private void OnDestroy()
+    {
+        // Освобождаем ресурсы Steam API при закрытии
+        SteamAPI.Shutdown();
     }
 }
