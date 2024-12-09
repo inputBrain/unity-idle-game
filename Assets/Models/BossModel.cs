@@ -1,4 +1,6 @@
-﻿namespace Models
+﻿using UnityEngine.UIElements;
+
+namespace Models
 {
     public class BossModel
     {
@@ -11,5 +13,7 @@
         public float HP;
 
         public float Attack;
+
+        public Image Image;
     }
 }

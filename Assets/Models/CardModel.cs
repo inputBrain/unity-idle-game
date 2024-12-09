@@ -1,4 +1,6 @@
-﻿namespace Models
+﻿using UnityEngine.UIElements;
+
+namespace Models
 {
     public class CardModel
     {
@@ -16,5 +18,6 @@
         public float BlockPower;
         public float Evade;
         public Rarity Rarity;
+        public Image Image;
     }
 }
