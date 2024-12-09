@@ -2,14 +2,24 @@
 {
     public class TotalCardStatsModel
     {
-        public int TotalHP;
+        public float ExpCurrent;
 
-        public int TotalPDamage;
+        public float ExpToNextLevel;
 
-        public int TotalMDamage;
+        public int HP;
 
-        public int TotalPDef;
+        public float HPRegeneration;
 
-        public int TotalMDef;
+        public float Attack;
+
+        public float Crit;
+
+        public float CritDmg;
+
+        public float Block;
+
+        public float BlockPower;
+
+        public float Evade;
     }
 }
