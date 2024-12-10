@@ -9,7 +9,7 @@ namespace Models
         public int Level;
         public float ExpCurrent;
         public float ExpToNextLevel;
-        public int HP;
+        public float HP;
         public float HPRegeneration;
         public float Attack;
         public float Crit;
@@ -18,6 +18,6 @@ namespace Models
         public float BlockPower;
         public float Evade;
         public Rarity Rarity;
-        public Image Image;
+        // public Image Image;
     }
 }

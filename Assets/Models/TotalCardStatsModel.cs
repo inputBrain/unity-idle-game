@@ -6,7 +6,7 @@
 
         public float ExpToNextLevel;
 
-        public int HP;
+        public float HP;
 
         public float HPRegeneration;
 
