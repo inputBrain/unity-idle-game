@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 94991570}
   - component: {fileID: 94991571}
   m_Layer: 5
-  m_Name: Enemy Armor = Slidebar
+  m_Name: Boss Armor = Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 224059431}
   - component: {fileID: 224059430}
   m_Layer: 5
-  m_Name: Enemy - Image
+  m_Name: Boss - Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -521,7 +521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 292293210}
   m_Layer: 5
-  m_Name: Cards - GO
+  m_Name: Teams - GO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 304718733}
   - component: {fileID: 304718734}
   m_Layer: 5
-  m_Name: Cards EXP - Slider
+  m_Name: Team EXP - Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1652,7 +1652,7 @@ GameObject:
   - component: {fileID: 890228397}
   - component: {fileID: 890228398}
   m_Layer: 5
-  m_Name: Cards HP = Slider
+  m_Name: Team HP = Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2537,6 +2537,7 @@ GameObject:
   - component: {fileID: 1321215872}
   - component: {fileID: 1321215871}
   - component: {fileID: 1321215870}
+  - component: {fileID: 1321215873}
   m_Layer: 5
   m_Name: Game - Canvas
   m_TagString: Untagged
@@ -2631,6 +2632,34 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1321215873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321215868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86fb1f91182b41ef8be45d4897475874, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Zone_Text: {fileID: 1772833158}
+  Zone: 1
+  BossArmor_Slider: {fileID: 94991571}
+  BossArmor_TextOnSlider: {fileID: 1441910718}
+  BossHP_Slider: {fileID: 1651809203}
+  BossHP_TextOnSlider: {fileID: 1634352747}
+  TeamHP_Slider: {fileID: 890228398}
+  TeamHP_TextOnSlider: {fileID: 185557520}
+  HP_Text: {fileID: 363223775}
+  HPs_Text: {fileID: 1388065257}
+  Attack_Text: {fileID: 487844953}
+  Crit_Text: {fileID: 1638737907}
+  CritDmg_Text: {fileID: 989836371}
+  Block_Text: {fileID: 1695895230}
+  BlockPower_Text: {fileID: 770323736}
+  Evade_Text: {fileID: 1868996084}
 --- !u!1 &1388065255
 GameObject:
   m_ObjectHideFlags: 0
@@ -3456,7 +3485,7 @@ GameObject:
   - component: {fileID: 1651809202}
   - component: {fileID: 1651809203}
   m_Layer: 5
-  m_Name: Enemy HP = Slidebar
+  m_Name: Boss HP = Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3756,7 +3785,7 @@ GameObject:
   - component: {fileID: 1772833159}
   - component: {fileID: 1772833158}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Zone - Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

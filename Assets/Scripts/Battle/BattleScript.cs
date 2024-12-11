@@ -37,7 +37,9 @@ namespace Battle
 
         private float bossHealthDisplayed;
         private float bossArmorDisplayed;
+        
         private float teamHealthDisplayed;
+        private float teamHealthTarget;
 
         private void Start()
         {
@@ -47,6 +49,7 @@ namespace Battle
             bossHealthDisplayed = Boss.HP;
             bossArmorDisplayed = Boss.Armor;
             teamHealthDisplayed = TotalCardStat.HP;
+            teamHealthTarget = TotalCardStat.HP;
 
             UpdateStatsUI();
             StartCoroutine(BattleUpdate());
@@ -65,11 +68,11 @@ namespace Battle
 
         private void InitializeCards()
         {
-            CardList.Add(new CardModel() { Id = 1, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 20, Crit = 10, CritDmg = 50, Block = 5, BlockPower = 25, Evade = 5, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 2, HP = 150, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 15, Crit = 15, CritDmg = 60, Block = 10, BlockPower = 30, Evade = 10, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 3, HP = 180, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 18, Crit = 8, CritDmg = 45, Block = 7, BlockPower = 20, Evade = 7, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 4, HP = 220, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 22, Crit = 12, CritDmg = 55, Block = 6, BlockPower = 28, Evade = 6, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 5, HP = 210, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 21, Crit = 11, CritDmg = 52, Block = 9, BlockPower = 29, Evade = 8, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 1, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 20, Crit = 10, CritDmg = 50, Block = 5, BlockPower = 25, Evade = 5, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 2, HP = 150, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 15, Crit = 15, CritDmg = 60, Block = 10, BlockPower = 30, Evade = 10, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 3, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 18, Crit = 8, CritDmg = 45, Block = 7, BlockPower = 20, Evade = 7, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 4, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 22, Crit = 12, CritDmg = 55, Block = 6, BlockPower = 28, Evade = 6, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 5, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 21, Crit = 11, CritDmg = 52, Block = 9, BlockPower = 29, Evade = 8, Rarity = Rarity.Epic });
 
             foreach (var card in CardList)
             {
@@ -188,7 +191,7 @@ namespace Battle
                 }
             }
 
-            TotalCardStat.HP = 0;
+            TotalCardStat.HP = 0; // Обновляем общее здоровье команды
             foreach (var card in CardList)
             {
                 TotalCardStat.HP += card.HP;
@@ -218,8 +221,13 @@ namespace Battle
             bossHealthDisplayed = Mathf.Lerp(bossHealthDisplayed, Boss.HP, Time.deltaTime * 5f);
             bossArmorDisplayed = Mathf.Lerp(bossArmorDisplayed, Boss.Armor, Time.deltaTime * 5f);
 
+            // BossHP_Slider.value = bossHealthDisplayed / 1000f; // Начальное значение здоровья босса 1000
+            // BossArmor_Slider.value = bossArmorDisplayed / 200f; // Начальное значение брони 200
+            
+
             // Плавное обновление здоровья команды
             teamHealthDisplayed = Mathf.Lerp(teamHealthDisplayed, TotalCardStat.HP, Time.deltaTime * 5f);
+            TeamHP_Slider.value = teamHealthDisplayed / 1000f; // Начальное значение здоровья команды 1000
 
             UpdateBossUI();
             UpdateStatsUI();
