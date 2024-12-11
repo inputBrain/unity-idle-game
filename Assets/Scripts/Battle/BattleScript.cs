@@ -34,6 +34,10 @@ namespace Battle
         public TMP_Text Block_Text;
         public TMP_Text BlockPower_Text;
         public TMP_Text Evade_Text;
+        
+        public TMP_Text BossAttack_Text;
+        public TMP_Text BossExpReward_Text;
+        public TMP_Text BossGoldReward_Text;
 
         private float bossHealthDisplayed;
         private float bossArmorDisplayed;
@@ -43,11 +47,12 @@ namespace Battle
 
         private void Start()
         {
+            Zone_Text.text = "Zone: " + Zone;
+            
             InitializeBoss();
             InitializeCards();
 
             bossHealthDisplayed = Boss.HP;
-            bossArmorDisplayed = Boss.Armor;
             teamHealthDisplayed = TotalCardStat.HP;
             teamHealthTarget = TotalCardStat.HP;
 
@@ -59,20 +64,23 @@ namespace Battle
         {
             Boss = new BossModel()
             {
-                Armor = 50f,
                 HP = 500f,
-                Attack = 10f
+                Attack = 10f,
+                ExpReward = 10,
+                GoldReward = 1
             };
+            
+            UpdateBossRewardInfo();
             UpdateBossUI();
         }
 
         private void InitializeCards()
         {
-            CardList.Add(new CardModel() { Id = 1, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 20, Crit = 10, CritDmg = 50, Block = 5, BlockPower = 25, Evade = 5, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 2, HP = 150, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 15, Crit = 15, CritDmg = 60, Block = 10, BlockPower = 30, Evade = 10, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 3, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 18, Crit = 8, CritDmg = 45, Block = 7, BlockPower = 20, Evade = 7, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 4, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 22, Crit = 12, CritDmg = 55, Block = 6, BlockPower = 28, Evade = 6, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 5, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 21, Crit = 11, CritDmg = 52, Block = 9, BlockPower = 29, Evade = 8, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 1, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 150, Crit = 25, CritDmg = 50, Block = 5, BlockPower = 25, Evade = 5, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 2, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 15, Crit = 15, CritDmg = 60, Block = 10, BlockPower = 30, Evade = 10, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 3, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 20.1f, Attack = 18, Crit = 8, CritDmg = 45, Block = 7, BlockPower = 20, Evade = 7, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 4, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 22, Crit = 12, CritDmg = 55, Block = 6, BlockPower = 28, Evade = 6, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 5, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0.1f, Attack = 21, Crit = 11, CritDmg = 52, Block = 9, BlockPower = 29, Evade = 8, Rarity = Rarity.Epic });
 
             foreach (var card in CardList)
             {
@@ -98,16 +106,15 @@ namespace Battle
             BlockPower_Text.text = $"Block Power: {TotalCardStat.BlockPower}%";
             Evade_Text.text = $"Evade: {TotalCardStat.Evade}";
 
-            TeamHP_Slider.value = teamHealthDisplayed / 1000f; // Допустим, начальное значение 1000
+            TeamHP_Slider.value = teamHealthDisplayed / 1000f;
             TeamHP_TextOnSlider.text = TotalCardStat.HP.ToString();
         }
 
         private void UpdateBossUI()
         {
-            BossHP_Slider.value = bossHealthDisplayed / 500f; // Допустим, начальное значение 500
-            BossArmor_Slider.value = bossArmorDisplayed / 50f; // Допустим, начальное значение 50
+            BossHP_Slider.value = bossHealthDisplayed / 500f;
+            BossArmor_Slider.value = bossArmorDisplayed / 50f;
             BossHP_TextOnSlider.text = Boss.HP.ToString("F1");
-            BossArmor_TextOnSlider.text = Boss.Armor.ToString("F1");
         }
 
         private IEnumerator BattleUpdate()
@@ -123,7 +130,7 @@ namespace Battle
                     OnBossDefeated();
                 }
 
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.5f);
             }
         }
 
@@ -135,16 +142,11 @@ namespace Battle
             {
                 totalDamage *= 1 + TotalCardStat.CritDmg / 100f;
             }
-
-            if (Boss.Armor > 0)
+            
+            Boss.HP -= totalDamage;
+            if (Boss.HP <= 0)
             {
-                Boss.Armor -= totalDamage;
-                if (Boss.Armor < 0) Boss.Armor = 0;
-            }
-            else
-            {
-                Boss.HP -= totalDamage;
-                if (Boss.HP < 0) Boss.HP = 0;
+                Boss.HP = 0;
             }
         }
 
@@ -191,11 +193,19 @@ namespace Battle
                 }
             }
 
-            TotalCardStat.HP = 0; // Обновляем общее здоровье команды
+            TotalCardStat.HP = 0;
             foreach (var card in CardList)
             {
                 TotalCardStat.HP += card.HP;
             }
+        }
+
+
+        private void UpdateBossRewardInfo()
+        {
+            BossAttack_Text.text = "Attack: " + Boss.Attack;
+            BossExpReward_Text.text = "Exp: " + Boss.ExpReward;
+            BossGoldReward_Text.text = "Gold: " + Boss.GoldReward;
         }
 
         private void OnBossDefeated()
@@ -204,8 +214,9 @@ namespace Battle
             Zone_Text.text = $"Zone: {Zone}";
 
             Boss.HP *= 1.2f;
-            Boss.Armor *= 1.5f;
             Boss.Attack *= 1.05f;
+            Boss.ExpReward += 5;
+            Boss.GoldReward += 2;
 
             if (Random.value < 0.05f)
             {
@@ -217,17 +228,10 @@ namespace Battle
 
         private void Update()
         {
-            // Плавное обновление здоровья босса
             bossHealthDisplayed = Mathf.Lerp(bossHealthDisplayed, Boss.HP, Time.deltaTime * 5f);
-            bossArmorDisplayed = Mathf.Lerp(bossArmorDisplayed, Boss.Armor, Time.deltaTime * 5f);
 
-            // BossHP_Slider.value = bossHealthDisplayed / 1000f; // Начальное значение здоровья босса 1000
-            // BossArmor_Slider.value = bossArmorDisplayed / 200f; // Начальное значение брони 200
-            
-
-            // Плавное обновление здоровья команды
             teamHealthDisplayed = Mathf.Lerp(teamHealthDisplayed, TotalCardStat.HP, Time.deltaTime * 5f);
-            TeamHP_Slider.value = teamHealthDisplayed / 1000f; // Начальное значение здоровья команды 1000
+            TeamHP_Slider.value = teamHealthDisplayed / TotalCardStat.HP;
 
             UpdateBossUI();
             UpdateStatsUI();
