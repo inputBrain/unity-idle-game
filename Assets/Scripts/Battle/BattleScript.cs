@@ -39,9 +39,7 @@ namespace Battle
         public TMP_Text BossGoldReward_Text;
 
         private float bossCurrentHP;
-        
         private float teamCurrentHP;
-        private float teamHealthTarget;
 
         private void Start()
         {
@@ -52,7 +50,6 @@ namespace Battle
 
             bossCurrentHP = Boss.HP;
             teamCurrentHP = TotalCardStat.HP;
-            teamHealthTarget = TotalCardStat.HP;
 
             UpdateAllTeamStats_UI();
 
@@ -62,6 +59,15 @@ namespace Battle
         
         private void Update()
         {
+
+            teamCurrentHP += TotalCardStat.HPRegeneration * Time.deltaTime;
+            if (teamCurrentHP > TotalCardStat.HP)
+            {
+                teamCurrentHP = TotalCardStat.HP;
+            }
+            
+            UpdateTeamSliderHP_UI();
+
             // bossCurrentHP = Mathf.Lerp(bossCurrentHP, Boss.HP, Time.deltaTime * 5f);
 
             // teamCurrentHP = Mathf.Lerp(teamCurrentHP, TotalCardStat.HP, Time.deltaTime * 5f);
@@ -85,10 +91,9 @@ namespace Battle
                     OnBossDefeated();
                 }
 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(1f);
             }
         }
-        
         
         
         private void DealDamageToBoss()
@@ -147,28 +152,6 @@ namespace Battle
             }
             UpdateTeamSliderHP_UI();
         }
-
-        
-        // private void RegenerateTeamHealth()
-        // {
-        //     foreach (var card in CardList)
-        //     {
-        //         if (card.HP > 0)
-        //         {
-        //             card.HP += (int)card.HPRegeneration;
-        //             if (card.HP > 100)
-        //             {
-        //                 card.HP = 100;
-        //             }
-        //         }
-        //     }
-        //
-        //     TotalCardStat.HP = 0;
-        //     foreach (var card in CardList)
-        //     {
-        //         TotalCardStat.HP += card.HP;
-        //     }
-        // }
         
 
         private void OnBossDefeated()
@@ -203,10 +186,8 @@ namespace Battle
 
         private void UpdateTeamSliderHP_UI()
         {
-            // HP_Text.text = $"HP: {TotalCardStat.HP:F1}";
-            
             TeamHP_Slider.value = teamCurrentHP / TotalCardStat.HP;
-            TeamHP_TextOnSlider.text = teamCurrentHP.ToString();
+            TeamHP_TextOnSlider.text = teamCurrentHP.ToString("F1");
         }
         
         private void UpdateAllTeamStats_UI()
@@ -219,9 +200,6 @@ namespace Battle
             Block_Text.text = $"Block: {TotalCardStat.BlockChance}%";
             BlockPower_Text.text = $"Block Power: {TotalCardStat.BlockPower}%";
             Evade_Text.text = $"Evade: {TotalCardStat.Evade}";
-
-            // TeamHP_Slider.value = teamCurrentHP / TotalCardStat.HP;
-            // TeamHP_TextOnSlider.text = TotalCardStat.HP.ToString("F1");
         }
         
         private void UpdateBossStatAndRewards_UI()
