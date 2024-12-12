@@ -54,7 +54,8 @@ namespace Battle
             teamCurrentHP = TotalCardStat.HP;
             teamHealthTarget = TotalCardStat.HP;
 
-            UpdateStatsUI();
+            UpdateAllTeamStats_UI();
+
             StartCoroutine(BattleUpdate());
         }
         
@@ -66,8 +67,8 @@ namespace Battle
             // teamCurrentHP = Mathf.Lerp(teamCurrentHP, TotalCardStat.HP, Time.deltaTime * 5f);
             // TeamHP_Slider.value = teamCurrentHP / TotalCardStat.HP;
 
-            UpdateBossUI();
-            UpdateStatsUI();
+            // UpdateBossSliderHP_UI();
+            // UpdateAllTeamStats_UI();
         }
         
         
@@ -76,7 +77,7 @@ namespace Battle
             while (true)
             {
                 DealDamageToBoss();
-                // DealDamageToTeam();
+                DealDamageToTeam();
                 // RegenerateTeamHealth();
 
                 if (bossCurrentHP <= 0)
@@ -85,10 +86,6 @@ namespace Battle
                 }
 
                 yield return new WaitForSeconds(0.1f);
-                
-                Debug.Log("Boss HP: " + Boss.HP);
-                Debug.Log("Boss Current hp: " + bossCurrentHP);
-               
             }
         }
         
@@ -96,46 +93,46 @@ namespace Battle
         
         private void DealDamageToBoss()
         {
-            float totalDamage = TotalCardStat.Attack;
+            var totalDamage = TotalCardStat.Attack;
 
-            // if (Random.value * 100 < TotalCardStat.Crit)
-            // {
-            //     totalDamage *= 1 + TotalCardStat.CritDmg / 100f;
-            // }
+            // Critical attack case
+            if (Random.value * 100 < TotalCardStat.Crit)
+            {
+                totalDamage *= 1 + TotalCardStat.CritDmg / 100f;
+                bossCurrentHP -= totalDamage;
+                // if (bossCurrentHP < 0)
+                // {
+                //     bossCurrentHP = 0;
+                // }
+                // UpdateBossSliderHP_UI();
+                return;
+            }
+
             
-          //  StartCoroutine(LerpValue(bossCurrentHP, bossCurrentHP- totalDamage));
-            
-           bossCurrentHP -= totalDamage;
+            bossCurrentHP -= totalDamage;
         }
 
         
         private void DealDamageToTeam()
         {
-            float damageToTeam = Boss.Attack;
-
-            foreach (var card in CardList)
+            var damageToTeam = Boss.Attack;
+            
+            if (Random.value * 100 < TotalCardStat.Evade)
             {
-                float blockedDamage = damageToTeam * (card.BlockPower / 100f);
-                damageToTeam -= blockedDamage;
+                return;
+            }
+            
+            if (Random.value * 100 < TotalCardStat.BlockChance)
+            {
+                damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
 
-                if (Random.value * 100 < card.Evade)
-                {
-                    damageToTeam = 0;
-                }
-
-                card.HP -= damageToTeam;
-
-                if (card.HP < 0)
-                {
-                    card.HP = 0;
-                }
+                TotalCardStat.HP -= damageToTeam;
+                UpdateTeamHPSliderAndStat_UI();
+                return;
             }
 
-            TotalCardStat.HP = 0;
-            foreach (var card in CardList)
-            {
-                TotalCardStat.HP += card.HP;
-            }
+            TotalCardStat.HP -= damageToTeam;
+            UpdateTeamHPSliderAndStat_UI();
         }
 
         
@@ -166,13 +163,13 @@ namespace Battle
             Zone++;
             Zone_Text.text = $"Zone: {Zone}";
 
-            Boss.HP *= 1.2f;
-            Boss.Attack *= 1.05f;
+            Boss.HP *= 1.5f;
+            Boss.Attack *= 1.2f;
             Boss.ExpReward += 5;
             Boss.GoldReward += 2;
 
             bossCurrentHP = Boss.HP;
-            UpdateBossRewardInfo();
+            UpdateBossStatAndRewards_UI();
 
             if (Random.value < 0.05f)
             {
@@ -184,28 +181,37 @@ namespace Battle
         #region UI
 
         
-        private void UpdateBossUI()
+        private void UpdateBossSliderHP_UI()
         {
             BossHP_Slider.value = bossCurrentHP / Boss.HP;
             BossHP_TextOnSlider.text = bossCurrentHP.ToString("F1");
         }
-        
-        private void UpdateStatsUI()
-        {
-            HP_Text.text = $"HP: {TotalCardStat.HP}";
-            HPs_Text.text = $"HP/s: {TotalCardStat.HPRegeneration}";
-            Attack_Text.text = $"Attack: {TotalCardStat.Attack}";
-            Crit_Text.text = $"Crit: {TotalCardStat.Crit}%";
-            CritDmg_Text.text = $"Crit Dmg: {TotalCardStat.CritDmg}%";
-            Block_Text.text = $"Block: {TotalCardStat.Block}%";
-            BlockPower_Text.text = $"Block Power: {TotalCardStat.BlockPower}%";
-            Evade_Text.text = $"Evade: {TotalCardStat.Evade}";
 
-            TeamHP_Slider.value = teamCurrentHP / 1000f;
+
+        private void UpdateTeamHPSliderAndStat_UI()
+        {
+            HP_Text.text = $"HP: {TotalCardStat.HP:F1}";
+            
+            TeamHP_Slider.value = teamCurrentHP / TotalCardStat.HP;
             TeamHP_TextOnSlider.text = TotalCardStat.HP.ToString();
         }
         
-        private void UpdateBossRewardInfo()
+        private void UpdateAllTeamStats_UI()
+        {
+            HP_Text.text = $"HP: {TotalCardStat.HP}";
+            HPs_Text.text = $"HP/s: {TotalCardStat.HPRegeneration:F1}";
+            Attack_Text.text = $"Attack: {TotalCardStat.Attack}";
+            Crit_Text.text = $"Crit: {TotalCardStat.Crit}%";
+            CritDmg_Text.text = $"Crit Dmg: {TotalCardStat.CritDmg}%";
+            Block_Text.text = $"Block: {TotalCardStat.BlockChance}%";
+            BlockPower_Text.text = $"Block Power: {TotalCardStat.BlockPower}%";
+            Evade_Text.text = $"Evade: {TotalCardStat.Evade}";
+
+            TeamHP_Slider.value = teamCurrentHP / TotalCardStat.HP;
+            TeamHP_TextOnSlider.text = TotalCardStat.HP.ToString("F1");
+        }
+        
+        private void UpdateBossStatAndRewards_UI()
         {
             BossAttack_Text.text = "Attack: " + Boss.Attack.ToString("F1");
             BossExpReward_Text.text = "Exp: " + Boss.ExpReward.ToString("F1");
@@ -221,24 +227,24 @@ namespace Battle
         {
             Boss = new BossModel()
             {
-                HP = 5000f,
-                Attack = 10f,
+                HP = 250f,
+                Attack = 1f,
                 ExpReward = 10,
                 GoldReward = 1
             };
             
-            UpdateBossRewardInfo();
-            UpdateBossUI();
+            UpdateBossStatAndRewards_UI();
+            UpdateBossSliderHP_UI();
         }
 
 
         private void _initCards()
         {
-            CardList.Add(new CardModel() { Id = 1, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 1000, Crit = 25, CritDmg = 50, Block = 5, BlockPower = 25, Evade = 5, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 2, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 10, Crit = 15, CritDmg = 60, Block = 10, BlockPower = 30, Evade = 10, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 3, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 10, Crit = 8, CritDmg = 45, Block = 7, BlockPower = 20, Evade = 7, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 4, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 10, Crit = 12, CritDmg = 55, Block = 6, BlockPower = 28, Evade = 6, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 5, HP = 1000, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 10, Crit = 11, CritDmg = 52, Block = 9, BlockPower = 29, Evade = 8, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 1, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 1, Crit = 10, CritDmg = 500, Block = 5, BlockPower = 25, Evade = 5, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 2, HP = 250, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 5, Crit = 10, CritDmg = 500, Block = 10, BlockPower = 30, Evade = 10, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 3, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 5, Crit = 10, CritDmg = 500, Block = 7, BlockPower = 20, Evade = 7, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 4, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 1, Crit = 10, CritDmg = 500, Block = 6, BlockPower = 28, Evade = 6, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel() { Id = 5, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 1.1f, Attack = 1, Crit = 0, CritDmg = 0, Block = 9, BlockPower = 29, Evade = 8, Rarity = Rarity.Epic });
 
             foreach (var card in CardList)
             {
@@ -247,7 +253,7 @@ namespace Battle
                 TotalCardStat.Attack += card.Attack;
                 TotalCardStat.Crit += card.Crit;
                 TotalCardStat.CritDmg += card.CritDmg;
-                TotalCardStat.Block += card.Block;
+                TotalCardStat.BlockChance += card.Block;
                 TotalCardStat.BlockPower += card.BlockPower;
                 TotalCardStat.Evade += card.Evade;
             }

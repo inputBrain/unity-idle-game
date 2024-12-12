@@ -16,7 +16,7 @@
 
         public float CritDmg;
 
-        public float Block;
+        public float BlockChance;
 
         public float BlockPower;
 
