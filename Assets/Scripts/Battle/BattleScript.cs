@@ -160,6 +160,8 @@ namespace Battle
 
         private void OnBossDefeated()
         {
+            ReceiveExp();
+            
             Zone++;
             Zone_Text.text = $"Zone: {Zone}";
 
@@ -195,6 +197,29 @@ namespace Battle
             UpdateBossStatAndRewards_UI();
         }
 
+        
+        private void ReceiveExp()
+        {
+            if (CardList.Count <= 0)
+            {
+                return;
+            }
+            
+            var expPerCard = Boss.ExpReward / CardList.Count;
+
+            foreach (var card in CardList)
+            {
+                card.ExpCurrent += expPerCard;
+                if (card.ExpCurrent >= card.ExpToNextLevel)
+                {
+                    card.Level += 1;
+
+                    card.ExpCurrent = 0;
+                    card.ExpToNextLevel *= 1.5f;
+                }
+            }
+        }
+        
         
         #region UI
 
@@ -255,9 +280,9 @@ namespace Battle
         {
             CardList.Add(new CardModel() { Id = 1, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 10f, Attack = 10, Crit = 60, CritDmg = 100, Block = 25, BlockPower = 50, Evade = 25, Rarity = Rarity.Epic });
             CardList.Add(new CardModel() { Id = 2, HP = 250, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 3, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 4, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 5, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
+            // CardList.Add(new CardModel() { Id = 3, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
+            // CardList.Add(new CardModel() { Id = 4, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
+            // CardList.Add(new CardModel() { Id = 5, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
 
             foreach (var card in CardList)
             {
