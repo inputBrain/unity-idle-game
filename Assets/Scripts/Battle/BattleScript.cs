@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Models;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Battle
 {
@@ -162,21 +164,22 @@ namespace Battle
         {
             ReceiveExp();
             
-            Zone++;
-            Zone_Text.text = $"Zone: {Zone}";
-
-            Boss.HP *= 1.5f;
-            Boss.Attack *= 2.2f;
-            Boss.ExpReward += 5;
-            Boss.GoldReward += 2;
-
-            bossCurrentHP = Boss.HP;
-            UpdateBossStatAndRewards_UI();
-
             if (Random.value * 100 < 50f)
             {
                 Debug.Log("Reward granted!");
             }
+            
+            Zone++;
+            Zone_Text.text = $"Zone: {Zone}";
+
+            Boss.HP *= 1.05f;
+            Boss.Attack *= 1.01f;
+            Boss.ExpReward += 10;
+            Boss.GoldReward += 1;
+
+            bossCurrentHP = Boss.HP;
+            UpdateBossStatAndRewards_UI();
+            
         }
         
         
@@ -185,10 +188,10 @@ namespace Battle
             Zone--;
             Zone_Text.text = $"Zone: {Zone}";
 
-            Boss.HP /= 1.5f;
-            Boss.Attack /= 2.2f;
-            Boss.ExpReward -= 5;
-            Boss.GoldReward -= 2;
+            Boss.HP /= 1.05f;
+            Boss.Attack /= 1.01f;
+            Boss.ExpReward -= 10;
+            Boss.GoldReward -= 1;
 
             bossCurrentHP = Boss.HP;
             teamCurrentHP = TotalCardStat.HP;
@@ -212,11 +215,63 @@ namespace Battle
                 card.ExpCurrent += expPerCard;
                 if (card.ExpCurrent >= card.ExpToNextLevel)
                 {
-                    card.Level += 1;
-
-                    card.ExpCurrent = 0;
-                    card.ExpToNextLevel *= 1.5f;
+                    while (card.ExpCurrent >= card.ExpToNextLevel)
+                    {
+                        card.Level += 1;
+                        card.ExpCurrent -= card.ExpToNextLevel;
+                        card.ExpToNextLevel = CalculateExpToNextLevel(card);
+                    }
+                    UpdateCardStats(card);
+                    UpdateAllTeamStats_UI();
                 }
+            }
+        }
+        
+        private static float CalculateExpToNextLevel(CardModel card)
+        {
+            var scale = card.Rarity switch
+            {
+                Rarity.Common => 1.1f,
+                Rarity.Rare => 1.2f,
+                Rarity.Epic => 1.5f,
+                Rarity.Legendary => 2.5f,
+                _ => throw new ArgumentException($"Undefined card rarity: {card.Rarity}. Cannot calculate experience")
+            };
+
+            return card.StartBaseExp * Mathf.Pow(card.Level, scale);
+        }
+        
+        
+        private static void UpdateCardStats(CardModel card)
+        {
+            switch (card.Rarity)
+            {
+                case Rarity.Common:
+                    card.HP *= 1.01f;
+                    card.Attack *= 1.025f;
+                    break;
+                case Rarity.Rare:
+                    card.HP *= 1.05f;
+                    card.Attack *= 1.050f;
+                    card.Crit += 0.1f;
+                    break;
+                case Rarity.Epic:
+                    card.HP *= 1.1f;
+                    card.Attack *= 1.1f;
+                    card.Crit += 0.5f;
+                    card.CritDmg += 10;
+                    break;
+                case Rarity.Legendary:
+                    card.HP *= 1.1f;
+                    card.HPRegeneration += 5f;
+                    card.Attack *= 1.1f;
+                    card.Crit += 1f;
+                    card.CritDmg += 25;
+                    card.Block += 1;
+                    card.BlockPower += 2;
+                    break;
+                default:
+                    throw new ArgumentException($"Undefined card rarity: {card.Rarity}");
             }
         }
         
@@ -237,8 +292,24 @@ namespace Battle
             TeamHP_TextOnSlider.text = teamCurrentHP.ToString("F1");
         }
         
+        
         private void UpdateAllTeamStats_UI()
         {
+            TotalCardStat = new TotalCardStatsModel();
+            
+            foreach (var card in CardList)
+            {
+                TotalCardStat.HP += card.HP;
+                TotalCardStat.HPRegeneration += card.HPRegeneration;
+                TotalCardStat.Attack += card.Attack;
+                TotalCardStat.Crit += card.Crit;
+                TotalCardStat.CritDmg += card.CritDmg;
+                TotalCardStat.BlockChance += card.Block;
+                TotalCardStat.BlockPower += card.BlockPower;
+                TotalCardStat.Evade += card.Evade;
+            }
+            
+            
             HP_Text.text = $"HP: {TotalCardStat.HP}";
             HPs_Text.text = $"HP/s: {TotalCardStat.HPRegeneration:F1}";
             Attack_Text.text = $"Attack: {TotalCardStat.Attack}";
@@ -263,7 +334,7 @@ namespace Battle
 
         private void _initBoss()
         {
-            Boss = new BossModel()
+            Boss = new BossModel
             {
                 HP = 250f,
                 Attack = 10f,
@@ -278,11 +349,8 @@ namespace Battle
 
         private void _initCards()
         {
-            CardList.Add(new CardModel() { Id = 1, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 10f, Attack = 10, Crit = 60, CritDmg = 100, Block = 25, BlockPower = 50, Evade = 25, Rarity = Rarity.Epic });
-            CardList.Add(new CardModel() { Id = 2, HP = 250, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
-            // CardList.Add(new CardModel() { Id = 3, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
-            // CardList.Add(new CardModel() { Id = 4, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
-            // CardList.Add(new CardModel() { Id = 5, HP = 100, Title = "", Level = 1, ExpCurrent = 1, ExpToNextLevel = 200, HPRegeneration = 0, Attack = 0, Crit = 0, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Epic });
+            CardList.Add(new CardModel{ Id = 1, HP = 100, Title = "Legendary Card", Level = 1, ExpCurrent = 0, ExpToNextLevel = 100, StartBaseExp = 1000, HPRegeneration = 10f, Attack = 10, Crit = 20, CritDmg = 100, Block = 25, BlockPower = 50, Evade = 25, Rarity = Rarity.Legendary });
+            CardList.Add(new CardModel{ Id = 1, HP = 100, Title = "Common Card", Level = 1, ExpCurrent = 0, ExpToNextLevel = 10, StartBaseExp = 100, HPRegeneration = 0.1f, Attack = 11, Crit = 0.5f, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Common });
 
             foreach (var card in CardList)
             {
@@ -298,6 +366,5 @@ namespace Battle
         }
 
         #endregion
-  
     }
 }

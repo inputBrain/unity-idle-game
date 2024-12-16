@@ -9,6 +9,7 @@ namespace Models
         public int Level;
         public float ExpCurrent;
         public float ExpToNextLevel;
+        public float StartBaseExp;
         public float HP;
         public float HPRegeneration;
         public float Attack;
