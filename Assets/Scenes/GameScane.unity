@@ -4645,6 +4645,21 @@ MonoBehaviour:
   BossAttack_Text: {fileID: 1289391576}
   BossExpReward_Text: {fileID: 2137145984}
   BossGoldReward_Text: {fileID: 124740648}
+  Card1Exp_Slider: {fileID: 304718734}
+  Card2Exp_Slider: {fileID: 1912701644}
+  Card3Exp_Slider: {fileID: 767272741}
+  Card4Exp_Slider: {fileID: 1856023708}
+  Card5Exp_Slider: {fileID: 82174353}
+  Card1EXP_TextOnSlider: {fileID: 321484338}
+  Card2EXP_TextOnSlider: {fileID: 991722278}
+  Card3EXP_TextOnSlider: {fileID: 1447573981}
+  Card4EXP_TextOnSlider: {fileID: 453796095}
+  Card5EXP_TextOnSlider: {fileID: 285243037}
+  Card1Level_Text: {fileID: 1504747148}
+  Card2Level_Text: {fileID: 669620767}
+  Card3Level_Text: {fileID: 403878444}
+  Card4Level_Text: {fileID: 281220725}
+  Card5Level_Text: {fileID: 2033897783}
 --- !u!1 &1388065255
 GameObject:
   m_ObjectHideFlags: 0

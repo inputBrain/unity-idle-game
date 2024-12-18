@@ -42,6 +42,33 @@ namespace Battle
 
         private float bossCurrentHP;
         private float teamCurrentHP;
+        
+        
+        public Slider Card1Exp_Slider;
+        public Slider Card2Exp_Slider;
+        public Slider Card3Exp_Slider;
+        public Slider Card4Exp_Slider;
+        public Slider Card5Exp_Slider;
+
+        public TMP_Text Card1EXP_TextOnSlider;
+        public TMP_Text Card2EXP_TextOnSlider;
+        public TMP_Text Card3EXP_TextOnSlider;
+        public TMP_Text Card4EXP_TextOnSlider;
+        public TMP_Text Card5EXP_TextOnSlider;
+        
+        public TMP_Text Card1Level_Text;
+        public TMP_Text Card2Level_Text;
+        public TMP_Text Card3Level_Text;
+        public TMP_Text Card4Level_Text;
+        public TMP_Text Card5Level_Text;
+        //
+        // private float card1CurrentExp;
+        // private float card2CurrentExp;
+        // private float card3CurrentExp;
+        // private float card4CurrentExp;
+        // private float card5CurrentExp;
+
+
 
         private void Start()
         {
@@ -97,7 +124,7 @@ namespace Battle
                     OnBossWin();
                 }
 
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.1f);
             }
         }
         
@@ -207,7 +234,7 @@ namespace Battle
             {
                 return;
             }
-            
+
             var expPerCard = Boss.ExpReward / CardList.Count;
 
             foreach (var card in CardList)
@@ -224,8 +251,10 @@ namespace Battle
                     UpdateCardStats(card);
                     UpdateAllTeamStats_UI();
                 }
+                UpdateCardUI(card);
             }
         }
+
         
         private static float CalculateExpToNextLevel(CardModel card)
         {
@@ -282,14 +311,14 @@ namespace Battle
         private void UpdateBossSliderHP_UI()
         {
             BossHP_Slider.value = bossCurrentHP / Boss.HP;
-            BossHP_TextOnSlider.text = bossCurrentHP.ToString("F1");
+            BossHP_TextOnSlider.text = bossCurrentHP.ToString("F0");
         }
 
 
         private void UpdateTeamSliderHP_UI()
         {
             TeamHP_Slider.value = teamCurrentHP / TotalCardStat.HP;
-            TeamHP_TextOnSlider.text = teamCurrentHP.ToString("F1");
+            TeamHP_TextOnSlider.text = teamCurrentHP.ToString("F0");
         }
         
         
@@ -328,6 +357,24 @@ namespace Battle
         }
         
         
+        private void UpdateCardUI(CardModel card)
+        {
+            if (card.ExpSlider != null)
+            {
+                card.ExpSlider.value = card.ExpCurrent / card.ExpToNextLevel;
+            }
+    
+            if (card.ExpTextOnSlider != null)
+            {
+                card.ExpTextOnSlider.text = $"{card.ExpCurrent:F0} / {card.ExpToNextLevel:F0}";
+            }
+    
+            if (card.LevelText != null)
+            {
+                card.LevelText.text = $"lvl: {card.Level}";
+            }
+        }
+        
         #endregion
 
         #region Init
@@ -338,7 +385,7 @@ namespace Battle
             {
                 HP = 250f,
                 Attack = 10f,
-                ExpReward = 10,
+                ExpReward = 50,
                 GoldReward = 1
             };
             
@@ -349,8 +396,117 @@ namespace Battle
 
         private void _initCards()
         {
-            CardList.Add(new CardModel{ Id = 1, HP = 100, Title = "Legendary Card", Level = 1, ExpCurrent = 0, ExpToNextLevel = 100, StartBaseExp = 1000, HPRegeneration = 10f, Attack = 10, Crit = 20, CritDmg = 100, Block = 25, BlockPower = 50, Evade = 25, Rarity = Rarity.Legendary });
-            CardList.Add(new CardModel{ Id = 1, HP = 100, Title = "Common Card", Level = 1, ExpCurrent = 0, ExpToNextLevel = 10, StartBaseExp = 100, HPRegeneration = 0.1f, Attack = 11, Crit = 0.5f, CritDmg = 0, Block = 0, BlockPower = 0, Evade = 0, Rarity = Rarity.Common });
+            CardList.Add(new CardModel
+            {
+                Id = 1, 
+                HP = 100,
+                Title = "Epic Card",
+                Level = 1, 
+                ExpCurrent = 0,
+                ExpToNextLevel = 500,
+                StartBaseExp = 500,
+                HPRegeneration = 0.1f,
+                Attack = 11, 
+                Crit = 0.5f,
+                CritDmg = 0, 
+                Block = 0, 
+                BlockPower = 0,
+                Evade = 0, 
+                Rarity = Rarity.Rare,
+                ExpSlider = Card1Exp_Slider, 
+                ExpTextOnSlider = Card1EXP_TextOnSlider,
+                LevelText = Card1Level_Text
+            });
+            
+            CardList.Add(new CardModel 
+            { 
+                Id = 2, 
+                HP = 100, 
+                Title = "Legendary Card", 
+                Level = 1, 
+                ExpCurrent = 0, 
+                ExpToNextLevel = 1000, 
+                StartBaseExp = 1000, 
+                HPRegeneration = 10f, 
+                Attack = 10, 
+                Crit = 20, 
+                CritDmg = 100, 
+                Block = 25, 
+                BlockPower = 50, 
+                Evade = 25, 
+                Rarity = Rarity.Legendary,
+                ExpSlider = Card2Exp_Slider, 
+                ExpTextOnSlider = Card2EXP_TextOnSlider,
+                LevelText = Card2Level_Text
+            });
+            
+            CardList.Add(new CardModel 
+            { 
+                Id = 3, 
+                HP = 100, 
+                Title = "Legendary Card 3", 
+                Level = 1, 
+                ExpCurrent = 0, 
+                ExpToNextLevel = 1000, 
+                StartBaseExp = 1000, 
+                HPRegeneration = 0, 
+                Attack = 0, 
+                Crit = 0, 
+                CritDmg = 0, 
+                Block = 0, 
+                BlockPower = 0, 
+                Evade = 0, 
+                Rarity = Rarity.Legendary,
+                ExpSlider = Card3Exp_Slider, 
+                ExpTextOnSlider = Card3EXP_TextOnSlider,
+                LevelText = Card3Level_Text
+            });
+            
+            CardList.Add(new CardModel 
+            { 
+                Id = 4, 
+                HP = 100, 
+                Title = "Rare Card 4", 
+                Level = 1, 
+                ExpCurrent = 0, 
+                ExpToNextLevel = 100, 
+                StartBaseExp = 100, 
+                HPRegeneration = 0, 
+                Attack = 0, 
+                Crit = 0, 
+                CritDmg = 0, 
+                Block = 0, 
+                BlockPower = 0, 
+                Evade = 0, 
+                Rarity = Rarity.Rare,
+                ExpSlider = Card4Exp_Slider, 
+                ExpTextOnSlider = Card4EXP_TextOnSlider,
+                LevelText = Card4Level_Text
+            });
+
+            
+            CardList.Add(new CardModel 
+            { 
+                Id = 5, 
+                HP = 100, 
+                Title = "Rare Card 5", 
+                Level = 1, 
+                ExpCurrent = 0, 
+                ExpToNextLevel = 100, 
+                StartBaseExp = 100, 
+                HPRegeneration = 0, 
+                Attack = 0, 
+                Crit = 0, 
+                CritDmg = 0, 
+                Block = 0, 
+                BlockPower = 0, 
+                Evade = 0, 
+                Rarity = Rarity.Rare,
+                ExpSlider = Card5Exp_Slider, 
+                ExpTextOnSlider = Card5EXP_TextOnSlider,
+                LevelText = Card5Level_Text
+            });
+
 
             foreach (var card in CardList)
             {

@@ -1,4 +1,5 @@
-﻿using UnityEngine.UIElements;
+﻿using TMPro;
+using UnityEngine.UI;
 
 namespace Models
 {
@@ -19,6 +20,9 @@ namespace Models
         public float BlockPower;
         public float Evade;
         public Rarity Rarity;
-        // public Image Image;
+        public Image Image;
+        public Slider ExpSlider;
+        public TMP_Text ExpTextOnSlider;
+        public TMP_Text LevelText;
     }
 }
