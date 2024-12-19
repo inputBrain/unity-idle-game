@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Battle
 {
-    public class BattleScript : MonoBehaviour
+    public class BattleScript : Singleton<BattleScript>
     {
         public List<CardModel> CardList = new();
         public TMP_Text Zone_Text;
@@ -36,9 +36,7 @@ namespace Battle
         public TMP_Text BlockPower_Text;
         public TMP_Text Evade_Text;
         
-        public TMP_Text BossAttack_Text;
-        public TMP_Text BossExpReward_Text;
-        public TMP_Text BossGoldReward_Text;
+  
 
         private float bossCurrentHP;
         private float teamCurrentHP;
@@ -75,9 +73,9 @@ namespace Battle
             Zone_Text.text = "Zone: " + Zone;
             
             _initBoss();
-            _initCards();
+            // _initCards();
 
-            bossCurrentHP = Boss.HP;
+            bossCurrentHP = Boss.CurrentHP;
             teamCurrentHP = TotalCardStat.HP;
 
             UpdateAllTeamStats_UI();
@@ -124,7 +122,7 @@ namespace Battle
                     OnBossWin();
                 }
 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(1f);
             }
         }
         
@@ -187,7 +185,7 @@ namespace Battle
         }
         
 
-        private void OnBossDefeated()
+        public void OnBossDefeated()
         {
             ReceiveExp();
             
@@ -199,12 +197,12 @@ namespace Battle
             Zone++;
             Zone_Text.text = $"Zone: {Zone}";
 
-            Boss.HP *= 1.05f;
+            Boss.MaxHp *= 1.05f;
             Boss.Attack *= 1.01f;
             Boss.ExpReward += 10;
             Boss.GoldReward += 1;
 
-            bossCurrentHP = Boss.HP;
+            bossCurrentHP = Boss.MaxHp;
             UpdateBossStatAndRewards_UI();
             
         }
@@ -215,12 +213,12 @@ namespace Battle
             Zone--;
             Zone_Text.text = $"Zone: {Zone}";
 
-            Boss.HP /= 1.05f;
+            Boss.CurrentHP /= 1.05f;
             Boss.Attack /= 1.01f;
             Boss.ExpReward -= 10;
             Boss.GoldReward -= 1;
 
-            bossCurrentHP = Boss.HP;
+            bossCurrentHP = Boss.CurrentHP;
             teamCurrentHP = TotalCardStat.HP;
             UpdateTeamSliderHP_UI();
             UpdateBossSliderHP_UI();
@@ -310,7 +308,7 @@ namespace Battle
         
         private void UpdateBossSliderHP_UI()
         {
-            BossHP_Slider.value = bossCurrentHP / Boss.HP;
+            BossHP_Slider.value = bossCurrentHP / Boss.CurrentHP;
             BossHP_TextOnSlider.text = bossCurrentHP.ToString("F0");
         }
 
@@ -349,11 +347,11 @@ namespace Battle
             Evade_Text.text = $"Evade: {TotalCardStat.Evade}";
         }
         
-        private void UpdateBossStatAndRewards_UI()
+        public void UpdateBossStatAndRewards_UI()
         {
-            BossAttack_Text.text = "Attack: " + Boss.Attack.ToString("F1");
-            BossExpReward_Text.text = "Exp: " + Boss.ExpReward.ToString("F1");
-            BossGoldReward_Text.text = "Gold: " + Boss.GoldReward.ToString("F1");
+            // BossAttack_Text.text = "Attack: " + Boss.Attack.ToString("F1");
+            // BossExpReward_Text.text = "Exp: " + Boss.ExpReward.ToString("F1");
+            // BossGoldReward_Text.text = "Gold: " + Boss.GoldReward.ToString("F1");
         }
         
         
@@ -383,7 +381,7 @@ namespace Battle
         {
             Boss = new BossModel
             {
-                HP = 250f,
+                CurrentHP = 250f,
                 Attack = 10f,
                 ExpReward = 50,
                 GoldReward = 1
@@ -394,132 +392,7 @@ namespace Battle
         }
 
 
-        private void _initCards()
-        {
-            CardList.Add(new CardModel
-            {
-                Id = 1, 
-                HP = 100,
-                Title = "Epic Card",
-                Level = 1, 
-                ExpCurrent = 0,
-                ExpToNextLevel = 500,
-                StartBaseExp = 500,
-                HPRegeneration = 0.1f,
-                Attack = 11, 
-                Crit = 0.5f,
-                CritDmg = 0, 
-                Block = 0, 
-                BlockPower = 0,
-                Evade = 0, 
-                Rarity = Rarity.Rare,
-                ExpSlider = Card1Exp_Slider, 
-                ExpTextOnSlider = Card1EXP_TextOnSlider,
-                LevelText = Card1Level_Text
-            });
-            
-            CardList.Add(new CardModel 
-            { 
-                Id = 2, 
-                HP = 100, 
-                Title = "Legendary Card", 
-                Level = 1, 
-                ExpCurrent = 0, 
-                ExpToNextLevel = 1000, 
-                StartBaseExp = 1000, 
-                HPRegeneration = 10f, 
-                Attack = 10, 
-                Crit = 20, 
-                CritDmg = 100, 
-                Block = 25, 
-                BlockPower = 50, 
-                Evade = 25, 
-                Rarity = Rarity.Legendary,
-                ExpSlider = Card2Exp_Slider, 
-                ExpTextOnSlider = Card2EXP_TextOnSlider,
-                LevelText = Card2Level_Text
-            });
-            
-            CardList.Add(new CardModel 
-            { 
-                Id = 3, 
-                HP = 100, 
-                Title = "Legendary Card 3", 
-                Level = 1, 
-                ExpCurrent = 0, 
-                ExpToNextLevel = 1000, 
-                StartBaseExp = 1000, 
-                HPRegeneration = 0, 
-                Attack = 0, 
-                Crit = 0, 
-                CritDmg = 0, 
-                Block = 0, 
-                BlockPower = 0, 
-                Evade = 0, 
-                Rarity = Rarity.Legendary,
-                ExpSlider = Card3Exp_Slider, 
-                ExpTextOnSlider = Card3EXP_TextOnSlider,
-                LevelText = Card3Level_Text
-            });
-            
-            CardList.Add(new CardModel 
-            { 
-                Id = 4, 
-                HP = 100, 
-                Title = "Rare Card 4", 
-                Level = 1, 
-                ExpCurrent = 0, 
-                ExpToNextLevel = 100, 
-                StartBaseExp = 100, 
-                HPRegeneration = 0, 
-                Attack = 0, 
-                Crit = 0, 
-                CritDmg = 0, 
-                Block = 0, 
-                BlockPower = 0, 
-                Evade = 0, 
-                Rarity = Rarity.Rare,
-                ExpSlider = Card4Exp_Slider, 
-                ExpTextOnSlider = Card4EXP_TextOnSlider,
-                LevelText = Card4Level_Text
-            });
-
-            
-            CardList.Add(new CardModel 
-            { 
-                Id = 5, 
-                HP = 100, 
-                Title = "Rare Card 5", 
-                Level = 1, 
-                ExpCurrent = 0, 
-                ExpToNextLevel = 100, 
-                StartBaseExp = 100, 
-                HPRegeneration = 0, 
-                Attack = 0, 
-                Crit = 0, 
-                CritDmg = 0, 
-                Block = 0, 
-                BlockPower = 0, 
-                Evade = 0, 
-                Rarity = Rarity.Rare,
-                ExpSlider = Card5Exp_Slider, 
-                ExpTextOnSlider = Card5EXP_TextOnSlider,
-                LevelText = Card5Level_Text
-            });
-
-
-            foreach (var card in CardList)
-            {
-                TotalCardStat.HP += card.HP;
-                TotalCardStat.HPRegeneration += card.HPRegeneration;
-                TotalCardStat.Attack += card.Attack;
-                TotalCardStat.Crit += card.Crit;
-                TotalCardStat.CritDmg += card.CritDmg;
-                TotalCardStat.BlockChance += card.Block;
-                TotalCardStat.BlockPower += card.BlockPower;
-                TotalCardStat.Evade += card.Evade;
-            }
-        }
+        
 
         #endregion
     }

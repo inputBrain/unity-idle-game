@@ -2,7 +2,7 @@
 
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    static protected T Instance { get; set; }
+    static public T Instance { get; set; }
 
 
     private void Awake()
@@ -16,4 +16,5 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
             Instance = (T) (object) this;
         }
     }
+
 }
