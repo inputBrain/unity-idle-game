@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Models;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -36,7 +35,8 @@ namespace Battle
         public TMP_Text Block_Text;
         public TMP_Text BlockPower_Text;
         public TMP_Text Evade_Text;
-        
+
+        public TMP_Text EnemyType_Text;
         public TMP_Text EnemyAttack_Text;
         public TMP_Text EnemyExpReward_Text;
         public TMP_Text EnemyGoldReward_Text;
@@ -62,12 +62,6 @@ namespace Battle
         public TMP_Text Card3Level_Text;
         public TMP_Text Card4Level_Text;
         public TMP_Text Card5Level_Text;
-        //
-        // private float card1CurrentExp;
-        // private float card2CurrentExp;
-        // private float card3CurrentExp;
-        // private float card4CurrentExp;
-        // private float card5CurrentExp;
 
 
 
@@ -76,7 +70,6 @@ namespace Battle
             Zone_Text.text = "Zone: " + Zone;
             
             _initEnemy();
-            _initBoss();
             _initCards();
             
             enemyCurrentHP = Enemy.HP;
@@ -124,10 +117,10 @@ namespace Battle
 
                 if (teamCurrentHP <= 0)
                 {
-                    OnBossWin();
+                    OnEnemyWin();
                 }
 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.01f);
             }
         }
         
@@ -141,7 +134,7 @@ namespace Battle
             {
                 totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
                 enemyCurrentHP -= totalDamage;
-                if (enemyCurrentHP < 0)
+                if (enemyCurrentHP <= 0)
                 {
                     enemyCurrentHP = 0;
                 }
@@ -151,7 +144,7 @@ namespace Battle
 
             
             enemyCurrentHP -= totalDamage;
-            if (enemyCurrentHP < 0)
+            if (enemyCurrentHP <= 0)
             {
                 enemyCurrentHP = 0;
             }
@@ -161,7 +154,7 @@ namespace Battle
         
         private void DealDamageToTeam()
         {
-            var damageToTeam = Boss.Attack;
+            var damageToTeam = Zone % 10 == 0 ? Boss.Attack : Enemy.Attack;
             
             if (Random.value * 100 < TotalCardStat.Evade)
             {
@@ -205,25 +198,41 @@ namespace Battle
             if (Zone % 10 == 0)
             {
                 _initBoss();
+                EnemyType_Text.text = "BOSS STATS";
             }
+            else
+            {
+                _initEnemy();
+                EnemyType_Text.text = "UNIT STATS";
+            }
+            
+            
         }
         
         
-        private void OnBossWin()
+        private void OnEnemyWin()
         {
             Zone--;
+            if (Zone <= 0)
+            {
+                Zone = 1;
+            }
             Zone_Text.text = $"Zone: {Zone}";
 
-            Boss.HP /= 1.05f;
-            Boss.Attack /= 1.01f;
-            Boss.ExpReward -= 10;
-            Boss.GoldReward -= 1;
+            if (Zone % 10 == 0)
+            {
+                _initBoss();
+                EnemyType_Text.text = "BOSS STATS";
+            }
+            else
+            { 
+                _initEnemy();
+                EnemyType_Text.text = "UNIT STATS";
+            }
 
-            enemyCurrentHP = Boss.HP;
+
             teamCurrentHP = TotalCardStat.HP;
             UpdateTeamSliderHP_UI();
-            UpdateEnemySliderHP_UI();
-            UpdateEnemyStatAndRewards_UI();
         }
 
         
@@ -234,7 +243,9 @@ namespace Battle
                 return;
             }
 
-            var expPerCard = Boss.ExpReward / CardList.Count;
+            float experience = Zone % 10 == 0 ? Boss.ExpReward : Enemy.ExpReward;
+            
+            var expPerCard = experience / CardList.Count;
 
             foreach (var card in CardList)
             {
@@ -407,18 +418,18 @@ namespace Battle
             {
                 Boss = new BossModel
                 {
-                    HP = Zone * 10f,
-                    Attack = Zone * 1.5f,
+                    HP = Zone * 1000f,
+                    Attack = Zone * 15f,
                     ExpReward = Zone * 10,
                     GoldReward = Zone * 10
                 };
             }
 
             
-            Boss.HP = Zone * 10f;
-            Boss.Attack = Zone * 1.5f;
-            Boss.ExpReward = Zone * 10;
-            Boss.GoldReward = Zone * 10;
+            Boss.HP = Zone * 1000f;
+            Boss.Attack = Zone * 15f;
+            Boss.ExpReward = Zone * 30;
+            Boss.GoldReward = Zone * 30;
             
             enemyCurrentHP = Boss.HP;
             
@@ -433,18 +444,17 @@ namespace Battle
             {
                 Enemy = new EnemyModel
                 {
-                    HP = Zone * 1.5f,
-                    Attack = Zone * 1.5f,
-                    ExpReward = (int)(Zone * 1.5),
-                    GoldReward = (int)(Zone * 1.5)
+                    HP = Zone * 150f,
+                    Attack = Zone * 5f,
+                    ExpReward = (int)(Zone * 15),
+                    GoldReward = (int)(Zone * 15)
                 };
             }
 
-
-            Enemy.HP = Zone * 10f;
-            Enemy.Attack = Zone * 1.5f;
-            Enemy.ExpReward = Zone * 10;
-            Enemy.GoldReward = Zone * 10;
+            Enemy.HP = Zone * 150f;
+            Enemy.Attack = Zone * 5f;
+            Enemy.ExpReward = (int)(Zone * 15);
+            Enemy.GoldReward = (int)(Zone * 15);
             
             enemyCurrentHP = Enemy.HP;
             
