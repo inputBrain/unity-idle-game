@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Models;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -18,11 +19,11 @@ namespace Battle
         public TotalCardStatsModel TotalCardStat = new();
         public BossModel Boss = new();
 
-        public Slider BossArmor_Slider;
-        public TMP_Text BossArmor_TextOnSlider;
+        public EnemyModel Enemy = new();
 
-        public Slider BossHP_Slider;
-        public TMP_Text BossHP_TextOnSlider;
+
+        public Slider EnemyHP_Slider;
+        public TMP_Text EnemyHP_TextOnSlider;
 
         public Slider TeamHP_Slider;
         public TMP_Text TeamHP_TextOnSlider;
@@ -36,11 +37,11 @@ namespace Battle
         public TMP_Text BlockPower_Text;
         public TMP_Text Evade_Text;
         
-        public TMP_Text BossAttack_Text;
-        public TMP_Text BossExpReward_Text;
-        public TMP_Text BossGoldReward_Text;
+        public TMP_Text EnemyAttack_Text;
+        public TMP_Text EnemyExpReward_Text;
+        public TMP_Text EnemyGoldReward_Text;
 
-        private float bossCurrentHP;
+        private float enemyCurrentHP;
         private float teamCurrentHP;
         
         
@@ -74,10 +75,12 @@ namespace Battle
         {
             Zone_Text.text = "Zone: " + Zone;
             
+            _initEnemy();
             _initBoss();
             _initCards();
-
-            bossCurrentHP = Boss.HP;
+            
+            enemyCurrentHP = Enemy.HP;
+            
             teamCurrentHP = TotalCardStat.HP;
 
             UpdateAllTeamStats_UI();
@@ -114,7 +117,7 @@ namespace Battle
                 DealDamageToBoss();
                 DealDamageToTeam();
 
-                if (bossCurrentHP <= 0)
+                if (enemyCurrentHP <= 0)
                 {
                     OnBossDefeated();
                 }
@@ -137,22 +140,22 @@ namespace Battle
             if (Random.value * 100 < TotalCardStat.Crit)
             {
                 totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
-                bossCurrentHP -= totalDamage;
-                if (bossCurrentHP < 0)
+                enemyCurrentHP -= totalDamage;
+                if (enemyCurrentHP < 0)
                 {
-                    bossCurrentHP = 0;
+                    enemyCurrentHP = 0;
                 }
-                UpdateBossSliderHP_UI();
+                UpdateEnemySliderHP_UI();
                 return;
             }
 
             
-            bossCurrentHP -= totalDamage;
-            if (bossCurrentHP < 0)
+            enemyCurrentHP -= totalDamage;
+            if (enemyCurrentHP < 0)
             {
-                bossCurrentHP = 0;
+                enemyCurrentHP = 0;
             }
-            UpdateBossSliderHP_UI();
+            UpdateEnemySliderHP_UI();
         }
 
         
@@ -199,14 +202,10 @@ namespace Battle
             Zone++;
             Zone_Text.text = $"Zone: {Zone}";
 
-            Boss.HP *= 1.05f;
-            Boss.Attack *= 1.01f;
-            Boss.ExpReward += 10;
-            Boss.GoldReward += 1;
-
-            bossCurrentHP = Boss.HP;
-            UpdateBossStatAndRewards_UI();
-            
+            if (Zone % 10 == 0)
+            {
+                _initBoss();
+            }
         }
         
         
@@ -220,11 +219,11 @@ namespace Battle
             Boss.ExpReward -= 10;
             Boss.GoldReward -= 1;
 
-            bossCurrentHP = Boss.HP;
+            enemyCurrentHP = Boss.HP;
             teamCurrentHP = TotalCardStat.HP;
             UpdateTeamSliderHP_UI();
-            UpdateBossSliderHP_UI();
-            UpdateBossStatAndRewards_UI();
+            UpdateEnemySliderHP_UI();
+            UpdateEnemyStatAndRewards_UI();
         }
 
         
@@ -308,10 +307,22 @@ namespace Battle
         #region UI
 
         
-        private void UpdateBossSliderHP_UI()
+        private void UpdateEnemySliderHP_UI()
         {
-            BossHP_Slider.value = bossCurrentHP / Boss.HP;
-            BossHP_TextOnSlider.text = bossCurrentHP.ToString("F0");
+            float unitHp;
+            
+            if (Zone % 10 == 0)
+            {
+                unitHp = Boss.HP;
+            }
+            else
+            {
+                unitHp = Enemy.HP;
+            }
+            
+            
+            EnemyHP_Slider.value = enemyCurrentHP / unitHp;
+            EnemyHP_TextOnSlider.text = enemyCurrentHP.ToString("F0");
         }
 
 
@@ -348,12 +359,22 @@ namespace Battle
             BlockPower_Text.text = $"Block Power: {TotalCardStat.BlockPower}%";
             Evade_Text.text = $"Evade: {TotalCardStat.Evade}";
         }
-        
-        private void UpdateBossStatAndRewards_UI()
+
+
+        private void UpdateEnemyStatAndRewards_UI()
         {
-            BossAttack_Text.text = "Attack: " + Boss.Attack.ToString("F1");
-            BossExpReward_Text.text = "Exp: " + Boss.ExpReward.ToString("F1");
-            BossGoldReward_Text.text = "Gold: " + Boss.GoldReward.ToString("F1");
+            if (Zone % 10 == 0)
+            {
+                EnemyAttack_Text.text = "Attack: " + Boss.Attack.ToString("F1");
+                EnemyExpReward_Text.text = "Exp: " + Boss.ExpReward.ToString("F1");
+                EnemyGoldReward_Text.text = "Gold: " + Boss.GoldReward.ToString("F1");
+            }
+            else
+            {
+                EnemyAttack_Text.text = "Attack: " + Enemy.Attack.ToString("F1");
+                EnemyExpReward_Text.text = "Exp: " + Enemy.ExpReward.ToString("F1");
+                EnemyGoldReward_Text.text = "Gold: " + Enemy.GoldReward.ToString("F1");
+            }
         }
         
         
@@ -371,26 +392,64 @@ namespace Battle
     
             if (card.LevelText != null)
             {
-                card.LevelText.text = $"lvl: {card.Level}";
+                card.LevelText.text = $"lvl {card.Level}";
             }
         }
         
         #endregion
 
+
         #region Init
 
         private void _initBoss()
         {
-            Boss = new BossModel
+            if (Boss == null)
             {
-                HP = 250f,
-                Attack = 10f,
-                ExpReward = 50,
-                GoldReward = 1
-            };
+                Boss = new BossModel
+                {
+                    HP = Zone * 10f,
+                    Attack = Zone * 1.5f,
+                    ExpReward = Zone * 10,
+                    GoldReward = Zone * 10
+                };
+            }
+
             
-            UpdateBossStatAndRewards_UI();
-            UpdateBossSliderHP_UI();
+            Boss.HP = Zone * 10f;
+            Boss.Attack = Zone * 1.5f;
+            Boss.ExpReward = Zone * 10;
+            Boss.GoldReward = Zone * 10;
+            
+            enemyCurrentHP = Boss.HP;
+            
+            UpdateEnemyStatAndRewards_UI();
+            UpdateEnemySliderHP_UI();
+        }
+
+
+        private void _initEnemy()
+        {
+            if (Enemy == null)
+            {
+                Enemy = new EnemyModel
+                {
+                    HP = Zone * 1.5f,
+                    Attack = Zone * 1.5f,
+                    ExpReward = (int)(Zone * 1.5),
+                    GoldReward = (int)(Zone * 1.5)
+                };
+            }
+
+
+            Enemy.HP = Zone * 10f;
+            Enemy.Attack = Zone * 1.5f;
+            Enemy.ExpReward = Zone * 10;
+            Enemy.GoldReward = Zone * 10;
+            
+            enemyCurrentHP = Enemy.HP;
+            
+            UpdateEnemyStatAndRewards_UI();
+            UpdateEnemySliderHP_UI();
         }
 
 
