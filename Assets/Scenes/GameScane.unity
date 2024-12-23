@@ -2524,10 +2524,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Zone_Text: {fileID: 1772833158}
   Zone: 1
-  BossArmor_Slider: {fileID: 94991571}
-  BossArmor_TextOnSlider: {fileID: 1441910718}
-  BossHP_Slider: {fileID: 1651809203}
-  BossHP_TextOnSlider: {fileID: 1634352747}
+  EnemyHP_Slider: {fileID: 1651809203}
+  EnemyHP_TextOnSlider: {fileID: 1634352747}
   TeamHP_Slider: {fileID: 890228398}
   TeamHP_TextOnSlider: {fileID: 185557520}
   HP_Text: {fileID: 363223775}
@@ -2538,9 +2536,10 @@ MonoBehaviour:
   Block_Text: {fileID: 1695895230}
   BlockPower_Text: {fileID: 770323736}
   Evade_Text: {fileID: 1868996084}
-  BossAttack_Text: {fileID: 1289391576}
-  BossExpReward_Text: {fileID: 2137145984}
-  BossGoldReward_Text: {fileID: 124740648}
+  EnemyType_Text: {fileID: 894730196}
+  EnemyAttack_Text: {fileID: 1289391576}
+  EnemyExpReward_Text: {fileID: 2137145984}
+  EnemyGoldReward_Text: {fileID: 124740648}
   Card1Exp_Slider: {fileID: 304718734}
   Card2Exp_Slider: {fileID: 1912701644}
   Card3Exp_Slider: {fileID: 767272741}
@@ -4988,7 +4987,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1428102348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7597,6 +7596,10 @@ PrefabInstance:
     - target: {fileID: 2108904176275572746, guid: c675bb8c61214ac4f8440414241ab2dd, type: 3}
       propertyPath: m_Name
       value: Card
+      objectReference: {fileID: 0}
+    - target: {fileID: 2108904176275572746, guid: c675bb8c61214ac4f8440414241ab2dd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3166178633593205664, guid: c675bb8c61214ac4f8440414241ab2dd, type: 3}
       propertyPath: m_Pivot.x
