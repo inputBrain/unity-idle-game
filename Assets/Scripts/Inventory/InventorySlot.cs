@@ -7,9 +7,13 @@ namespace Inventory
     {
         public void OnDrop(PointerEventData eventData)
         {
-            var dropped = eventData.pointerDrag;
-            var draggableItem = dropped.GetComponent<DraggableItem>();
-            draggableItem.parentAfterDrag = transform;
+            if (transform.childCount == 0)
+            {
+                var dropped = eventData.pointerDrag;
+                var draggableItem = dropped.GetComponent<DraggableItem>();
+                draggableItem.parentAfterDrag = transform;
+            }
+
         }
     }
 }

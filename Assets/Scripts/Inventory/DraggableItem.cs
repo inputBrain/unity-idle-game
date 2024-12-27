@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Inventory
 {
     public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        public Image image;
+        
         [HideInInspector]
         public Transform parentAfterDrag;
         
@@ -14,6 +17,7 @@ namespace Inventory
             parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
             transform.SetAsFirstSibling();
+            image.raycastTarget = false;
         }
 
 
@@ -28,6 +32,7 @@ namespace Inventory
         {
             Debug.Log("OnEndDrag drag");
             transform.SetParent(parentAfterDrag);
+            image.raycastTarget = true;
         }
     }
 }
