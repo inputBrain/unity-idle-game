@@ -120,7 +120,7 @@ namespace Battle
                     OnEnemyWin();
                 }
 
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(1f);
             }
         }
         

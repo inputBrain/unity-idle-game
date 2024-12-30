@@ -26,14 +26,14 @@ namespace Inventory
             }
         }
 
-        
+
         private void _onOpenInventory()
         {
             InventoryCanvas.SetActive(true);
             _isOpenedInventory = true;
         }
 
-        
+
         private void _onCloseInventory()
         {
             InventoryCanvas.SetActive(false);

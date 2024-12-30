@@ -15318,7 +15318,6 @@ GameObject:
   - component: {fileID: 1428102350}
   - component: {fileID: 1428102349}
   - component: {fileID: 1428102348}
-  - component: {fileID: 1428102352}
   m_Layer: 5
   m_Name: Canvas - Inventory
   m_TagString: Untagged
@@ -15410,19 +15409,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1428102352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428102347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19a38a1ddc1043ea9ae123a25e220a88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InventoryCanvas: {fileID: 1428102347}
 --- !u!1 &1430518765
 GameObject:
   m_ObjectHideFlags: 0
@@ -16816,6 +16802,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7313ef0ee369b0644907d82fe5563673, type: 3}
+--- !u!1 &1524774695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1524774697}
+  - component: {fileID: 1524774696}
+  m_Layer: 0
+  m_Name: Inventory Toggle Script
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1524774696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524774695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a38a1ddc1043ea9ae123a25e220a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InventoryCanvas: {fileID: 1428102347}
+--- !u!4 &1524774697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524774695}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 680.6625, y: 398.98007, z: 5.897534}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1525136188 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9130129754088740739, guid: 7313ef0ee369b0644907d82fe5563673, type: 3}
@@ -20955,7 +20986,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428102352}
+      - m_Target: {fileID: 1524774696}
         m_TargetAssemblyTypeName: Inventory.InventoryOpenAndClose, Assembly-CSharp
         m_MethodName: ToggleInventory
         m_Mode: 1
@@ -23050,3 +23081,4 @@ SceneRoots:
   - {fileID: 2100421919}
   - {fileID: 1428102351}
   - {fileID: 3952805098120793211}
+  - {fileID: 1524774697}
