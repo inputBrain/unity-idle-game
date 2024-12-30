@@ -16,7 +16,7 @@ namespace Inventory
             Debug.Log("OnBeginDrag drag");
             parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
-            transform.SetAsFirstSibling();
+            transform.SetAsLastSibling();
             image.raycastTarget = false;
         }
 
