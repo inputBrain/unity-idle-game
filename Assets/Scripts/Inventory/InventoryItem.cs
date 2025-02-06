@@ -4,8 +4,9 @@ using UnityEngine.UI;
 
 namespace Inventory
 {
-    public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        [Header("UI")]
         public Image image;
         
         [HideInInspector]
@@ -13,26 +14,21 @@ namespace Inventory
         
         public void OnBeginDrag(PointerEventData eventData)
         {
-            Debug.Log("OnBeginDrag drag");
             parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
-            transform.SetAsLastSibling();
+            // transform.SetAsLastSibling();
             image.raycastTarget = false;
         }
 
-
         public void OnDrag(PointerEventData eventData)
         {
-            Debug.Log("OnDrag drag");
             transform.position = Input.mousePosition;
         }
 
-
         public void OnEndDrag(PointerEventData eventData)
         {
-            Debug.Log("OnEndDrag drag");
-            transform.SetParent(parentAfterDrag);
             image.raycastTarget = true;
+            transform.SetParent(parentAfterDrag);
         }
     }
 }

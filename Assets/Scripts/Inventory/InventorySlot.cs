@@ -9,9 +9,8 @@ namespace Inventory
         {
             if (transform.childCount == 0)
             {
-                var dropped = eventData.pointerDrag;
-                var draggableItem = dropped.GetComponent<DraggableItem>();
-                draggableItem.parentAfterDrag = transform;
+                var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();;
+                inventoryItem.parentAfterDrag = transform;
             }
 
         }
