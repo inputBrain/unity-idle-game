@@ -9,7 +9,7 @@ namespace Inventory
         {
             if (transform.childCount == 0)
             {
-                var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();;
+                var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
                 inventoryItem.parentAfterDrag = transform;
             }
 
