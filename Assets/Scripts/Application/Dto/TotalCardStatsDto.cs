@@ -18,5 +18,19 @@ namespace Application.Dto
         public float Block => Cards.Sum(card => card.Block);
         public float BlockPower => Cards.Sum(card => card.BlockPower);
         public float Evade => Cards.Sum(card => card.Evade);
+
+
+        public void GetDamage(float damage)
+        {
+            if (Cards.Sum(c => c.CurrentHp) - damage < 0)
+            {
+                return;
+            }
+                
+            foreach (var card in Cards)
+            {
+                card.CurrentHp -= damage / Cards.Count;
+            }
+        }
     }
 }

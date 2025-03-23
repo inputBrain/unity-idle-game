@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ebaka_0: 2499549213174594550
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

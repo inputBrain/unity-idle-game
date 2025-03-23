@@ -10,8 +10,8 @@ namespace Presentation.MVP.Presenter
 
         public PlayerPresenter(IPlayerView view, Player model)
         {
-            this._view = view;
-            this._model = model;
+            _view = view;
+            _model = model;
 
             view.OnAddCoinClicked += AddCoin;
             model.OnCoinsChanged += view.SetCoins;

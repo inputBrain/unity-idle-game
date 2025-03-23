@@ -8,7 +8,7 @@ namespace Utils
     {
         public static List<T> GetAllScriptableObjects<T>(string path) where T : ScriptableObject
         {
-            return Resources.LoadAll<T>(nameof(ScriptableObjects) + "/Items").ToList();
+            return Resources.LoadAll<T>(nameof(ScriptableObjects) + path).ToList();
         }
     }
 }

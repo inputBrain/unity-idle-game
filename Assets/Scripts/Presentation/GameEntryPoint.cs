@@ -1,28 +1,43 @@
-﻿using Domain.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Domain.Entities;
 using Presentation.MVP.Presenter;
 using Presentation.MVP.Views;
+using Presentation.Services;
 using UnityEngine;
 
 namespace Presentation
 {
     public class GameEntryPoint : MonoBehaviour
     {
-        [Header("Ссылка на View")]
-        public PlayerView playerView;
-        public GameView gameView;
+        private CardLoaderService _cardLoaderService;
+
+        public TotalCardStatsView TotalCardStatsView;
+        [SerializeField]
+        public List<Card> Cards;
+        [SerializeField]
+        public float CardHps;
+
         
-        private Player _player = new() { Coins = 100 };
 
         private void Awake()
         {
-            var playerPresenter = new PlayerPresenter(playerView, _player);
-            var gamePresenter = new GamePresenter(gameView, _player);
-            this.InvokeRepeating(nameof(AddCoin), 1f, 1f);
+            _cardLoaderService = new CardLoaderService();
+            Cards = _cardLoaderService.GetDomainCards();
+
+            new TotalCardStatsPresenter(Cards, TotalCardStatsView);
+            InvokeRepeating(nameof(AddHp), 1f, 1f);
         }
 
-        void AddCoin()
+
+        void AddHp()
         {
-            _player.Coins += 1;
+            foreach (var card in Cards)
+            {
+                card.CurrentHp += 1;
+            }
+            CardHps = Cards.Sum(c => c.CurrentHp);
+
         }
     }
 }
