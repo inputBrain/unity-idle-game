@@ -1,31 +1,54 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Presentation.MVP.Views
+public class TotalCardStatsView : MonoBehaviour
 {
-    public class TotalCardStatsView : MonoBehaviour
+    public TMP_Text Hp;
+    public TMP_Text HPs;
+    public TMP_Text Attack;
+    public TMP_Text Crit;
+    public TMP_Text CritDmg;
+    public TMP_Text Block;
+    public TMP_Text BlockPower;
+    public TMP_Text Evade;
+
+    public void SetTotalHp(float totalHp)
     {
-        [Header("Хпшка")]
-        public TMP_Text Hp;
+        Hp.text = "HP: " + totalHp;
+    }
 
-        public TMP_Text HPs;
+    public void SetTotalHPs(float totalHpRegeneration)
+    {
+        HPs.text = "HP/s: " + totalHpRegeneration;
+    }
 
-        public TMP_Text Attack;
+    public void SetTotalAttack(float totalAttack)
+    {
+        Attack.text = "Attack: " + totalAttack;
+    }
 
-        public TMP_Text Crit;
+    public void SetTotalCrit(float totalcCrit)
+    {
+        Crit.text = "Crit: " + totalcCrit + "%";
+    }
 
-        public TMP_Text CritDmg;
+    public void SetTotalCritDmg(float totalCritDmg)
+    {
+        CritDmg.text = "Crit Dmg: " + "+" + totalCritDmg + "%";
+    }
 
-        public TMP_Text Block;
+    public void SetTotalBlock(float totalBlock)
+    {
+        Block.text = "Block: " + totalBlock + "%";
+    }
 
-        public TMP_Text BlockPower;
+    public void SetTotalBlockPower(float totalBlockPower)
+    {
+        BlockPower.text = "Block Power: " + totalBlockPower + "%";
+    }
 
-        public TMP_Text Evade;
-        
-        
-        public void SetHp(float hp)
-        {
-            Hp.text = "HP: " + hp;
-        }
+    public void SetTotalEvade(float totalEvade)
+    {
+        Evade.text = "Evade: " + totalEvade + "%";
     }
 }
