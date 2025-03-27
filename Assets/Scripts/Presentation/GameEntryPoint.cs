@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Domain.Entities;
+using OLd.Battle;
 using Presentation.MVP.Presenter;
 using Presentation.MVP.Views;
 using Presentation.Services;
@@ -13,31 +14,35 @@ namespace Presentation
         private CardLoaderService _cardLoaderService;
 
         public TotalCardStatsView TotalCardStatsView;
-        [SerializeField]
-        public List<Card> Cards;
-        [SerializeField]
-        public float CardHps;
 
+        public List<CardView> CardsViews;
+
+        public ZoneView ZoneView;
         
 
-        private void Awake()
+        private async void Awake()
         {
             _cardLoaderService = new CardLoaderService();
-            Cards = _cardLoaderService.GetDomainCards();
+            var cards = _cardLoaderService.GetDomainCards();
+            var zone = new Zone();
+            var boss = new Boss();
+            
+            new TotalCardStatsPresenter(cards, TotalCardStatsView);
 
-            new TotalCardStatsPresenter(Cards, TotalCardStatsView);
-            InvokeRepeating(nameof(AddHp), 1f, 1f);
-        }
-
-
-        void AddHp()
-        {
-            foreach (var card in Cards)
+            for (var i = 0; i < CardsViews.Count; i++)
             {
-                card.CurrentHp += 1;
+                new CardPresenter(cards[i], CardsViews[i]);
             }
-            CardHps = Cards.Sum(c => c.CurrentHp);
+            
+            
+            new ZonePresenter(ZoneView, zone);
+            var battleScript = new BattleScript(boss, zone, cards);
 
+            while (true)
+            {
+                battleScript.BattleUpdate();
+                await Task.Delay(1000);
+            }
         }
     }
 }

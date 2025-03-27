@@ -7,43 +7,30 @@ using Random = UnityEngine.Random;
 
 namespace OLd.Battle
 {
-    public class BattleScript : MonoBehaviour
+    public class BattleScript
     {
         public List<Card> CardList = new();
-        public int Zone = 1;
 
         public TotalCardStatsDto TotalCardStat = new();
         public Boss Boss = new();
-
-        public Boss Enemy = new();
+        private Zone _zone;
         
         private float enemyCurrentHP;
+
+
+        public BattleScript(Boss boss, Zone zone, List<Card> cards)
+        {
+            CardList = cards;
+            Boss = boss;
+            _zone = zone;
+            TotalCardStat.Cards = cards;
+
+            _zone.CurrentZone = 1;
+        }
         
-
-
-        private void Start()
+        public void BattleUpdate()
         {
-            enemyCurrentHP = Enemy.Hp;
-
-           InvokeRepeating(nameof(BattleUpdate), 0f, 1f);
-        }
-
-
-        private void FixedUpdate()
-        {
-            foreach (var card in CardList)
-            {
-                card.CurrentHp += TotalCardStat.HpRegeneration;
-                if (card.CurrentHp > card.MaxHp)
-                {
-                    card.CurrentHp = card.MaxHp;
-                }
-            }
-        }
-
-
-        private void BattleUpdate()
-        {
+            HpRegeneration();
             DealDamageToBoss();
             DealDamageToTeam();
 
@@ -57,7 +44,20 @@ namespace OLd.Battle
                 OnEnemyWin();
             }
         }
-        
+
+
+        private void HpRegeneration()
+        {
+            foreach (var card in CardList)
+            {
+                card.CurrentHp += TotalCardStat.HpRegeneration;
+                if (card.CurrentHp > card.MaxHp)
+                {
+                    card.CurrentHp = card.MaxHp;
+                }
+            }
+        }
+     
         
         private void DealDamageToBoss()
         {
@@ -86,7 +86,7 @@ namespace OLd.Battle
         
         private void DealDamageToTeam()
         {
-            var damageToTeam = Zone % 10 == 0 ? Boss.Attack : Enemy.Attack;
+            var damageToTeam = _zone.CurrentZone % 10 == 0 ? Boss.Attack : Boss.Attack;
             
             if (Random.value * 100 < TotalCardStat.Evade)
             {
@@ -113,16 +113,16 @@ namespace OLd.Battle
                 Debug.Log("Reward granted!");
             }
             
-            Zone++;
+            _zone.CurrentZone++;
         }
         
         
         private void OnEnemyWin()
         {
-            Zone--;
-            if (Zone <= 0)
+            _zone.CurrentZone--;
+            if (_zone.CurrentZone <= 0)
             {
-                Zone = 1;
+                _zone.CurrentZone = 1;
             }
         }
 
@@ -134,7 +134,8 @@ namespace OLd.Battle
                 return;
             }
 
-            float experience = Zone % 10 == 0 ? Boss.ExpReward : Enemy.ExpReward;
+            //TODO: implement reward for boss wave
+            float experience = 1f;
             
             var expPerCard = experience / CardList.Count;
 

@@ -9,15 +9,104 @@ namespace Domain.Entities
 
         public string Title { get; set; }
 
-        public int Level { get; set; }
+        private float _level;
 
-        public float ExpCurrent { get; set; }
+        public float Level
+        {
+            get => _level;
+            set
+            {
+                if (Mathf.Approximately(_level, value))
+                {
+                    return;
+                }
+                {
+                    _level = value;
+                    OnLevelChanged?.Invoke(_level);
+                }
+            }
+        }
 
-        public float ExpToNextLevel { get; set; }
+        public event System.Action<float> OnLevelChanged;
+
+
+
+
+        private float _expCurrent;
+
+        public float ExpCurrent
+        {
+            get => _expCurrent;
+            set
+            {
+                if (Mathf.Approximately(_expCurrent, value))
+                {
+                    return;
+                }
+                {
+                    _expCurrent = value;
+                    OnExpCurrentChanged?.Invoke(_expCurrent);
+                }
+            }
+        }
+
+        public event System.Action<float> OnExpCurrentChanged;
+
+
+        private float _expToNextLevel;
+
+        public float ExpToNextLevel
+        {
+            get => _expToNextLevel;
+            set
+            {
+                if (Mathf.Approximately(_expToNextLevel, value))
+                {
+                    return;
+                }
+                {
+                    _expToNextLevel = value;
+                    OnExpToNextLevelChanged?.Invoke(_expToNextLevel);
+                }
+            }
+        }
+
+        public event System.Action<float> OnExpToNextLevelChanged;
+
 
         public float StartBaseExp { get; set; }
 
-        public string ImageResourcePath { get; set; }
+        private string _imageResourcesPath;
+
+        public string ImageResourcePath
+        {
+            get => _imageResourcesPath;
+            set
+            {
+                if (_imageResourcesPath == value)
+                {
+                    return;
+                }
+                {
+                    _imageResourcesPath = value;
+                    OnImageResourcePathChanged?.Invoke(_imageResourcesPath);
+                }
+            }
+        }
+
+        public event System.Action<string> OnImageResourcePathChanged;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         private float _currentHp;
