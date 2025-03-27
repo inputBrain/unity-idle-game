@@ -18,6 +18,7 @@ namespace Presentation.MVP.Presenter
             
             UpdateImage(card.ImageResourcePath);
             _card.OnImageResourcePathChanged += UpdateImage;
+            _card.OnLevelChanged += _cardView.SetLevel;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
 using OLd.Battle;
@@ -29,6 +30,7 @@ namespace Presentation
             
             new TotalCardStatsPresenter(cards, TotalCardStatsView);
 
+            
             for (var i = 0; i < CardsViews.Count; i++)
             {
                 new CardPresenter(cards[i], CardsViews[i]);
@@ -36,7 +38,7 @@ namespace Presentation
             
             
             new ZonePresenter(ZoneView, zone);
-            var battleScript = new BattleScript(boss, zone, cards);
+            var battleScript = new BattleScript(boss, zone, cards.Take(CardsViews.Count).ToList());
 
             while (true)
             {

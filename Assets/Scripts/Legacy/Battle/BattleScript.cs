@@ -135,7 +135,7 @@ namespace OLd.Battle
             }
 
             //TODO: implement reward for boss wave
-            float experience = 1f;
+            float experience = 5000f;
             
             var expPerCard = experience / CardList.Count;
 
@@ -147,6 +147,13 @@ namespace OLd.Battle
                     while (card.ExpCurrent >= card.ExpToNextLevel)
                     {
                         card.Level += 1;
+                        card.MaxHp *= 1.1f;
+                        card.CurrentHp *= 1.1f;
+                        card.HpRegeneration *= 1.1f;
+                        card.Attack *= 1.1f;
+                        card.Evade *= 1.1f;
+                        card.Block *= 1.1f;
+                        card.BlockPower *= 1.1f;
                         card.ExpCurrent -= card.ExpToNextLevel;
                         card.ExpToNextLevel = CalculateExpToNextLevel(card);
                     }

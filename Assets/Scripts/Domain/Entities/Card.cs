@@ -1,4 +1,5 @@
-﻿using ScriptableObjects.Config;
+﻿using System;
+using ScriptableObjects.Config;
 using UnityEngine;
 
 namespace Domain.Entities
@@ -9,14 +10,14 @@ namespace Domain.Entities
 
         public string Title { get; set; }
 
-        private float _level;
+        private int _level;
 
-        public float Level
+        public int Level
         {
             get => _level;
             set
             {
-                if (Mathf.Approximately(_level, value))
+                if (_level == value)
                 {
                     return;
                 }
@@ -27,7 +28,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnLevelChanged;
+        public event Action<int> OnLevelChanged;
 
 
 
@@ -50,7 +51,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnExpCurrentChanged;
+        public event Action<float> OnExpCurrentChanged;
 
 
         private float _expToNextLevel;
@@ -71,7 +72,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnExpToNextLevelChanged;
+        public event Action<float> OnExpToNextLevelChanged;
 
 
         public float StartBaseExp { get; set; }
@@ -94,18 +95,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<string> OnImageResourcePathChanged;
-
-
-
-
-
-
-
-
-
-
-
+        public event Action<string> OnImageResourcePathChanged;
 
 
 
@@ -127,7 +117,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnCurrentHpChanged;
+        public event Action<float> OnCurrentHpChanged;
 
         private float _maxHp;
 
@@ -144,7 +134,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnMaxHpChanged;
+        public event Action<float> OnMaxHpChanged;
 
         private float _hpRegeneration;
 
@@ -161,7 +151,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnHpRegenerationChanged;
+        public event Action<float> OnHpRegenerationChanged;
 
         private float _attack;
 
@@ -178,7 +168,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnAttackChanged;
+        public event Action<float> OnAttackChanged;
 
         private float _crit;
 
@@ -195,7 +185,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnCritChanged;
+        public event Action<float> OnCritChanged;
 
         private float _critDmg;
 
@@ -212,7 +202,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnCritDmgChanged;
+        public event Action<float> OnCritDmgChanged;
 
         private float _block;
 
@@ -229,7 +219,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnBlockChanged;
+        public event Action<float> OnBlockChanged;
 
         private float _blockPower;
 
@@ -246,7 +236,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnBlockPowerChanged;
+        public event Action<float> OnBlockPowerChanged;
 
         private float _evade;
 
@@ -263,7 +253,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<float> OnEvadeChanged;
+        public event Action<float> OnEvadeChanged;
 
         private int _rarity;
 
@@ -280,7 +270,7 @@ namespace Domain.Entities
             }
         }
 
-        public event System.Action<int> OnRarityChanged;
+        public event Action<int> OnRarityChanged;
 
 
         public void TakeDamage(float damage)

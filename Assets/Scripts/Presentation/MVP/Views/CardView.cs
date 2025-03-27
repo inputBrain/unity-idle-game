@@ -11,6 +11,12 @@ namespace Presentation.MVP.Views
         public TMP_Text ExpToNextLevel;
         public Image CardImage;
 
+        
+        public void SetLevel(int level)
+        {
+            Level.text = "lvl: " + level;
+        }
+
 
         public void SetImage(string path)
         {
