@@ -19,7 +19,7 @@ MonoBehaviour:
   ExpToNextLevel: 1000
   StartBaseExp: 1000
   Hp: 30
-  HPRegeneration: 5
+  HpRegeneration: 22
   Attack: 5
   Crit: 5
   CritDmg: 5

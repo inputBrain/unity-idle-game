@@ -135,7 +135,7 @@ namespace OLd.Battle
             }
 
             //TODO: implement reward for boss wave
-            float experience = 5000f;
+            float experience = 450f;
             
             var expPerCard = experience / CardList.Count;
 
@@ -166,10 +166,10 @@ namespace OLd.Battle
         {
             var scale = card.Rarity switch
             {
-                (int)Rarity.Common => 1.1f,
-                (int)Rarity.Rare => 1.2f,
-                (int)Rarity.Epic => 1.5f,
-                (int)Rarity.Legendary => 2.5f,
+                (int)Rarity.Common => 1.01f,
+                (int)Rarity.Rare => 1.02f,
+                (int)Rarity.Epic => 1.05f,
+                (int)Rarity.Legendary => 1.1f,
                 _ => throw new ArgumentException($"Undefined card rarity: {card.Rarity}. Cannot calculate experience")
             };
 
