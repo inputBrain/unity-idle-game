@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Domain.Entities;
 using Presentation.MVP.Views;
@@ -9,7 +11,9 @@ namespace Presentation.MVP.Presenter
     public class TotalCardStatsPresenter : MonoBehaviour
     {
         private readonly TotalCardStatsView _view;
+
         private readonly List<Card> _cards;
+
 
         public TotalCardStatsPresenter(List<Card> cards, TotalCardStatsView view)
         {
@@ -32,16 +36,32 @@ namespace Presentation.MVP.Presenter
             }
         }
 
+
         private void UpdateTotalStats()
         {
-            _view.SetTotalHp(_cards.Sum(card => card.CurrentHp));
-            _view.SetTotalHPs(_cards.Sum(card => card.HpRegeneration));
-            _view.SetTotalAttack(_cards.Sum(card => card.Attack));
-            _view.SetTotalCrit(_cards.Sum(card => card.Crit));
-            _view.SetTotalCritDmg(_cards.Sum(card => card.CritDmg));
-            _view.SetTotalBlock(_cards.Sum(card => card.Block));
-            _view.SetTotalBlockPower(_cards.Sum(card => card.BlockPower));
-            _view.SetTotalEvade(_cards.Sum(card => card.Evade));
+            var totalTeamHp = Convert.ToInt32(_cards.Sum(card => card.CurrentHp));
+
+            var totalHPs = Convert.ToInt32(_cards.Sum(card => card.HpRegeneration));
+            var totalAttack = Convert.ToInt32(_cards.Sum(card => card.Attack));
+            var totalCrit = Convert.ToInt32(_cards.Sum(card => card.Crit));
+            var totalCritDmg = Convert.ToInt32(_cards.Sum(card => card.CritDmg));
+            var totalBlock = Convert.ToInt32(_cards.Sum(card => card.Block));
+            var totalBlockPower = Convert.ToInt32(_cards.Sum(card => card.BlockPower));
+            var totalEvade = Convert.ToInt32(_cards.Sum(card => card.Evade));
+
+            _view.SetTotalHp(totalTeamHp);
+            _view.SetTotalHPs(totalHPs);
+            _view.SetTotalAttack(totalAttack);
+            _view.SetTotalCrit(totalCrit);
+            _view.SetTotalCritDmg(totalCritDmg);
+            _view.SetTotalBlock(totalBlock);
+            _view.SetTotalBlockPower(totalBlockPower);
+            _view.SetTotalEvade(totalEvade);
+
+
+            var preparedHpToDispalyOnSlider = totalTeamHp.ToString(CultureInfo.InvariantCulture);
+
+            _view.SetSliderHp(totalTeamHp, preparedHpToDispalyOnSlider);
         }
     }
 }
