@@ -3301,6 +3301,8 @@ MonoBehaviour:
   Block: {fileID: 1695895230}
   BlockPower: {fileID: 770323736}
   Evade: {fileID: 1868996084}
+  Slider: {fileID: 890228398}
+  HpOnSlider: {fileID: 185557520}
 --- !u!1 &322663757
 GameObject:
   m_ObjectHideFlags: 0
