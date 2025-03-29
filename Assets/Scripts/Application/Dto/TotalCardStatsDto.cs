@@ -24,6 +24,10 @@ namespace Application.Dto
         {
             if (Cards.Sum(c => c.CurrentHp) - damage < 0)
             {
+                foreach (var c in Cards)
+                {
+                    c.CurrentHp = 0;
+                }
                 return;
             }
                 

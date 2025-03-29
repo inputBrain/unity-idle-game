@@ -24,12 +24,12 @@ namespace Legacy.Battle
             _zone = zone;
             TotalCardStat.Cards = cards;
 
-            _zone.CurrentZone = 1;
+            _zone.CurrentZone.Value = 1;
         }
         
         public void BattleUpdate()
         {
-            HpRegeneration();
+            // HpRegeneration();
             DealDamageToBoss();
             DealDamageToTeam();
 
@@ -77,15 +77,17 @@ namespace Legacy.Battle
         {
             var damageToTeam = Boss.Attack;
             
-            if (Random.value * 100 < TotalCardStat.Evade)
-            {
-                return;
-            }
             
-            if (Random.value * 100 < TotalCardStat.Block)
-            {
-                damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
-            }
+                //TODO:
+            // if (Random.value * 100 < TotalCardStat.Evade)
+            // {
+            //     return;
+            // }
+            //
+            // if (Random.value * 100 < TotalCardStat.Block)
+            // {
+            //     damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
+            // }
 
             TotalCardStat.GetDamage(damageToTeam);
         }
@@ -100,19 +102,23 @@ namespace Legacy.Battle
                 Debug.Log("Reward granted!");
             }
             
-            _zone.CurrentZone++;
+            _zone.CurrentZone.Value++;
             
-            Boss.
+            Boss.GetUpdatedStats(_zone.CurrentZone.Value);
+            
         }
         
         
         private void OnEnemyWin()
         {
-            _zone.CurrentZone--;
+            _zone.CurrentZone.Value--;
             if (_zone.CurrentZone <= 0)
             {
-                _zone.CurrentZone = 1;
+                _zone.CurrentZone.Value = 1;
             }
+            
+            // Boss.Attack -= 100f;
+
         }
 
         
@@ -136,13 +142,14 @@ namespace Legacy.Battle
                     while (card.ExpCurrent >= card.ExpToNextLevel)
                     {
                         card.Level += 1;
-                        card.MaxHp *= 1.1f;
-                        card.CurrentHp *= 1.1f;
-                        card.HpRegeneration *= 1.1f;
+                        card.MaxHp += 1.1f;
+                        card.CurrentHp += 1.1f;
+                        //TODO:
+                        // card.HpRegeneration *= 1.1f;
                         card.Attack += 1.1f;
-                        card.Evade *= 1.1f;
-                        card.Block *= 1.1f;
-                        card.BlockPower *= 1.1f;
+                        card.Evade += 1.1f;
+                        card.Block += 1.1f;
+                        card.BlockPower += 1.1f;
                         card.ExpCurrent -= card.ExpToNextLevel;
                         card.ExpToNextLevel = CalculateExpToNextLevel(card);
                     }

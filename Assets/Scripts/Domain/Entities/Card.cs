@@ -122,6 +122,8 @@ namespace Domain.Entities
 
         private float _maxHp;
 
+        
+        //TODO: value is incorrect
         public float MaxHp
         {
             get => _maxHp;

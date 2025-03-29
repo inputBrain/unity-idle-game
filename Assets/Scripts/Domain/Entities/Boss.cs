@@ -113,32 +113,13 @@ namespace Domain.Entities
                 OnImageResourcePathChanged?.Invoke(_imageResourcesPath);
             }
         }
-
-
-        public float TakeDamage(float incomingDamage)
-        {
-            var effectiveDamage = Mathf.Max(incomingDamage, 0);
-            CurrentHp = Mathf.Max(CurrentHp - effectiveDamage, 0);
-
-            return effectiveDamage;
-        }
-
-
-        public void UpgradeForNextZone(int zoneNumber)
-        {
-            const int MaxHpIncreasePerZone = 20;
-            const int AttackIncreasePerZone = 5;
-
-            MaxHp += MaxHpIncreasePerZone * zoneNumber;
-            CurrentHp = MaxHp;
-            Attack = StartAttack + AttackIncreasePerZone * zoneNumber;
-        }
-
-// 
+        
 
         public void GetUpdatedStats(int zone)
         {
             MaxHp = BaseHp * zone;
+            CurrentHp = MaxHp;
+            Attack += 100f;
         }
     }
 }

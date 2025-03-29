@@ -16,7 +16,7 @@ namespace Presentation.MVP.Views
         {
             Slider.value = bossCurrentHp / bossMaxHp;
 
-            HpOnSlider.text = bossMaxHp.ToString(CultureInfo.InvariantCulture);
+            HpOnSlider.text = ((int)bossCurrentHp).ToString(CultureInfo.InvariantCulture);
         }
     }
 }

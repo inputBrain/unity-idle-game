@@ -15,13 +15,13 @@ namespace Presentation.MVP.Presenter
             _zoneView = zoneView;
             _zone = zone;
 
-            _zone.OnCurrenZoneChanged += _zoneView.UpdateZoneText;
+            _zone.CurrentZone.OnValueChanged += _zoneView.UpdateZoneText;
         }
         
         
         public  void IncreaseZone()
         {
-            _zone.CurrentZone++;
+            _zone.CurrentZone.Value++;
         }        
         
         public  void DecreaseZone()
@@ -30,7 +30,7 @@ namespace Presentation.MVP.Presenter
             {
                 return;
             }
-            _zone.CurrentZone--;
+            _zone.CurrentZone.Value--;
         }
     }
 }

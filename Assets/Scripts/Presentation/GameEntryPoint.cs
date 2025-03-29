@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using Domain.Entities;
 using Legacy.Battle;
 using Presentation.MVP.Presenter;
@@ -27,13 +28,16 @@ namespace Presentation
         {
             _cardLoaderService = new CardLoaderService();
             var cards = _cardLoaderService.GetDomainCards();
-            var zone = new Zone();
+            var zone = new Zone
+            {
+                CurrentZone = new ObservableProperty<int>(1)
+            };
             var boss = new Boss
             {
                 Attack = 100f,
                 MaxHp = 300f,
+                BaseHp = 300f,
                 CurrentHp = 300,
-                StartAttack = 100f,
                 Id = 1,
                 Title = "123"
             };
