@@ -29,9 +29,9 @@ namespace Presentation.MVP.Views
 
 
 
-        public void SetSliderHp(float teamTotalHp, string totalHp)
+        public void SetSliderHp(float teamMaxHp, float teamCurrentHp, string totalHp)
         {
-            Slider.value = teamTotalHp;
+            Slider.value = teamCurrentHp / teamMaxHp;
         
             HpOnSlider.text = totalHp;
         }

@@ -9,18 +9,16 @@ namespace Presentation.MVP.Presenter
 {
     public class TotalCardStatsPresenter : MonoBehaviour
     {
-        private readonly TotalCardStatsView _view;
-
-        private readonly List<Card> _cards;
-
-
-        public TotalCardStatsPresenter(List<Card> cards, TotalCardStatsView view)
+        private TotalCardStatsView _view;
+        private List<Card> _cards;
+        
+        public void Init(List<Card> cards, TotalCardStatsView view)
         {
             _cards = cards;
             _view = view;
-
+            
             UpdateTotalStats();
-
+    
             foreach (var card in _cards)
             {
                 card.OnCurrentHpChanged += _ => UpdateTotalStats();
@@ -36,8 +34,11 @@ namespace Presentation.MVP.Presenter
         }
 
 
+
         private void UpdateTotalStats()
         {
+            var totalTeamMaxHp = Mathf.RoundToInt(_cards.Sum(card => card.MaxHp));
+            
             var totalTeamHp = Mathf.RoundToInt(_cards.Sum(card => card.CurrentHp));
 
             var totalHPs = Mathf.RoundToInt(_cards.Sum(card => card.HpRegeneration));
@@ -60,7 +61,7 @@ namespace Presentation.MVP.Presenter
 
             var preparedHpToDispalyOnSlider = totalTeamHp.ToString(CultureInfo.InvariantCulture);
 
-            _view.SetSliderHp(totalTeamHp, preparedHpToDispalyOnSlider);
+            _view.SetSliderHp(totalTeamMaxHp, totalTeamHp, preparedHpToDispalyOnSlider);
         }
     }
 }

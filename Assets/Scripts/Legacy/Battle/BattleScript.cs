@@ -5,7 +5,7 @@ using Domain.Entities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace OLd.Battle
+namespace Legacy.Battle
 {
     public class BattleScript
     {
@@ -87,7 +87,7 @@ namespace OLd.Battle
         
         private void DealDamageToTeam()
         {
-            var damageToTeam = _zone.CurrentZone % 10 == 0 ? Boss.Attack : Boss.Attack;
+            var damageToTeam = Boss.Attack;
             
             if (Random.value * 100 < TotalCardStat.Evade)
             {

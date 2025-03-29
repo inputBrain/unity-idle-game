@@ -7,30 +7,9 @@ namespace Presentation.MVP.Presenter
 {
     public class CardPresenter : MonoBehaviour
     {
-        private readonly Card _card;
+        private Card _card;
+        private CardView _cardView;
 
-        private readonly CardView _cardView;
-
-
-        public CardPresenter(Card card, CardView cardView)
-        {
-            _card = card;
-            _cardView = cardView;
-            
-            UpdateImage(card.ImageResourcePath);
-            UpdateSlider(card.ExpCurrent, card.ExpToNextLevel);
-            
-            _card.OnImageResourcePathChanged += UpdateImage;
-            _card.OnLevelChanged += _cardView.SetLevel;
-            
-            _card.OnExpCurrentChanged += _cardView.SetSliderCurrentExp;
-            _card.OnExpToNextLevelChanged += _cardView.SetSliderNextExp;
-            
-            _card.OnExpCurrentChanged += _cardView.SetTextCurrentExp;
-            _card.OnExpToNextLevelChanged += _cardView.SetTextNextExp;
-        }
-        
-        
         public void Init(Card card, CardView cardView)
         {
             _card = card;
