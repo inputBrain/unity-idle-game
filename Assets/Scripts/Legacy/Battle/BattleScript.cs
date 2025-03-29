@@ -26,6 +26,7 @@ namespace OLd.Battle
             TotalCardStat.Cards = cards;
 
             _zone.CurrentZone = 1;
+            enemyCurrentHP = Boss.MaxHp;
         }
         
         public void BattleUpdate()
@@ -96,8 +97,6 @@ namespace OLd.Battle
             if (Random.value * 100 < TotalCardStat.Block)
             {
                 damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
-
-                TotalCardStat.GetDamage(damageToTeam);
             }
 
             TotalCardStat.GetDamage(damageToTeam);

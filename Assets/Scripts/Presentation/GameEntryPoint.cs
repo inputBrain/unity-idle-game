@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
@@ -33,17 +34,25 @@ namespace Presentation
             
             for (var i = 0; i < CardsViews.Count; i++)
             {
-                new CardPresenter(cards[i], CardsViews[i]);
+                var cardPresenter = gameObject.AddComponent<CardPresenter>();
+                cardPresenter.Init(cards[i], CardsViews[i]);
             }
             
             
-            new ZonePresenter(ZoneView, zone);
+            gameObject.AddComponent<ZonePresenter>();
             var battleScript = new BattleScript(boss, zone, cards.Take(CardsViews.Count).ToList());
 
+            StartCoroutine(StartBattleLoop(battleScript));
+
+        }
+        
+        
+        private IEnumerator StartBattleLoop(BattleScript battleScript)
+        {
             while (true)
             {
                 battleScript.BattleUpdate();
-                await Task.Delay(1000);
+                yield return new WaitForSeconds(1f);
             }
         }
     }

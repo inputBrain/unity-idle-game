@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Domain.Entities;
@@ -39,15 +38,15 @@ namespace Presentation.MVP.Presenter
 
         private void UpdateTotalStats()
         {
-            var totalTeamHp = Convert.ToInt32(_cards.Sum(card => card.CurrentHp));
+            var totalTeamHp = Mathf.RoundToInt(_cards.Sum(card => card.CurrentHp));
 
-            var totalHPs = Convert.ToInt32(_cards.Sum(card => card.HpRegeneration));
-            var totalAttack = Convert.ToInt32(_cards.Sum(card => card.Attack));
-            var totalCrit = Convert.ToInt32(_cards.Sum(card => card.Crit));
-            var totalCritDmg = Convert.ToInt32(_cards.Sum(card => card.CritDmg));
-            var totalBlock = Convert.ToInt32(_cards.Sum(card => card.Block));
-            var totalBlockPower = Convert.ToInt32(_cards.Sum(card => card.BlockPower));
-            var totalEvade = Convert.ToInt32(_cards.Sum(card => card.Evade));
+            var totalHPs = Mathf.RoundToInt(_cards.Sum(card => card.HpRegeneration));
+            var totalAttack = Mathf.RoundToInt(_cards.Sum(card => card.Attack));
+            var totalCrit = Mathf.RoundToInt(_cards.Sum(card => card.Crit));
+            var totalCritDmg = Mathf.RoundToInt(_cards.Sum(card => card.CritDmg));
+            var totalBlock = Mathf.RoundToInt(_cards.Sum(card => card.Block));
+            var totalBlockPower = Mathf.RoundToInt(_cards.Sum(card => card.BlockPower));
+            var totalEvade = Mathf.RoundToInt(_cards.Sum(card => card.Evade));
 
             _view.SetTotalHp(totalTeamHp);
             _view.SetTotalHPs(totalHPs);
