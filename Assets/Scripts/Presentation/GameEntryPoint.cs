@@ -32,7 +32,7 @@ namespace Presentation
             {
                 Attack = 100f,
                 MaxHp = 300f,
-                Hp = 300,
+                CurrentHp = 300,
                 StartAttack = 100f,
                 Id = 1,
                 Title = "123"

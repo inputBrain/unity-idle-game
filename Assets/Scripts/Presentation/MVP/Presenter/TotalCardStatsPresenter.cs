@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Domain.Entities;
 using Presentation.MVP.Views;
@@ -28,6 +29,7 @@ namespace Presentation.MVP.Presenter
                 card.OnBlockChanged += _ =>           _view.SetTotalBlock((int)_cards.Sum(x => x.Block));
                 card.OnBlockPowerChanged += _ =>      _view.SetTotalBlockPower((int)_cards.Sum(x => x.BlockPower));
                 card.OnEvadeChanged += _ =>           _view.SetTotalEvade((int)_cards.Sum(x => x.Evade));
+                card.OnCurrentHpChanged += _ =>       _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
                 card.OnMaxHpChanged += _ =>           _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
             }
         }

@@ -28,7 +28,7 @@ namespace Presentation.Services
 
         public bool IsBossDead()
         {
-            return _currentBoss.Hp <= 0;
+            return _currentBoss.CurrentHp <= 0;
         }
 
         public (float effectiveDamage, bool bossDefeated) AttackBoss()

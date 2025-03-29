@@ -15,7 +15,6 @@ namespace Legacy.Battle
         public Boss Boss = new();
         private Zone _zone;
         
-        private float enemyCurrentHP;
 
 
         public BattleScript(Boss boss, Zone zone, List<Card> cards)
@@ -26,7 +25,6 @@ namespace Legacy.Battle
             TotalCardStat.Cards = cards;
 
             _zone.CurrentZone = 1;
-            enemyCurrentHP = Boss.MaxHp;
         }
         
         public void BattleUpdate()
@@ -35,7 +33,7 @@ namespace Legacy.Battle
             DealDamageToBoss();
             DealDamageToTeam();
 
-            if (enemyCurrentHP <= 0)
+            if (Boss.CurrentHp <= 0)
             {
                 OnBossDefeated();
             }
@@ -71,11 +69,7 @@ namespace Legacy.Battle
             // }
 
             
-            enemyCurrentHP -= totalDamage;
-            if (enemyCurrentHP <= 0)
-            {
-                enemyCurrentHP = 0;
-            }
+            Boss.CurrentHp -= totalDamage;
         }
 
         
@@ -107,6 +101,8 @@ namespace Legacy.Battle
             }
             
             _zone.CurrentZone++;
+            
+            Boss.
         }
         
         

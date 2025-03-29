@@ -6,26 +6,35 @@ namespace Domain.Entities
     public class Boss
     {
         public int Id { get; set; }
+        public float BaseHp { get; set; }
         public string Title { get; set; }
 
-        private float _hp;
-        public event Action<float> OnHpChanged;
-        public float Hp
+        private float _currentHp;
+        public event Action<float> OnCurrentHpChanged;
+        public float CurrentHp
         {
-            get => _hp;
+            get => _currentHp;
             set
             {
-                if (Mathf.Approximately(_hp, value))
+                if (Mathf.Approximately(_currentHp, value))
                 {
                     return;
                 }
-                _hp = value;
-                OnHpChanged?.Invoke(_hp);
+                
+                if (value < 0)
+                {
+                    _currentHp = 0;
+                    return;
+                }
+                    
+                _currentHp = value;
+                OnCurrentHpChanged?.Invoke(_currentHp);
             }
         }
 
         private float _maxHp;
         public event Action<float> OnMaxHpChanged;
+        
         public float MaxHp
         {
             get => _maxHp;
@@ -56,21 +65,6 @@ namespace Domain.Entities
             }
         }
 
-        private float _startAttack;
-        public event Action<float> OnStartAttackChanged;
-        public float StartAttack
-        {
-            get => _startAttack;
-            set
-            {
-                if (Mathf.Approximately(_startAttack, value))
-                {
-                    return;
-                }
-                _startAttack = value;
-                OnStartAttackChanged?.Invoke(_startAttack);
-            }
-        }
 
         private int _expReward;
         public event Action<int> OnExpRewardChanged;
@@ -124,7 +118,7 @@ namespace Domain.Entities
         public float TakeDamage(float incomingDamage)
         {
             var effectiveDamage = Mathf.Max(incomingDamage, 0);
-            Hp = Mathf.Max(Hp - effectiveDamage, 0);
+            CurrentHp = Mathf.Max(CurrentHp - effectiveDamage, 0);
 
             return effectiveDamage;
         }
@@ -136,8 +130,15 @@ namespace Domain.Entities
             const int AttackIncreasePerZone = 5;
 
             MaxHp += MaxHpIncreasePerZone * zoneNumber;
-            Hp = MaxHp;
+            CurrentHp = MaxHp;
             Attack = StartAttack + AttackIncreasePerZone * zoneNumber;
+        }
+
+// 
+
+        public void GetUpdatedStats(int zone)
+        {
+            MaxHp = BaseHp * zone;
         }
     }
 }

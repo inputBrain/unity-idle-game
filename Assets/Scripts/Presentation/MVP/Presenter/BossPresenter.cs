@@ -16,16 +16,16 @@ namespace Presentation.MVP.Presenter
             _boss = boss;
             _bossView = bossView;
 
-            UpdateSlider(_boss.MaxHp, boss.Hp);
+            UpdateSlider(_boss.MaxHp, boss.CurrentHp);
 
-            _boss.OnHpChanged += _ => UpdateSlider();
+            _boss.OnCurrentHpChanged += _ => UpdateSlider();
             _boss.OnMaxHpChanged += _ => UpdateSlider();
 
         }
 
         private void UpdateSlider()
         {
-            _bossView.SetSliderHp(_boss.MaxHp, _boss.Hp);
+            _bossView.SetSliderHp(_boss.MaxHp, _boss.CurrentHp);
         }
         
         
