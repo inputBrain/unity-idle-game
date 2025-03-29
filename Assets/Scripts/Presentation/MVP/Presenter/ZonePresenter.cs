@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
-    public class ZonePresenter : MonoBehaviour
+    public class ZonePresenter
     {
         private readonly Zone _zone;
         private readonly ZoneView _zoneView;

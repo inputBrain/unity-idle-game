@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Domain.Entities;
 using Presentation.MVP.Views;
@@ -8,49 +6,48 @@ using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
-    public class TotalCardStatsPresenter : MonoBehaviour
+    public class TotalCardStatsPresenter
     {
-        private readonly TotalCardStatsView _view;
-
-        private readonly List<Card> _cards;
-
-
-        public TotalCardStatsPresenter(List<Card> cards, TotalCardStatsView view)
+        private TotalCardStatsView _view;
+        private List<Card> _cards;
+        
+        public void Init(List<Card> cards, TotalCardStatsView view)
         {
             _cards = cards;
             _view = view;
-
-            UpdateTotalStats();
-
+            
+            InitTotalStats();
+    
             foreach (var card in _cards)
             {
-                card.OnCurrentHpChanged += _ => UpdateTotalStats();
-                card.OnMaxHpChanged += _ => UpdateTotalStats();
-                card.OnHpRegenerationChanged += _ => UpdateTotalStats();
-                card.OnAttackChanged += _ => UpdateTotalStats();
-                card.OnCritChanged += _ => UpdateTotalStats();
-                card.OnCritDmgChanged += _ => UpdateTotalStats();
-                card.OnBlockChanged += _ => UpdateTotalStats();
-                card.OnBlockPowerChanged += _ => UpdateTotalStats();
-                card.OnEvadeChanged += _ => UpdateTotalStats();
+                card.OnCurrentHpChanged += _ =>       _view.SetTotalHp((int)_cards.Sum(x => x.CurrentHp));
+                card.OnHpRegenerationChanged += _ =>  _view.SetTotalHPRegeneration((int)_cards.Sum(x => x.HpRegeneration));
+                card.OnAttackChanged += _ =>          _view.SetTotalAttack((int)_cards.Sum(x => x.Attack));
+                card.OnCritChanged += _ =>            _view.SetTotalCrit((int)_cards.Sum(x => x.Crit));
+                card.OnCritDmgChanged += _ =>         _view.SetTotalCritDmg((int)_cards.Sum(x => x.CritDmg));
+                card.OnBlockChanged += _ =>           _view.SetTotalBlock((int)_cards.Sum(x => x.Block));
+                card.OnBlockPowerChanged += _ =>      _view.SetTotalBlockPower((int)_cards.Sum(x => x.BlockPower));
+                card.OnEvadeChanged += _ =>           _view.SetTotalEvade((int)_cards.Sum(x => x.Evade));
+                card.OnMaxHpChanged += _ =>           _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
             }
         }
 
 
-        private void UpdateTotalStats()
-        {
-            var totalTeamHp = Convert.ToInt32(_cards.Sum(card => card.CurrentHp));
 
-            var totalHPs = Convert.ToInt32(_cards.Sum(card => card.HpRegeneration));
-            var totalAttack = Convert.ToInt32(_cards.Sum(card => card.Attack));
-            var totalCrit = Convert.ToInt32(_cards.Sum(card => card.Crit));
-            var totalCritDmg = Convert.ToInt32(_cards.Sum(card => card.CritDmg));
-            var totalBlock = Convert.ToInt32(_cards.Sum(card => card.Block));
-            var totalBlockPower = Convert.ToInt32(_cards.Sum(card => card.BlockPower));
-            var totalEvade = Convert.ToInt32(_cards.Sum(card => card.Evade));
+        private void InitTotalStats()
+        {
+            var totalTeamMaxHp = (int) _cards.Sum(card => card.MaxHp);
+            var totalTeamHp = (int) _cards.Sum(card => card.CurrentHp);
+            var totalHPs = (int) _cards.Sum(card => card.HpRegeneration);
+            var totalAttack = (int) _cards.Sum(card => card.Attack);
+            var totalCrit = (int) _cards.Sum(card => card.Crit);
+            var totalCritDmg = (int) _cards.Sum(card => card.CritDmg);
+            var totalBlock = (int) _cards.Sum(card => card.Block);
+            var totalBlockPower = (int) _cards.Sum(card => card.BlockPower);
+            var totalEvade = (int) _cards.Sum(card => card.Evade);
 
             _view.SetTotalHp(totalTeamHp);
-            _view.SetTotalHPs(totalHPs);
+            _view.SetTotalHPRegeneration(totalHPs);
             _view.SetTotalAttack(totalAttack);
             _view.SetTotalCrit(totalCrit);
             _view.SetTotalCritDmg(totalCritDmg);
@@ -58,10 +55,7 @@ namespace Presentation.MVP.Presenter
             _view.SetTotalBlockPower(totalBlockPower);
             _view.SetTotalEvade(totalEvade);
 
-
-            var preparedHpToDispalyOnSlider = totalTeamHp.ToString(CultureInfo.InvariantCulture);
-
-            _view.SetSliderHp(totalTeamHp, preparedHpToDispalyOnSlider);
+            _view.SetSliderHp(totalTeamMaxHp, totalTeamHp);
         }
     }
 }

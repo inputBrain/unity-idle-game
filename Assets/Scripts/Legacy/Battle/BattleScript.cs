@@ -5,7 +5,7 @@ using Domain.Entities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace OLd.Battle
+namespace Legacy.Battle
 {
     public class BattleScript
     {
@@ -26,6 +26,7 @@ namespace OLd.Battle
             TotalCardStat.Cards = cards;
 
             _zone.CurrentZone = 1;
+            enemyCurrentHP = Boss.MaxHp;
         }
         
         public void BattleUpdate()
@@ -63,17 +64,11 @@ namespace OLd.Battle
         {
             var totalDamage = TotalCardStat.Attack;
 
-            // Critical attack case
-            if (Random.value * 100 < TotalCardStat.Crit)
-            {
-                totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
-                enemyCurrentHP -= totalDamage;
-                if (enemyCurrentHP <= 0)
-                {
-                    enemyCurrentHP = 0;
-                }
-                return;
-            }
+            // Critical attack case TODO:
+            // if (Random.value * 100 < TotalCardStat.Crit)
+            // {
+            //     totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
+            // }
 
             
             enemyCurrentHP -= totalDamage;
@@ -86,7 +81,7 @@ namespace OLd.Battle
         
         private void DealDamageToTeam()
         {
-            var damageToTeam = _zone.CurrentZone % 10 == 0 ? Boss.Attack : Boss.Attack;
+            var damageToTeam = Boss.Attack;
             
             if (Random.value * 100 < TotalCardStat.Evade)
             {
@@ -96,8 +91,6 @@ namespace OLd.Battle
             if (Random.value * 100 < TotalCardStat.Block)
             {
                 damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
-
-                TotalCardStat.GetDamage(damageToTeam);
             }
 
             TotalCardStat.GetDamage(damageToTeam);
@@ -135,7 +128,7 @@ namespace OLd.Battle
             }
 
             //TODO: implement reward for boss wave
-            float experience = 450f;
+            float experience = 200f;
             
             var expPerCard = experience / CardList.Count;
 
@@ -150,7 +143,7 @@ namespace OLd.Battle
                         card.MaxHp *= 1.1f;
                         card.CurrentHp *= 1.1f;
                         card.HpRegeneration *= 1.1f;
-                        card.Attack *= 1.1f;
+                        card.Attack += 1.1f;
                         card.Evade *= 1.1f;
                         card.Block *= 1.1f;
                         card.BlockPower *= 1.1f;

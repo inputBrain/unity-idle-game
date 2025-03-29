@@ -5,14 +5,12 @@ using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
-    public class CardPresenter : MonoBehaviour
+    public class CardPresenter
     {
-        private readonly Card _card;
+        private Card _card;
+        private CardView _cardView;
 
-        private readonly CardView _cardView;
-
-
-        public CardPresenter(Card card, CardView cardView)
+        public void Init(Card card, CardView cardView)
         {
             _card = card;
             _cardView = cardView;

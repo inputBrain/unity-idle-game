@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
-using OLd.Battle;
+using Legacy.Battle;
 using Presentation.MVP.Presenter;
 using Presentation.MVP.Views;
 using Presentation.Services;
@@ -17,34 +18,59 @@ namespace Presentation
         public TotalCardStatsView TotalCardStatsView;
 
         public List<CardView> CardsViews;
+        public BossView BossView;
 
         public ZoneView ZoneView;
         
 
-        private async void Awake()
+        private void Awake()
         {
             _cardLoaderService = new CardLoaderService();
             var cards = _cardLoaderService.GetDomainCards();
             var zone = new Zone();
-            var boss = new Boss();
-            
-            new TotalCardStatsPresenter(cards, TotalCardStatsView);
-
-            
-            for (var i = 0; i < CardsViews.Count; i++)
+            var boss = new Boss
             {
-                new CardPresenter(cards[i], CardsViews[i]);
-            }
+                Attack = 100f,
+                MaxHp = 300f,
+                Hp = 300,
+                StartAttack = 100f,
+                Id = 1,
+                Title = "123"
+            };
+
+            InitUI(cards, boss, zone);
+           
             
-            
-            new ZonePresenter(ZoneView, zone);
             var battleScript = new BattleScript(boss, zone, cards.Take(CardsViews.Count).ToList());
 
+            StartCoroutine(StartBattleLoop(battleScript));
+
+        }
+        
+        
+        private IEnumerator StartBattleLoop(BattleScript battleScript)
+        {
             while (true)
             {
                 battleScript.BattleUpdate();
-                await Task.Delay(1000);
+                
+                yield return new WaitForSeconds(1f);
             }
         }
+
+
+        private void InitUI(List<Card> cards, Boss boss, Zone zone)
+        {
+            new TotalCardStatsPresenter().Init(cards, TotalCardStatsView);
+            new BossPresenter().Init(boss,BossView);
+            
+            for (var i = 0; i < CardsViews.Count; i++)
+            {
+                new CardPresenter().Init(cards[i], CardsViews[i]);
+            }
+            
+            new ZonePresenter(ZoneView, zone);
+        }
+
     }
 }
