@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
-    public class ZonePresenter : MonoBehaviour
+    public class ZonePresenter
     {
         private readonly Zone _zone;
         private readonly ZoneView _zoneView;
@@ -15,13 +15,13 @@ namespace Presentation.MVP.Presenter
             _zoneView = zoneView;
             _zone = zone;
 
-            _zone.OnCurrenZoneChanged += _zoneView.UpdateZoneText;
+            _zone.CurrentZone.OnValueChanged += _zoneView.UpdateZoneText;
         }
         
         
         public  void IncreaseZone()
         {
-            _zone.CurrentZone++;
+            _zone.CurrentZone.Value++;
         }        
         
         public  void DecreaseZone()
@@ -30,7 +30,7 @@ namespace Presentation.MVP.Presenter
             {
                 return;
             }
-            _zone.CurrentZone--;
+            _zone.CurrentZone.Value--;
         }
     }
 }

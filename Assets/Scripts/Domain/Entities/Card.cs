@@ -106,14 +106,15 @@ namespace Domain.Entities
             get => _currentHp;
             set
             {
-                if (Mathf.Approximately(_currentHp, value))
+                if (Mathf.Approximately(_currentHp, value)) return;
+                
+                if (value < 0)
                 {
+                    _currentHp = 0;
                     return;
                 }
-                {
-                    _currentHp = value;
-                    OnCurrentHpChanged?.Invoke(_currentHp);
-                }
+                _currentHp = value;
+                OnCurrentHpChanged?.Invoke(_currentHp);
             }
         }
 
@@ -121,6 +122,8 @@ namespace Domain.Entities
 
         private float _maxHp;
 
+        
+        //TODO: value is incorrect
         public float MaxHp
         {
             get => _maxHp;

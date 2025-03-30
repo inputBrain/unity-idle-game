@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,11 +30,11 @@ namespace Presentation.MVP.Views
 
 
 
-        public void SetSliderHp(float teamMaxHp, float teamCurrentHp, string totalHp)
+        public void SetSliderHp(float teamMaxHp, float teamCurrentHp)
         {
             Slider.value = teamCurrentHp / teamMaxHp;
         
-            HpOnSlider.text = totalHp;
+            HpOnSlider.text = teamCurrentHp.ToString(CultureInfo.InvariantCulture);
         }
 
 
@@ -43,7 +44,7 @@ namespace Presentation.MVP.Views
         }
 
 
-        public void SetTotalHPs(float totalHpRegeneration)
+        public void SetTotalHPRegeneration(float totalHpRegeneration)
         {
             HPs.text = "HP/s: " + totalHpRegeneration;
         }

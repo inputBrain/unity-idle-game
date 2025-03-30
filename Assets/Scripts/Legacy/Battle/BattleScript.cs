@@ -15,7 +15,6 @@ namespace Legacy.Battle
         public Boss Boss = new();
         private Zone _zone;
         
-        private float enemyCurrentHP;
 
 
         public BattleScript(Boss boss, Zone zone, List<Card> cards)
@@ -25,17 +24,16 @@ namespace Legacy.Battle
             _zone = zone;
             TotalCardStat.Cards = cards;
 
-            _zone.CurrentZone = 1;
-            enemyCurrentHP = Boss.MaxHp;
+            _zone.CurrentZone.Value = 1;
         }
         
         public void BattleUpdate()
         {
-            HpRegeneration();
+            // HpRegeneration();
             DealDamageToBoss();
             DealDamageToTeam();
 
-            if (enemyCurrentHP <= 0)
+            if (Boss.CurrentHp <= 0)
             {
                 OnBossDefeated();
             }
@@ -64,24 +62,14 @@ namespace Legacy.Battle
         {
             var totalDamage = TotalCardStat.Attack;
 
-            // Critical attack case
-            if (Random.value * 100 < TotalCardStat.Crit)
-            {
-                totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
-                enemyCurrentHP -= totalDamage;
-                if (enemyCurrentHP <= 0)
-                {
-                    enemyCurrentHP = 0;
-                }
-                return;
-            }
+            // Critical attack case TODO:
+            // if (Random.value * 100 < TotalCardStat.Crit)
+            // {
+            //     totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
+            // }
 
             
-            enemyCurrentHP -= totalDamage;
-            if (enemyCurrentHP <= 0)
-            {
-                enemyCurrentHP = 0;
-            }
+            Boss.CurrentHp -= totalDamage;
         }
 
         
@@ -89,15 +77,17 @@ namespace Legacy.Battle
         {
             var damageToTeam = Boss.Attack;
             
-            if (Random.value * 100 < TotalCardStat.Evade)
-            {
-                return;
-            }
             
-            if (Random.value * 100 < TotalCardStat.Block)
-            {
-                damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
-            }
+                //TODO:
+            // if (Random.value * 100 < TotalCardStat.Evade)
+            // {
+            //     return;
+            // }
+            //
+            // if (Random.value * 100 < TotalCardStat.Block)
+            // {
+            //     damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
+            // }
 
             TotalCardStat.GetDamage(damageToTeam);
         }
@@ -112,17 +102,23 @@ namespace Legacy.Battle
                 Debug.Log("Reward granted!");
             }
             
-            _zone.CurrentZone++;
+            _zone.CurrentZone.Value++;
+            
+            Boss.GetUpdatedStats(_zone.CurrentZone.Value);
+            
         }
         
         
         private void OnEnemyWin()
         {
-            _zone.CurrentZone--;
+            _zone.CurrentZone.Value--;
             if (_zone.CurrentZone <= 0)
             {
-                _zone.CurrentZone = 1;
+                _zone.CurrentZone.Value = 1;
             }
+            
+            // Boss.Attack -= 100f;
+
         }
 
         
@@ -134,7 +130,7 @@ namespace Legacy.Battle
             }
 
             //TODO: implement reward for boss wave
-            float experience = 450f;
+            float experience = 200f;
             
             var expPerCard = experience / CardList.Count;
 
@@ -146,13 +142,14 @@ namespace Legacy.Battle
                     while (card.ExpCurrent >= card.ExpToNextLevel)
                     {
                         card.Level += 1;
-                        card.MaxHp *= 1.1f;
-                        card.CurrentHp *= 1.1f;
-                        card.HpRegeneration *= 1.1f;
-                        card.Attack *= 1.1f;
-                        card.Evade *= 1.1f;
-                        card.Block *= 1.1f;
-                        card.BlockPower *= 1.1f;
+                        card.MaxHp += 1.1f;
+                        card.CurrentHp += 1.1f;
+                        //TODO:
+                        // card.HpRegeneration *= 1.1f;
+                        card.Attack += 1.1f;
+                        card.Evade += 1.1f;
+                        card.Block += 1.1f;
+                        card.BlockPower += 1.1f;
                         card.ExpCurrent -= card.ExpToNextLevel;
                         card.ExpToNextLevel = CalculateExpToNextLevel(card);
                     }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
-    public class CardPresenter : MonoBehaviour
+    public class CardPresenter
     {
         private Card _card;
         private CardView _cardView;

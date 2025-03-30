@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,8 +7,16 @@ namespace Presentation.MVP.Views
 {
     public class BossView : MonoBehaviour
     {
-        public Slider BossHP_Slider;
-        public TMP_Text BossHP_Slider_TextOnSlider;
+        [Header("Boss HP Slider")]
+        public Slider Slider;
+        public TMP_Text HpOnSlider;
 
+
+        public void SetSliderHp(float bossMaxHp, float bossCurrentHp)
+        {
+            Slider.value = bossCurrentHp / bossMaxHp;
+
+            HpOnSlider.text = ((int)bossCurrentHp).ToString(CultureInfo.InvariantCulture);
+        }
     }
 }

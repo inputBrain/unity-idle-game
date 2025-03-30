@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using Domain.Entities;
 using Legacy.Battle;
 using Presentation.MVP.Presenter;
@@ -18,6 +19,7 @@ namespace Presentation
         public TotalCardStatsView TotalCardStatsView;
 
         public List<CardView> CardsViews;
+        public BossView BossView;
 
         public ZoneView ZoneView;
         
@@ -26,21 +28,23 @@ namespace Presentation
         {
             _cardLoaderService = new CardLoaderService();
             var cards = _cardLoaderService.GetDomainCards();
-            var zone = new Zone();
-            var boss = new Boss();
-            
-            var presenter = gameObject.AddComponent<TotalCardStatsPresenter>();
-            presenter.Init(cards, TotalCardStatsView);
-
-            
-            for (var i = 0; i < CardsViews.Count; i++)
+            var zone = new Zone
             {
-                var cardPresenter = gameObject.AddComponent<CardPresenter>();
-                cardPresenter.Init(cards[i], CardsViews[i]);
-            }
+                CurrentZone = new ObservableProperty<int>(1)
+            };
+            var boss = new Boss
+            {
+                Attack = 100f,
+                MaxHp = 300f,
+                BaseHp = 300f,
+                CurrentHp = 300,
+                Id = 1,
+                Title = "123"
+            };
+
+            InitUI(cards, boss, zone);
+           
             
-            
-            new ZonePresenter(ZoneView, zone);
             var battleScript = new BattleScript(boss, zone, cards.Take(CardsViews.Count).ToList());
 
             StartCoroutine(StartBattleLoop(battleScript));
@@ -55,12 +59,23 @@ namespace Presentation
                 var startTime = Time.realtimeSinceStartup;
         
                 battleScript.BattleUpdate();
-        
-                var executionTime = Time.realtimeSinceStartup - startTime;
-                Debug.Log($"BattleUpdate executed in {executionTime} seconds");
-        
+                
                 yield return new WaitForSeconds(1f);
             }
+        }
+
+
+        private void InitUI(List<Card> cards, Boss boss, Zone zone)
+        {
+            new TotalCardStatsPresenter().Init(cards, TotalCardStatsView);
+            new BossPresenter().Init(boss,BossView);
+            
+            for (var i = 0; i < CardsViews.Count; i++)
+            {
+                new CardPresenter().Init(cards[i], CardsViews[i]);
+            }
+            
+            new ZonePresenter(ZoneView, zone);
         }
 
     }
