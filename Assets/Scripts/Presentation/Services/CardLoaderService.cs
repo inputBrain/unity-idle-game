@@ -18,25 +18,31 @@ namespace Presentation.Services
 
         public List<Card> GetDomainCards()
         {
-            return GetCardsObject().Select(so => new Card
+            return GetCardsObject().Select(so =>
             {
-                Id = so.Id,
-                Title = so.Title,
-                Level = so.Level,
-                ExpCurrent = so.ExpCurrent,
-                ExpToNextLevel = so.ExpToNextLevel,
-                StartBaseExp = so.StartBaseExp,
-                CurrentHp = so.Hp,
-                MaxHp = so.Hp,
-                HpRegeneration = so.HpRegeneration,
-                Attack = so.Attack,
-                Crit = so.Crit,
-                CritDmg = so.CritDmg,
-                Block = so.Block,
-                BlockPower = so.BlockPower,
-                Evade = so.Evade,
-                Rarity = (int)so.Rarity,
-                ImageResourcePath = $"CharacterCards/{so.Image.name}"
+                var card = new Card
+                {
+                    Id = so.Id,
+                    Title = so.Title,
+                    StartBaseExp = so.StartBaseExp,
+                    
+                    ImageResourcesPath = { Value = $"CharacterCards/{so.Image.name}" },
+                    Level = { Value = so.Level },
+                    ExpCurrent = { Value = so.ExpCurrent },
+                    ExpToNextLevel = { Value = so.ExpToNextLevel },
+                    CurrentHp = { Value = so.Hp },
+                    MaxHp = { Value = so.Hp },
+                    HpRegeneration = { Value = so.HpRegeneration },
+                    Attack = { Value = so.Attack },
+                    Crit = { Value = so.Crit },
+                    CritDmg = { Value = so.CritDmg },
+                    Block = { Value = so.Block },
+                    BlockPower = { Value = so.BlockPower },
+                    Evade = { Value = so.Evade },
+                    Rarity = { Value = (int)so.Rarity }
+                };
+
+                return card;
             }).ToList();
         }
     }

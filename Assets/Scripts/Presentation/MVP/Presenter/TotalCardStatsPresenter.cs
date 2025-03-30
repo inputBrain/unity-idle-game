@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Domain.Entities;
 using Presentation.MVP.Views;
-using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
@@ -21,16 +19,16 @@ namespace Presentation.MVP.Presenter
     
             foreach (var card in _cards)
             {
-                card.OnCurrentHpChanged += _ =>       _view.SetTotalHp((int)_cards.Sum(x => x.CurrentHp));
-                card.OnHpRegenerationChanged += _ =>  _view.SetTotalHPRegeneration((int)_cards.Sum(x => x.HpRegeneration));
-                card.OnAttackChanged += _ =>          _view.SetTotalAttack((int)_cards.Sum(x => x.Attack));
-                card.OnCritChanged += _ =>            _view.SetTotalCrit((int)_cards.Sum(x => x.Crit));
-                card.OnCritDmgChanged += _ =>         _view.SetTotalCritDmg((int)_cards.Sum(x => x.CritDmg));
-                card.OnBlockChanged += _ =>           _view.SetTotalBlock((int)_cards.Sum(x => x.Block));
-                card.OnBlockPowerChanged += _ =>      _view.SetTotalBlockPower((int)_cards.Sum(x => x.BlockPower));
-                card.OnEvadeChanged += _ =>           _view.SetTotalEvade((int)_cards.Sum(x => x.Evade));
-                card.OnCurrentHpChanged += _ =>       _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
-                card.OnMaxHpChanged += _ =>           _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
+                card.CurrentHp.OnValueChanged += _ =>       _view.SetTotalHp((int)_cards.Sum(x => x.CurrentHp));
+                card.HpRegeneration.OnValueChanged += _ =>  _view.SetTotalHPRegeneration((int)_cards.Sum(x => x.HpRegeneration));
+                card.Attack.OnValueChanged += _ =>          _view.SetTotalAttack((int)_cards.Sum(x => x.Attack));
+                card.Crit.OnValueChanged += _ =>            _view.SetTotalCrit((int)_cards.Sum(x => x.Crit));
+                card.CritDmg.OnValueChanged += _ =>         _view.SetTotalCritDmg((int)_cards.Sum(x => x.CritDmg));
+                card.Block.OnValueChanged += _ =>           _view.SetTotalBlock((int)_cards.Sum(x => x.Block));
+                card.BlockPower.OnValueChanged += _ =>      _view.SetTotalBlockPower((int)_cards.Sum(x => x.BlockPower));
+                card.Evade.OnValueChanged += _ =>           _view.SetTotalEvade((int)_cards.Sum(x => x.Evade));
+                card.CurrentHp.OnValueChanged += _ =>       _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
+                card.MaxHp.OnValueChanged += _ =>           _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
             }
         }
 

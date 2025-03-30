@@ -26,14 +26,14 @@ namespace Application.Dto
             {
                 foreach (var c in Cards)
                 {
-                    c.CurrentHp = 0;
+                    c.CurrentHp.Value = 0;
                 }
                 return;
             }
                 
             foreach (var card in Cards)
             {
-                card.CurrentHp -= damage / Cards.Count;
+                card.CurrentHp.Value -= damage / Cards.Count;
             }
         }
     }

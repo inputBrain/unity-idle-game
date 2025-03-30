@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Presentation.MVP.Views;
-using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
@@ -16,16 +15,16 @@ namespace Presentation.MVP.Presenter
             _boss = boss;
             _bossView = bossView;
 
-            UpdateSlider(_boss.MaxHp, boss.CurrentHp);
+            UpdateSlider(_boss.MaxHp.Value, boss.CurrentHp.Value);
 
-            _boss.OnCurrentHpChanged += _ => UpdateSlider();
-            _boss.OnMaxHpChanged += _ => UpdateSlider();
+            _boss.CurrentHp.OnValueChanged += _ => UpdateSlider();
+            _boss.MaxHp.OnValueChanged += _ => UpdateSlider();
 
         }
 
         private void UpdateSlider()
         {
-            _bossView.SetSliderHp(_boss.MaxHp, _boss.CurrentHp);
+            _bossView.SetSliderHp(_boss.MaxHp.Value, _boss.CurrentHp.Value);
         }
         
         

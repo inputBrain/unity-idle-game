@@ -1,16 +1,15 @@
 ﻿using Domain.Entities;
 using Presentation.MVP.Views;
-using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
     public class ZonePresenter
     {
-        private readonly Zone _zone;
-        private readonly ZoneView _zoneView;
+        private Zone _zone;
+        private ZoneView _zoneView;
 
 
-        public ZonePresenter(ZoneView zoneView, Zone zone)
+        public void Init(Zone zone, ZoneView zoneView)
         {
             _zoneView = zoneView;
             _zone = zone;
@@ -26,7 +25,7 @@ namespace Presentation.MVP.Presenter
         
         public  void DecreaseZone()
         {
-            if (_zone.CurrentZone <= 1)
+            if (_zone.CurrentZone.Value <= 1)
             {
                 return;
             }

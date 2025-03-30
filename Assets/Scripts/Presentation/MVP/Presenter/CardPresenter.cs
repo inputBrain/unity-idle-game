@@ -1,7 +1,5 @@
-﻿using System;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Presentation.MVP.Views;
-using UnityEngine;
 
 namespace Presentation.MVP.Presenter
 {
@@ -15,17 +13,17 @@ namespace Presentation.MVP.Presenter
             _card = card;
             _cardView = cardView;
             
-            UpdateImage(card.ImageResourcePath);
+            UpdateImage(card.ImageResourcesPath.Value);
             UpdateSlider(card.ExpCurrent, card.ExpToNextLevel);
             
-            _card.OnImageResourcePathChanged += UpdateImage;
-            _card.OnLevelChanged += _cardView.SetLevel;
+            _card.ImageResourcesPath.OnValueChanged += UpdateImage;
+            _card.Level.OnValueChanged += _cardView.SetLevel;
             
-            _card.OnExpCurrentChanged += _cardView.SetSliderCurrentExp;
-            _card.OnExpToNextLevelChanged += _cardView.SetSliderNextExp;
+            _card.ExpCurrent.OnValueChanged += _cardView.SetSliderCurrentExp;
+            _card.ExpToNextLevel.OnValueChanged += _cardView.SetSliderNextExp;
             
-            _card.OnExpCurrentChanged += _cardView.SetTextCurrentExp;
-            _card.OnExpToNextLevelChanged += _cardView.SetTextNextExp;
+            _card.ExpCurrent.OnValueChanged += _cardView.SetTextCurrentExp;
+            _card.ExpToNextLevel.OnValueChanged += _cardView.SetTextNextExp;
         }
 
 

@@ -2,6 +2,6 @@
 {
     public class Zone
     {
-        public ObservableProperty<int> CurrentZone;
+        public ReactiveProperty<int> CurrentZone { get; } = new();
     }
 }

@@ -49,10 +49,10 @@ namespace Legacy.Battle
         {
             foreach (var card in CardList)
             {
-                card.CurrentHp += TotalCardStat.HpRegeneration;
+                card.CurrentHp.Value += TotalCardStat.HpRegeneration;
                 if (card.CurrentHp > card.MaxHp)
                 {
-                    card.CurrentHp = card.MaxHp;
+                    card.CurrentHp.Value = card.MaxHp;
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace Legacy.Battle
             // }
 
             
-            Boss.CurrentHp -= totalDamage;
+            Boss.CurrentHp.Value -= totalDamage;
         }
 
         
@@ -104,7 +104,7 @@ namespace Legacy.Battle
             
             _zone.CurrentZone.Value++;
             
-            Boss.GetUpdatedStats(_zone.CurrentZone.Value);
+            Boss.GetUpdatedStats(_zone.CurrentZone);
             
         }
         
@@ -136,22 +136,22 @@ namespace Legacy.Battle
 
             foreach (var card in CardList)
             {
-                card.ExpCurrent += expPerCard;
+                card.ExpCurrent.Value += expPerCard;
                 if (card.ExpCurrent >= card.ExpToNextLevel)
                 {
                     while (card.ExpCurrent >= card.ExpToNextLevel)
                     {
-                        card.Level += 1;
-                        card.MaxHp += 1.1f;
-                        card.CurrentHp += 1.1f;
+                        card.Level.Value += 1;
+                        card.MaxHp.Value += 1.1f;
+                        card.CurrentHp.Value += 1.1f;
                         //TODO:
                         // card.HpRegeneration *= 1.1f;
-                        card.Attack += 1.1f;
-                        card.Evade += 1.1f;
-                        card.Block += 1.1f;
-                        card.BlockPower += 1.1f;
-                        card.ExpCurrent -= card.ExpToNextLevel;
-                        card.ExpToNextLevel = CalculateExpToNextLevel(card);
+                        card.Attack.Value += 1.1f;
+                        card.Evade.Value += 1.1f;
+                        card.Block.Value += 1.1f;
+                        card.BlockPower.Value += 1.1f;
+                        card.ExpCurrent.Value -= card.ExpToNextLevel;
+                        card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
                     }
                 }
             }
@@ -160,7 +160,7 @@ namespace Legacy.Battle
         
         private static float CalculateExpToNextLevel(Card card)
         {
-            var scale = card.Rarity switch
+            var scale = card.Rarity.Value switch
             {
                 (int)Rarity.Common => 1.01f,
                 (int)Rarity.Rare => 1.02f,
