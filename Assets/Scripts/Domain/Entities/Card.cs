@@ -1,11 +1,18 @@
 ﻿using System;
-using UnityEngine;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-  
-    public class Card : BaseEntity
+    public class Card : IInventoryItem
     {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public ReactiveProperty<string> IconResourcesPath { get; } = new();
+        public Guid InstanceId { get; set; }
+        
+        
+        public float StartBaseExp { get; set; }
+
         public ReactiveProperty<int> Level { get; } = new();
         public ReactiveProperty<float> ExpCurrent { get; } = new();
         public ReactiveProperty<float> ExpToNextLevel { get; } = new();
@@ -19,7 +26,6 @@ namespace Domain.Entities
         public ReactiveProperty<float> BlockPower { get; } = new();
         public ReactiveProperty<float> Evade { get; } = new();
         public ReactiveProperty<int> Rarity { get; } = new();
-        
-        public float StartBaseExp { get; set; }
+
     }
 }

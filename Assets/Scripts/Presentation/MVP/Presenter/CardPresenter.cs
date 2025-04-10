@@ -13,10 +13,10 @@ namespace Presentation.MVP.Presenter
             _card = card;
             _cardView = cardView;
             
-            UpdateImage(card.ImageResourcesPath.Value);
+            UpdateIcon(card.IconResourcesPath.Value);
             UpdateSlider(card.ExpCurrent, card.ExpToNextLevel);
             
-            _card.ImageResourcesPath.OnValueChanged += UpdateImage;
+            _card.IconResourcesPath.OnValueChanged += UpdateIcon;
             _card.Level.OnValueChanged += _cardView.SetLevel;
             
             _card.ExpCurrent.OnValueChanged += _cardView.SetSliderCurrentExp;
@@ -27,7 +27,7 @@ namespace Presentation.MVP.Presenter
         }
 
 
-        private void UpdateImage(string path)
+        private void UpdateIcon(string path)
         {
             _cardView.SetImage(path);
         }

@@ -1,113 +1,137 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Domain.Entities;
+using Domain.Interfaces;
 using Legacy.Battle;
-using Presentation.MVP.Manager;
 using Presentation.MVP.Presenter;
-using Presentation.MVP.Views;
 using Presentation.Services;
 using UnityEngine;
 using UnityEngine.UI;
+using Presentation.MVP.Views;
 
 namespace Presentation
 {
     public class GameEntryPoint : MonoBehaviour
     {
-        //Вьюхи
-        public TotalCardStatsView totalCardStatsView;
-        public BossView bossView;
-        public ZoneView zoneView;
-
-        //Менеджеры и сервисы
-        public CardInventoryManager cardInventoryManager;
+        // --- Ссылки на View ---
+        [SerializeField] private TotalCardStatsView totalCardStatsView;
+        [SerializeField] private BossView bossView;
+        [SerializeField] private ZoneView zoneView;
+        [SerializeField] private InventoryView inventoryView;
+        
+        // --- Сервисы ---
         private CardLoaderService _cardLoaderService;
 
-        //Доменные сущности
+        // --- Доменные сущности ---
         private Boss _boss;
         private Zone _zone;
 
-        //UI
-        public Button startGameButton;
-        public Transform gameUI;
-        public Transform cardsToolbarUI;
-        public Transform inventoryUI;
-
-        // Префабы
-        public CardView cardViewPrefab;
-
+        [Header("UI Элементы")]
+        public Button startGameButton; // Кнопка старта игры
+        public Transform gameUI; // Панель с игровым UI (босс, зона и т.д.)
+        public Transform cardsToolbarUI; // Панель для отображения выбранных карт в бою
+        public Transform inventoryUI; // Панель с UI инвентаря
+        
+        //доменные сущности для инвентаря
+        private List<IInventoryItem> _runtimeDomainItems = new();
+        private InventoryModel _inventoryModel;
+        private InventoryPresenter _inventoryPresenter;
 
         private void Awake()
         {
+            // Инициализация сервиса и загрузка доменных карт
             _cardLoaderService = new CardLoaderService();
             var cards = _cardLoaderService.GetDomainCards();
-            
+
+            // Создание доменных сущностей
             _zone = new Zone { CurrentZone = { Value = 1 } };
+            _boss = new Boss { CurrentHp = { Value = 100f } };
+            
+            _inventoryModel = new InventoryModel();
 
-            _boss = new Boss
-            {
-                Attack = { Value = 100f },
-                MaxHp = { Value = 300f },
-                BaseHp = 300f,
-                CurrentHp = { Value = 300f },
-                Id = 1,
-                Title = "123"
-            };
+            _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);
 
-            foreach (var c in cards)
+            foreach (var card in cards)
             {
-                cardInventoryManager.AddItem(c);
+                _runtimeDomainItems.Add(card);
             }
-
-            InitUI(cards, _boss, _zone);
-
-            startGameButton.onClick.AddListener((() =>
-            {
-                startGameButton.gameObject.SetActive(false);
-                inventoryUI.gameObject.SetActive(false);
-
-                gameUI.gameObject.SetActive(true);
-                cardsToolbarUI.gameObject.SetActive(true);
-
-                InitUISelectedCards();
-                StartBattle();
-            }));
+            
+            _inventoryModel.LoadItems(_runtimeDomainItems);
+            
+            // // 2. ИНИЦИАЛИЗАЦИЯ ДРУГИХ ПРЕЗЕНТЕРОВ И VIEW 
+            // InitOtherUI(_boss, _zone);
+            //
+            // // 3. НАСТРОЙКА КНОПКИ СТАРТА ИГРЫ
+            // startGameButton.onClick.AddListener(StartGame);
         }
 
-        private void StartBattle()
+        private void StartGame()
         {
-            if (cardInventoryManager.selectedItems.Count > 0)
-            {
-                var battleScript = new BattleScript(_boss, _zone, cardInventoryManager.selectedItems);
-                StartCoroutine(StartBattleLoop(battleScript));
-            }
-            else
-            {
-                Debug.Log("Нет выбранных карточек для битвы.");
-            }
+            // Скрываем ненужный UI
+            startGameButton.gameObject.SetActive(false);
+            inventoryUI.gameObject.SetActive(false);
+
+            // Показываем UI боя
+            gameUI.gameObject.SetActive(true);
+            cardsToolbarUI.gameObject.SetActive(true); // Показываем тулбар для карт боя
+
+            // ПОЛУЧАЕМ ВЫБРАННЫЕ КАРТЫ ИЗ МЕНЕДЖЕРА ИНВЕНТАРЯ
+            // List<Card> selectedCards = cardInventoryManager.SelectedItems.ToList();
+            //
+            // if (selectedCards.Count > 0)
+            // {
+            //     Debug.Log($"Начинаем бой с {selectedCards.Count} картами.");
+            //     // Создаем UI для выбранных карт в тулбаре
+            //     InitUISelectedCardsToolbar(selectedCards);
+            //     // Запускаем логику боя
+            //     StartBattle(selectedCards);
+            // }
+            // else
+            // {
+            //     Debug.Log("Нет выбранных карт для боя.");
+            // }
         }
 
-        private void InitUI(List<Card> cards, Boss boss, Zone zone)
+        private void StartBattle(List<Card> selectedCards)
         {
-            new TotalCardStatsPresenter().Init(cards, totalCardStatsView);
+            // Создаем и запускаем скрипт боя
+            var battleScript = new BattleScript(_boss, _zone, selectedCards);
+            StartCoroutine(StartBattleLoop(battleScript));
+        }
+
+        // Инициализация UI, не связанного с инвентарем напрямую
+        private void InitOtherUI(Boss boss, Zone zone)
+        {
+            // Инициализация презентера для общих статов карт
+            // var allCards = cardInventoryManager.SelectedItems.ToList(); // Получаем выбранные карты из менеджера
+            // new TotalCardStatsPresenter().Init(allCards, totalCardStatsView);
+            // Инициализация презентеров для босса и зоны
             new BossPresenter().Init(boss, bossView);
             new ZonePresenter().Init(zone, zoneView);
         }
-        private void InitUISelectedCards()
+
+        // Создает UI в ТУЛБАРЕ БОЯ для карт, ВЫБРАННЫХ в инвентаре
+        private void InitUISelectedCardsToolbar(List<Card> selectedCards)
         {
-            foreach (var card in cardInventoryManager.selectedItems)
+            // Создаем CardView (не InventoryItemView!) для каждой выбранной карты
+            foreach (var card in selectedCards)
             {
-                CardView newCardView = Instantiate(cardViewPrefab, cardsToolbarUI);
-                new CardPresenter().Init(card, newCardView);
+                // Используем другой префаб и другой презентер CardPresenter
+                // CardView newCardView = Instantiate(cardViewPrefab, cardsToolbarUI);
+                // new CardPresenter().Init(card, newCardView);
             }
         }
 
         private IEnumerator StartBattleLoop(BattleScript battleScript)
         {
+            //ToDo: battleScript.IsBattleOngoing()
             while (true)
             {
                 battleScript.BattleUpdate();
                 yield return new WaitForSeconds(1f);
             }
+
+            Debug.Log("Бой завершен!");
         }
     }
 }

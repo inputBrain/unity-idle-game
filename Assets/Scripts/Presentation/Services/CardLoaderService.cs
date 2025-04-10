@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Entities;
 using ScriptableObjects.Config;
@@ -24,9 +25,9 @@ namespace Presentation.Services
                 {
                     Id = so.Id,
                     Title = so.Title,
+                    InstanceId = Guid.NewGuid(),
                     StartBaseExp = so.StartBaseExp,
-                    
-                    ImageResourcesPath = { Value = $"CharacterCards/{so.Image.name}" },
+                    IconResourcesPath = { Value = $"CharacterCards/{so.Image.name}" },
                     Level = { Value = so.Level },
                     ExpCurrent = { Value = so.ExpCurrent },
                     ExpToNextLevel = { Value = so.ExpToNextLevel },

@@ -342,7 +342,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 961901755}
-  - component: {fileID: 961901756}
+  - component: {fileID: 961901757}
   m_Layer: 0
   m_Name: CardInventoryManager
   m_TagString: Untagged
@@ -365,7 +365,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1571735223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &961901756
+--- !u!114 &961901757
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -374,11 +374,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 961901753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5be76554e538446d85140d33ea9bedf1, type: 3}
+  m_Script: {fileID: 11500000, guid: 314d7cf3925c4e3ab0b25240d5eab754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryContainer: {fileID: 1844720196}
-  inventoryItemPrefab: {fileID: 3985425451236055155, guid: 3023f7374e7b380438942355fb2fbae8, type: 3}
 --- !u!1 &980808826
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +424,7 @@ MonoBehaviour:
   totalCardStatsView: {fileID: 754386039657464746}
   bossView: {fileID: 1573589485665451603}
   zoneView: {fileID: 8339082034345045562}
-  cardInventoryManager: {fileID: 961901756}
+  cardInventoryManager: {fileID: 961901757}
   startGameButton: {fileID: 120562473}
   gameUI: {fileID: 219838638797210132}
   cardsToolbarUI: {fileID: 111917831853700696}
