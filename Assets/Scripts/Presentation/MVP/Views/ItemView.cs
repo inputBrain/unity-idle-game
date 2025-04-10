@@ -3,6 +3,7 @@ using Application.Dto;
 using Domain.Interfaces;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Presentation.MVP.Views
@@ -89,7 +90,7 @@ namespace Presentation.MVP.Views
 
         public void OnDrag(PointerEventData eventData)
         {
-            _rectTransform.anchoredPosition += eventData.delta / transform.lossyScale.x;
+            _rectTransform.anchoredPosition += eventData.delta;
         }
 
         public void OnEndDrag(PointerEventData eventData)
