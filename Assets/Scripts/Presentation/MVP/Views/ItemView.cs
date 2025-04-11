@@ -16,7 +16,7 @@ namespace Presentation.MVP.Views
 
         public IInventoryItem DomainItem { get; private set; }
 
-        private Action<IInventoryItem> _onClickCallback;
+        private Action<IInventoryItem> _onSelectCallback;
         private Action<IInventoryItem> _onDeleteCallback;
 
         private CanvasGroup _canvasGroup;
@@ -42,7 +42,7 @@ namespace Presentation.MVP.Views
         public void Init(Item item, Action<IInventoryItem> onClickCallback, Action<IInventoryItem> onDeleteCallback)
         {
             DomainItem = item.BackingDomainItem;
-            _onClickCallback = onClickCallback;
+            _onSelectCallback = onClickCallback;
             _onDeleteCallback = onDeleteCallback;
 
             if (iconImage != null)
@@ -68,7 +68,7 @@ namespace Presentation.MVP.Views
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.pointerCurrentRaycast.gameObject == deleteButton?.gameObject) return;
-            _onClickCallback?.Invoke(DomainItem);
+            _onSelectCallback?.Invoke(DomainItem);
         }
 
         private void OnDestroy()
@@ -79,13 +79,14 @@ namespace Presentation.MVP.Views
 
         #region Drag and Drop
 
-               public void OnBeginDrag(PointerEventData eventData)
+        public void OnBeginDrag(PointerEventData eventData)
         {
             _originalPosition = transform.localPosition;
             _originalParent = transform.parent;
-            _originalSiblingIndex = transform.GetSiblingIndex(); 
+            _originalSiblingIndex = transform.GetSiblingIndex();
+
             _canvasGroup.alpha = 0.7f;
-            _canvasGroup.blocksRaycasts = false; 
+            _canvasGroup.blocksRaycasts = false;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -99,16 +100,22 @@ namespace Presentation.MVP.Views
             _canvasGroup.blocksRaycasts = true;
 
             GameObject objectUnderPointer = eventData.pointerEnter; 
+            
+            
+            //
             ItemView targetItemView = null;
-
+            GameObject targetToolBarContainer = null;
+            GameObject targetInventoryContainer = null;
             if (objectUnderPointer != null)
             {
                 targetItemView = objectUnderPointer.GetComponentInParent<ItemView>();
+                targetToolBarContainer = objectUnderPointer.gameObject.CompareTag($"ToolBarContainer") ? objectUnderPointer.gameObject : null;
+                targetInventoryContainer = objectUnderPointer.gameObject.CompareTag($"InventoryContainer") ? objectUnderPointer.gameObject : null;
             }
 
-            bool canSwap = targetItemView != null &&             // Нашли ItemView?
-                           targetItemView != this &&               //Это не мы сами?
-                           targetItemView.transform.parent == _originalParent; // Он в том же родителе?
+            bool canSwap = targetItemView != null && // Нашли ItemView?
+                           targetItemView != this;         //Это не мы сами?
+                           // targetItemView.transform.parent == _originalParent; // Он в том же родителе?
 
             if (canSwap)
             {
@@ -116,18 +123,44 @@ namespace Presentation.MVP.Views
 
                 targetItemView.transform.SetParent(_originalParent, true);
                 targetItemView.transform.SetSiblingIndex(_originalSiblingIndex);
-                
-                 _rectTransform.localPosition = Vector3.zero;
-                 targetItemView._rectTransform.localPosition = Vector3.zero;
-                 
+
+                _rectTransform.localPosition = Vector3.zero;
+                targetItemView._rectTransform.localPosition = Vector3.zero;
+
                 Debug.Log($"Swapped {this.DomainItem?.Title} with {targetItemView.DomainItem?.Title}");
-            
+                
+                
+                // Inventory ToolBar
+                
+                //Inventory - A - Select
+                //ToolBar - B (Select for game)
+                
+                //Inventory - _onSelectCallback( B.GetComp<View>.DomainItem)
+                //ToolBar - A - Select
+                
             }
             else
             {
                 transform.SetSiblingIndex(_originalSiblingIndex); // Возвращаем на исходный индекс
                 transform.localPosition = _originalPosition;
                 Debug.Log($"Returned {this.DomainItem?.Title} to original position.");
+            }
+
+
+            if (targetToolBarContainer != null) //Нашли тулбар
+            {
+                //вызываем событие _onSelectCallback
+                _onSelectCallback?.Invoke(DomainItem);
+                transform.SetParent(targetToolBarContainer.transform, true);
+                // Сетим родителя
+            }
+
+
+            if (targetInventoryContainer != null)
+            {
+                _onSelectCallback?.Invoke(DomainItem);
+                transform.SetParent(targetInventoryContainer.transform, true);
+                // Сетим родителя
             }
         }
 
