@@ -6,6 +6,8 @@ TagManager:
   tags:
   - ToolBarContainer
   - InventoryContainer
+  - Inventory
+  - ToolBarPanel
   layers:
   - Default
   - TransparentFX

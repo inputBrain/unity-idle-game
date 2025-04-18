@@ -3,17 +3,13 @@ using Application.Dto;
 using Domain.Interfaces;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Presentation.MVP.Views
 {
-    public class ItemView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class ItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Image iconImage;
-        [SerializeField] private Image selectionHighlight;
-        [SerializeField] private Button deleteButton;
-
         public IInventoryItem DomainItem { get; private set; }
 
         private Action<IInventoryItem> _onSelectCallback;
@@ -30,12 +26,6 @@ namespace Presentation.MVP.Views
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
 
-            if (deleteButton != null)
-                deleteButton.onClick.AddListener(HandleDeleteClick);
-
-            if (selectionHighlight != null)
-                selectionHighlight.gameObject.SetActive(false);
-
             // iconImage ДОЛЖЕН иметь raycastTarget = true для IPointerClickHandler и др
         }
 
@@ -50,32 +40,8 @@ namespace Presentation.MVP.Views
                 iconImage.sprite = item.DisplayIcon;
                 iconImage.enabled = item.DisplayIcon != null;
             }
-
-            SetSelected(false);
         }
-
-        public void SetSelected(bool isSelected)
-        {
-            if (selectionHighlight != null)
-                selectionHighlight.gameObject.SetActive(isSelected);
-        }
-
-        private void HandleDeleteClick()
-        {
-            _onDeleteCallback?.Invoke(DomainItem);
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (eventData.pointerCurrentRaycast.gameObject == deleteButton?.gameObject) return;
-            _onSelectCallback?.Invoke(DomainItem);
-        }
-
-        private void OnDestroy()
-        {
-            if (deleteButton != null)
-                deleteButton.onClick.RemoveListener(HandleDeleteClick);
-        }
+        
 
         #region Drag and Drop
 
@@ -110,7 +76,7 @@ namespace Presentation.MVP.Views
             {
                 targetItemView = objectUnderPointer.GetComponentInParent<ItemView>();
                 targetToolBarContainer = objectUnderPointer.gameObject.CompareTag($"ToolBarContainer") ? objectUnderPointer.gameObject : null;
-                targetInventoryContainer = objectUnderPointer.gameObject.CompareTag($"InventoryContainer") ? objectUnderPointer.gameObject : null;
+                targetInventoryContainer = objectUnderPointer.gameObject.CompareTag($"Inventory") ? objectUnderPointer.gameObject : null;
             }
 
             bool canSwap = targetItemView != null && // Нашли ItemView?
@@ -165,6 +131,5 @@ namespace Presentation.MVP.Views
         }
 
         #endregion
-
     }
 }

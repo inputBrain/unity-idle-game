@@ -338,7 +338,7 @@ MonoBehaviour:
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 2580, y: 1440}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -639,8 +639,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 293d2a07ef5e4969a55d81e98be205dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemSlotsContainer: {fileID: 2029946121}
-  itemSlotPrefab: {fileID: 2387112583990440516, guid: dadeed17ff0fef34186d506406714244, type: 3}
+  inventoryContainerGrid: {fileID: 2029946121}
+  itemSlotPrefab: {fileID: 1342530046900651215, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
 --- !u!4 &1839596414
 Transform:
   m_ObjectHideFlags: 0
@@ -790,7 +790,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -14, y: -236.99997}
+  m_AnchoredPosition: {x: -14, y: -236.99927}
   m_SizeDelta: {x: -325.81, y: -694.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2052644239

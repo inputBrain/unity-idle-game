@@ -26,8 +26,8 @@ namespace Presentation.MVP.Presenter
         {
             _bossView.SetSliderHp(_boss.MaxHp.Value, _boss.CurrentHp.Value);
         }
-        
-        
+
+
         private void UpdateSlider(float bossMaxHp, float bossCurrentHp)
         {
             _bossView.SetSliderHp(bossMaxHp, bossCurrentHp);

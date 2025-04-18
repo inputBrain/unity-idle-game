@@ -182,8 +182,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8757109387951428694}
   - component: {fileID: 5068008142510879156}
+  - component: {fileID: 4695308413792187463}
+  - component: {fileID: 7827090824725585079}
   m_Layer: 5
-  m_Name: CardView
+  m_Name: ToolbarCardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,6 +228,31 @@ MonoBehaviour:
   ExpToNextLevel: {fileID: 0}
   CardImage: {fileID: 7627084447180866362}
   Slider: {fileID: 826240172999203419}
+--- !u!114 &4695308413792187463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342530046900651215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e838ac41dfcf41b78241af366e6267f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconImage: {fileID: 7627084447180866362}
+--- !u!225 &7827090824725585079
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342530046900651215}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1757338164313587969
 GameObject:
   m_ObjectHideFlags: 0

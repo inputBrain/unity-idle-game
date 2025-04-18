@@ -4,12 +4,13 @@ using System.Linq;
 using Application.Dto;
 using Domain.Interfaces; 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Presentation.MVP.Views
 {
     public class InventoryView : MonoBehaviour
     {
-        [SerializeField] private Transform itemSlotsContainer;
+        [SerializeField] private Transform inventoryContainerGrid;
         [SerializeField] private GameObject itemSlotPrefab;
 
         private readonly List<ItemView> _currentSlots = new();
@@ -27,7 +28,7 @@ namespace Presentation.MVP.Views
             _currentSlots.Clear();
             
 
-            if (itemSlotPrefab == null || itemSlotsContainer == null)
+            if (itemSlotPrefab == null || inventoryContainerGrid == null)
             {
                  Debug.LogError("InventoryView: отсутствует префаб слота или контейнер.");
                  return;
@@ -40,7 +41,7 @@ namespace Presentation.MVP.Views
                  if (item == null) continue;
 
                 //Из списка Item создаем GO на сцене из префаба
-                GameObject slotInstance = Instantiate(itemSlotPrefab, itemSlotsContainer);
+                GameObject slotInstance = Instantiate(itemSlotPrefab, inventoryContainerGrid);
                 ItemView itemView = slotInstance.GetComponent<ItemView>();
                 if (itemView != null)
                 {
@@ -55,21 +56,7 @@ namespace Presentation.MVP.Views
                 }
             }
         }
-
-        public void UpdateSelection(HashSet<IInventoryItem> selectedItems)
-        {
-            foreach (var slot in _currentSlots)
-            {
-                if (slot != null && slot.DomainItem != null)
-                {
-                    slot.SetSelected(selectedItems.Contains(slot.DomainItem));
-                }
-                else if (slot != null)
-                {
-                    slot.SetSelected(false);
-                }
-            }
-        }
+        
 
 
         private void HandleSlotClick(IInventoryItem clickedItem)

@@ -25,7 +25,6 @@ namespace Presentation.MVP.Presenter
 
             // Поменялась модель инвентаря в BLL? Обновляем UI
             _inventoryModel.OnInventoryChanged += HandleInventoryChanged;
-            _inventoryModel.OnSelectionChanged += HandleSelectionChanged;
             
             //Что то произошло в UI? Обновляем модель инвентаря
             _inventoryView.OnItemClicked += HandleItemClicked;
@@ -48,22 +47,8 @@ namespace Presentation.MVP.Presenter
                 }).ToList();
 
             _inventoryView.DisplayItems(itemsToDisplay);
-            HandleSelectionChanged(); 
         }
-
         
-        private void HandleSelectionChanged()
-        {
-            // Как это работает
-            // Кликаем по View и далее цепочка  => Presenter => Model => Presenter => View
-            // Т.е. наш клик уведомил модель, а та в свою очередь уведомила UI в обратную сторону
-            var selectedItems = _inventoryModel.SelectedItems;
-            _inventoryView.UpdateSelection(selectedItems);
-
-            Debug.Log(selectedItems.Any()
-                ? $"Выбрано {selectedItems.Count} предметов"
-                : "Сейчас ничего не выбрано");
-        }
 
         #endregion
 
@@ -110,7 +95,6 @@ namespace Presentation.MVP.Presenter
             if (_inventoryModel != null)
             {
                 _inventoryModel.OnInventoryChanged -= HandleInventoryChanged;
-                _inventoryModel.OnSelectionChanged -= HandleSelectionChanged;
             }
             if (_inventoryView != null)
             {
