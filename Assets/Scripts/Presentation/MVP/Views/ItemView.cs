@@ -13,7 +13,7 @@ namespace Presentation.MVP.Views
         public IInventoryItem DomainItem { get; private set; }
 
         private Action<IInventoryItem> _onSelectCallback;
-        private Action<IInventoryItem> _onDeleteCallback;
+
 
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
@@ -29,11 +29,11 @@ namespace Presentation.MVP.Views
             // iconImage ДОЛЖЕН иметь raycastTarget = true для IPointerClickHandler и др
         }
 
-        public void Init(Item item, Action<IInventoryItem> onClickCallback, Action<IInventoryItem> onDeleteCallback)
+        public void Init(Item item, Action<IInventoryItem> onClickCallback)
         {
             DomainItem = item.BackingDomainItem;
             _onSelectCallback = onClickCallback;
-            _onDeleteCallback = onDeleteCallback;
+       
 
             if (iconImage != null)
             {
@@ -57,7 +57,7 @@ namespace Presentation.MVP.Views
 
         public void OnDrag(PointerEventData eventData)
         {
-            _rectTransform.anchoredPosition += eventData.delta;
+            _rectTransform.position = eventData.position;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -118,7 +118,9 @@ namespace Presentation.MVP.Views
                 //вызываем событие _onSelectCallback
                 _onSelectCallback?.Invoke(DomainItem);
                 transform.SetParent(targetToolBarContainer.transform, true);
-                // Сетим родителя
+                var go = gameObject.GetComponent<CardView>();
+                go.Slider.gameObject.SetActive(true);
+                // _onSelectCallback?.Invoke(DomainItem);
             }
 
 
@@ -127,6 +129,8 @@ namespace Presentation.MVP.Views
                 _onSelectCallback?.Invoke(DomainItem);
                 transform.SetParent(targetInventoryContainer.transform, true);
                 // Сетим родителя
+                var go = gameObject.GetComponent<CardView>();
+                go.Slider.gameObject.SetActive(false);
             }
         }
 

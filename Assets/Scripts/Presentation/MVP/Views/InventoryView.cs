@@ -4,7 +4,6 @@ using System.Linq;
 using Application.Dto;
 using Domain.Interfaces; 
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Presentation.MVP.Views
 {
@@ -18,6 +17,7 @@ namespace Presentation.MVP.Views
         // На ивенты подписывается презентер
         public event Action<IInventoryItem> OnItemClicked;
         public event Action<IInventoryItem> OnItemDeleteClicked; 
+        public event Action<IInventoryItem> OnToolbarSelected; 
 
         public void DisplayItems(IReadOnlyList<Item> itemsToDisplay)
         {
@@ -46,7 +46,7 @@ namespace Presentation.MVP.Views
                 if (itemView != null)
                 {
                     //Если на префабе есть вьюха, то в нее передаем item и  Хандлеры для обработки по типу Drag/Drop/Click
-                    itemView.Init(item, HandleSlotClick, HandleDeleteClick);
+                    itemView.Init(item, HandleSlotClick);
                     _currentSlots.Add(itemView);
                 }
                 else
@@ -62,11 +62,6 @@ namespace Presentation.MVP.Views
         private void HandleSlotClick(IInventoryItem clickedItem)
         {
             OnItemClicked?.Invoke(clickedItem);
-        }
-
-        private void HandleDeleteClick(IInventoryItem itemToDelete) 
-        {
-            OnItemDeleteClicked?.Invoke(itemToDelete);
         }
     }
 }

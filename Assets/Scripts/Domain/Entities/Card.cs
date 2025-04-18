@@ -9,8 +9,6 @@ namespace Domain.Entities
         public string Title { get; set; }
         public ReactiveProperty<string> IconResourcesPath { get; } = new();
         public Guid InstanceId { get; set; }
-        
-        
         public float StartBaseExp { get; set; }
 
         public ReactiveProperty<int> Level { get; } = new();
@@ -26,6 +24,7 @@ namespace Domain.Entities
         public ReactiveProperty<float> BlockPower { get; } = new();
         public ReactiveProperty<float> Evade { get; } = new();
         public ReactiveProperty<int> Rarity { get; } = new();
-
+        
+        public ReactiveProperty<int> Count { get; } = new();
     }
 }
