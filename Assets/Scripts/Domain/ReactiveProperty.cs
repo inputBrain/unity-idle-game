@@ -24,7 +24,7 @@ namespace Domain
             _value = initialValue;
         }
 
-        // Оператор неявного преобразования позволяет получать значение напрямую
+
         public static implicit operator T(ReactiveProperty<T> reactive)
         {
             return reactive.Value;

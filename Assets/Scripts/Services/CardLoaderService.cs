@@ -6,7 +6,7 @@ using ScriptableObjects.Config;
 using UnityEngine;
 using Utils;
 
-namespace Presentation.Services
+namespace Services
 {
     public class CardLoaderService
     {
@@ -40,7 +40,9 @@ namespace Presentation.Services
                     Block = { Value = so.Block },
                     BlockPower = { Value = so.BlockPower },
                     Evade = { Value = so.Evade },
-                    Rarity = { Value = (int)so.Rarity }
+                    Rarity = { Value = (int)so.Rarity },
+                    Count = { Value = 1},
+                    DropChance = { Value = so.DropChance}
                 };
 
                 return card;

@@ -19,14 +19,16 @@ MonoBehaviour:
   ExpToNextLevel: 1000
   StartBaseExp: 1000
   Hp: 12
-  HPRegeneration: 1000
+  HpRegeneration: 0
   Attack: 10
   Crit: 5
   CritDmg: 5
   Block: 5
   BlockPower: 5
   Evade: 5
-  Rarity: 0
+  Rarity: 1
   Image: {fileID: 21300000, guid: ccde713b33760cb49952e9deec6b4531, type: 3}
   ImagePath: 
   IsStackable: 1
+  Count: 0
+  DropChance: 80

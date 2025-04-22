@@ -19,7 +19,7 @@ MonoBehaviour:
   ExpToNextLevel: 1000
   StartBaseExp: 1000
   Hp: 34
-  HPRegeneration: 1000
+  HpRegeneration: 0
   Attack: 5
   Crit: 5
   CritDmg: 5
@@ -30,3 +30,5 @@ MonoBehaviour:
   Image: {fileID: 21300000, guid: f4d3f91795fc24944a67be9407099af9, type: 3}
   ImagePath: 
   IsStackable: 1
+  Count: 0
+  DropChance: 10

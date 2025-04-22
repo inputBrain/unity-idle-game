@@ -4,10 +4,9 @@ using System.Linq;
 using Application.Dto;
 using Domain.Entities;
 using Domain.Interfaces;
-using Presentation.MVP.Views;
 using UnityEngine;
 
-namespace Presentation.MVP.Presenter
+namespace Presentation.Inventory
 {
     public class InventoryPresenter : IDisposable
     {

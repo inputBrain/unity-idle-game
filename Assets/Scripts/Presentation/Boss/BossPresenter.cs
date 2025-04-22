@@ -1,16 +1,13 @@
-﻿using Domain.Entities;
-using Presentation.MVP.Views;
-
-namespace Presentation.MVP.Presenter
+﻿namespace Presentation.Boss
 {
     public class BossPresenter
     {
-        private Boss _boss;
+        private Domain.Entities.Boss _boss;
 
         private BossView _bossView;
 
 
-        public void Init(Boss boss, BossView bossView)
+        public void Init(Domain.Entities.Boss boss, BossView bossView)
         {
             _boss = boss;
             _bossView = bossView;

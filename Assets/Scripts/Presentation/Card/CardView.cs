@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Presentation.MVP.Views
+namespace Presentation.Card
 {
     public class CardView : MonoBehaviour
     {

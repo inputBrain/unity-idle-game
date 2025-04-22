@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Presentation.MVP.Views
+namespace Presentation.Zone
 {
     public class ZoneView : MonoBehaviour
     {

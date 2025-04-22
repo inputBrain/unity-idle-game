@@ -1,15 +1,12 @@
-﻿using Domain.Entities;
-using Presentation.MVP.Views;
-
-namespace Presentation.MVP.Presenter
+﻿namespace Presentation.Zone
 {
     public class ZonePresenter
     {
-        private Zone _zone;
+        private Domain.Entities.Zone _zone;
         private ZoneView _zoneView;
 
 
-        public void Init(Zone zone, ZoneView zoneView)
+        public void Init(Domain.Entities.Zone zone, ZoneView zoneView)
         {
             _zoneView = zoneView;
             _zone = zone;

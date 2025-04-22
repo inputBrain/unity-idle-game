@@ -30,3 +30,5 @@ MonoBehaviour:
   Image: {fileID: 21300000, guid: fc75b4bf36f8a60439f41444d1603862, type: 3}
   ImagePath: 
   IsStackable: 1
+  Count: 0
+  DropChance: 10

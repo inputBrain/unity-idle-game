@@ -1,14 +1,11 @@
-﻿using Domain.Entities;
-using Presentation.MVP.Views;
-
-namespace Presentation.MVP.Presenter
+﻿namespace Presentation.Card
 {
     public class CardPresenter
     {
-        private Card _card;
+        private Domain.Entities.Card _card;
         private CardView _cardView;
 
-        public void Init(Card card, CardView cardView)
+        public void Init(Domain.Entities.Card card, CardView cardView)
         {
             _card = card;
             _cardView = cardView;

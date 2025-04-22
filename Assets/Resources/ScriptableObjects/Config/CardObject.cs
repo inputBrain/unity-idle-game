@@ -25,5 +25,8 @@ namespace ScriptableObjects.Config
         public Sprite Image;
         public string ImagePath;
         public bool IsStackable = true; 
+        public int Count;
+
+        public float DropChance;
     }
 }

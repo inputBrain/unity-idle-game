@@ -1,11 +1,12 @@
 ﻿using System;
 using Application.Dto;
 using Domain.Interfaces;
+using Presentation.Card;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Presentation.MVP.Views
+namespace Presentation.Inventory
 {
     public class ItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {

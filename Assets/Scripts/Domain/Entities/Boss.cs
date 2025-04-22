@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class Boss : BaseEntity
     {

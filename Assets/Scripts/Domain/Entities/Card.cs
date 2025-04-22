@@ -26,5 +26,6 @@ namespace Domain.Entities
         public ReactiveProperty<int> Rarity { get; } = new();
         
         public ReactiveProperty<int> Count { get; } = new();
+        public ReactiveProperty<float> DropChance { get; } = new();
     }
 }

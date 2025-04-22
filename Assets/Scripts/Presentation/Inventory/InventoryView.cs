@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Application.Dto;
-using Domain.Interfaces; 
+using Domain.Interfaces;
 using UnityEngine;
 
-namespace Presentation.MVP.Views
+namespace Presentation.Inventory
 {
     public class InventoryView : MonoBehaviour
     {

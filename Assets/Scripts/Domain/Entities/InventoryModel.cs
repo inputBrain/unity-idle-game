@@ -29,10 +29,10 @@ namespace Domain.Entities
         {
             if (domainItem == null) return;
 
-            bool removed = Items.Remove(domainItem);
+            var removed = Items.Remove(domainItem);
             if (removed)
             {
-                bool selectionChanged = SelectedItems.Remove(domainItem);
+                var selectionChanged = SelectedItems.Remove(domainItem);
                 OnInventoryChanged?.Invoke();
                 if (selectionChanged)
                 {
