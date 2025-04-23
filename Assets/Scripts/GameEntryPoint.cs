@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Battle;
 using Domain.Entities;
 using Domain.Interfaces;
-using Legacy.Battle;
 using Presentation.Boss;
 using Presentation.Inventory;
 using Presentation.TotalStats;

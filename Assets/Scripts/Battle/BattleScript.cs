@@ -5,13 +5,13 @@ using Domain.Entities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Legacy.Battle
+namespace Battle
 {
     public class BattleScript
     {
         public List<Card> CardList = new();
 
-        public TotalCardStatsDto TotalCardStat = new();
+        public TotalToolbarStatisticDto TotalToolbarStatistic = new();
         public Boss Boss = new();
         private Zone _zone;
         
@@ -22,7 +22,7 @@ namespace Legacy.Battle
             CardList = cards;
             Boss = boss;
             _zone = zone;
-            TotalCardStat.Cards = cards;
+            TotalToolbarStatistic.Cards = cards;
 
             _zone.CurrentZone.Value = 1;
         }
@@ -38,7 +38,7 @@ namespace Legacy.Battle
                 OnBossDefeated();
             }
 
-            if (TotalCardStat.Hp <= 0)
+            if (TotalToolbarStatistic.Hp <= 0)
             {
                 OnEnemyWin();
             }
@@ -49,7 +49,7 @@ namespace Legacy.Battle
         {
             foreach (var card in CardList)
             {
-                card.CurrentHp.Value += TotalCardStat.HpRegeneration;
+                card.CurrentHp.Value += TotalToolbarStatistic.HpRegeneration;
                 if (card.CurrentHp > card.MaxHp)
                 {
                     card.CurrentHp.Value = card.MaxHp;
@@ -60,12 +60,12 @@ namespace Legacy.Battle
         
         private void DealDamageToBoss()
         {
-            var totalDamage = TotalCardStat.Attack;
+            var totalDamage = TotalToolbarStatistic.Attack;
 
             // Critical attack case TODO:
-            // if (Random.value * 100 < TotalCardStat.Crit)
+            // if (Random.value * 100 < TotalToolbarStatistic.Crit)
             // {
-            //     totalDamage *= 1 + TotalCardStat.CritDmg / 10f;
+            //     totalDamage *= 1 + TotalToolbarStatistic.CritDmg / 10f;
             // }
 
             
@@ -79,17 +79,17 @@ namespace Legacy.Battle
             
             
                 //TODO:
-            // if (Random.value * 100 < TotalCardStat.Evade)
+            // if (Random.value * 100 < TotalToolbarStatistic.Evade)
             // {
             //     return;
             // }
             //
-            // if (Random.value * 100 < TotalCardStat.Block)
+            // if (Random.value * 100 < TotalToolbarStatistic.Block)
             // {
-            //     damageToTeam *= (1 - TotalCardStat.BlockPower / 100f);
+            //     damageToTeam *= (1 - TotalToolbarStatistic.BlockPower / 100f);
             // }
 
-            TotalCardStat.GetDamage(damageToTeam);
+            TotalToolbarStatistic.GetDamage(damageToTeam);
         }
         
 

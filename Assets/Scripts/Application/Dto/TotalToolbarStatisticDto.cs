@@ -4,12 +4,9 @@ using Domain.Entities;
 
 namespace Application.Dto
 {
-    public class TotalCardStatsDto
+    public class TotalToolbarStatisticDto
     {
         public IList<Card> Cards = new List<Card>();
-
-        public float ExpCurrent { get; set; }
-        public float ExpToNextLevel { get; set; }
         public float Hp => Cards.Sum(card => card.CurrentHp);
         public float HpRegeneration => Cards.Sum(card => card.HpRegeneration);
         public float Attack => Cards.Sum(card => card.Attack);
