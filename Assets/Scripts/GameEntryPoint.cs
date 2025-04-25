@@ -18,6 +18,7 @@ public class GameEntryPoint : MonoBehaviour
     [SerializeField] private BossView bossView;
     [SerializeField] private ZoneView zoneView;
     [SerializeField] private InventoryView inventoryView;
+    [SerializeField] private ItemView itemView;
         
     // --- Сервисы ---
     private CardLoaderService _cardLoaderService;
@@ -54,15 +55,17 @@ public class GameEntryPoint : MonoBehaviour
         foreach (var card in cards)
         {
             _runtimeDomainItems.Add(card);
+            new ItemPresenter().Init(card, itemView);
+
         }
             
         _inventoryModel.LoadItems(_runtimeDomainItems);
             
         // // 2. ИНИЦИАЛИЗАЦИЯ ДРУГИХ ПРЕЗЕНТЕРОВ И VIEW 
-        // InitOtherUI(_boss, _zone);
+        InitOtherUI(_boss, _zone);
         //
         // // 3. НАСТРОЙКА КНОПКИ СТАРТА ИГРЫ
-        // startGameButton.onClick.AddListener(StartGame);
+        startGameButton.onClick.AddListener(StartGame);
     }
 
     private void StartGame()
@@ -74,6 +77,7 @@ public class GameEntryPoint : MonoBehaviour
         // Показываем UI боя
         gameUI.gameObject.SetActive(true);
         cardsToolbarUI.gameObject.SetActive(true); // Показываем тулбар для карт боя
+
 
         // ПОЛУЧАЕМ ВЫБРАННЫЕ КАРТЫ ИЗ МЕНЕДЖЕРА ИНВЕНТАРЯ
         // List<Card> selectedCards = cardInventoryManager.SelectedItems.ToList();

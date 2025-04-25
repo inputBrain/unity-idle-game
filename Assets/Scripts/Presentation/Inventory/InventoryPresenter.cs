@@ -5,10 +5,11 @@ using Application.Dto;
 using Domain.Entities;
 using Domain.Interfaces;
 using UnityEngine;
+using Utils;
 
 namespace Presentation.Inventory
 {
-    public class InventoryPresenter : IDisposable
+    public class InventoryPresenter : Singleton<InventoryPresenter>, IDisposable
     {
         private readonly InventoryModel _inventoryModel;
         private readonly InventoryView _inventoryView;
@@ -42,7 +43,7 @@ namespace Presentation.Inventory
                 .Select(domainItem => {
                     var iconPath = domainItem.IconResourcesPath.Value; 
                     var icon = LoadSprite(iconPath);
-                    return new Item(domainItem, icon);
+                    return new Application.Dto.Item(domainItem, icon);
                 }).ToList();
 
             _inventoryView.DisplayItems(itemsToDisplay);
@@ -106,6 +107,8 @@ namespace Presentation.Inventory
         #endregion
         
         #region Публичные методы для управления из BLL
+        public void AddOrStackCard(Domain.Entities.Card card) => _inventoryModel.AddOrStackItem(card);
+
         public void AddItemToInventory(IInventoryItem domainItem) => _inventoryModel.AddItem(domainItem);
         public void RemoveItemFromInventory(IInventoryItem domainItem) => _inventoryModel.RemoveItem(domainItem);
         public IEnumerable<IInventoryItem> GetSelectedDomainItems() => _inventoryModel.SelectedItems;

@@ -4,7 +4,7 @@ namespace Utils
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        static protected T Instance { get; set; }
+        public static T Instance { get; set; }
 
 
         private void Awake()

@@ -2,6 +2,7 @@
 using Application.Dto;
 using Domain.Interfaces;
 using Presentation.Card;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,7 +11,11 @@ namespace Presentation.Inventory
 {
     public class ItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [SerializeField] private Image iconImage;
+        [SerializeField]
+        private Image iconImage;
+        
+        [SerializeField]
+        private TMP_Text countText;
         public IInventoryItem DomainItem { get; private set; }
 
         private Action<IInventoryItem> _onSelectCallback;
@@ -18,9 +23,9 @@ namespace Presentation.Inventory
 
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
-        private Transform _originalParent; //Изначальный родитель
+        private Transform _originalParent;
         private Vector3 _originalPosition;
-        private int _originalSiblingIndex; // Исходный индекс в иерархии родителя
+        private int _originalSiblingIndex;
 
         void Awake()
         {
@@ -30,17 +35,34 @@ namespace Presentation.Inventory
             // iconImage ДОЛЖЕН иметь raycastTarget = true для IPointerClickHandler и др
         }
 
-        public void Init(Item item, Action<IInventoryItem> onClickCallback)
+        public void Init(Application.Dto.Item item, Action<IInventoryItem> onClickCallback)
         {
             DomainItem = item.BackingDomainItem;
             _onSelectCallback = onClickCallback;
        
-
+            if (DomainItem is Domain.Entities.Card card && card.Count.Value > 1)
+            {
+                countText.text = $"X{card.Count.Value}";
+                countText.gameObject.SetActive(true);
+            }
+            else
+            {
+                countText.text = "";
+                countText.gameObject.SetActive(false);
+            }
+            
+            
             if (iconImage != null)
             {
                 iconImage.sprite = item.DisplayIcon;
                 iconImage.enabled = item.DisplayIcon != null;
             }
+        }
+        
+        public void SetCountText(string text, bool visible)
+        {
+            countText.text = text;
+            countText.gameObject.SetActive(visible);
         }
         
 
@@ -80,9 +102,9 @@ namespace Presentation.Inventory
                 targetInventoryContainer = objectUnderPointer.gameObject.CompareTag($"Inventory") ? objectUnderPointer.gameObject : null;
             }
 
-            bool canSwap = targetItemView != null && // Нашли ItemView?
-                           targetItemView != this;         //Это не мы сами?
-                           // targetItemView.transform.parent == _originalParent; // Он в том же родителе?
+            bool canSwap = targetItemView != null &&
+                           targetItemView != this;
+                           // targetItemView.transform.parent == _originalParent;
 
             if (canSwap)
             {
@@ -108,15 +130,14 @@ namespace Presentation.Inventory
             }
             else
             {
-                transform.SetSiblingIndex(_originalSiblingIndex); // Возвращаем на исходный индекс
+                transform.SetSiblingIndex(_originalSiblingIndex);
                 transform.localPosition = _originalPosition;
                 Debug.Log($"Returned {this.DomainItem?.Title} to original position.");
             }
 
 
-            if (targetToolBarContainer != null) //Нашли тулбар
+            if (targetToolBarContainer != null)
             {
-                //вызываем событие _onSelectCallback
                 _onSelectCallback?.Invoke(DomainItem);
                 transform.SetParent(targetToolBarContainer.transform, true);
                 var go = gameObject.GetComponent<CardView>();
@@ -129,7 +150,7 @@ namespace Presentation.Inventory
             {
                 _onSelectCallback?.Invoke(DomainItem);
                 transform.SetParent(targetInventoryContainer.transform, true);
-                // Сетим родителя
+
                 var go = gameObject.GetComponent<CardView>();
                 go.Slider.gameObject.SetActive(false);
             }

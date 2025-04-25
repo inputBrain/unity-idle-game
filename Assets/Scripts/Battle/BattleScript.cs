@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Application.Dto;
 using Domain.Entities;
+using Presentation.Inventory;
+using Services;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Battle
 {
@@ -15,7 +16,6 @@ namespace Battle
         public Boss Boss = new();
         private Zone _zone;
         
-
 
         public BattleScript(Boss boss, Zone zone, List<Card> cards)
         {
@@ -97,11 +97,20 @@ namespace Battle
         {
             ReceiveExp();
             
-            if (Random.value * 100 < 50f)
+            var allCards = new CardLoaderService().GetDomainCards();
+            var dropService = new CardDropService(allCards);
+            var droppedCards = dropService.RollMultipleDrops(1);
+
+            var inventoryPresenter = InventoryPresenter.Instance;
+
+            foreach (var card in droppedCards)
             {
-                Debug.Log("Reward granted!");
+                Debug.Log($"Dropped card: {card.Title} (Rarity: {card.Rarity.Value})");
+                // Добавляем в инвентарь:
+                // Вызов InventoryPresenter.AddItemToInventory(card); если у тебя есть к нему доступ
+
+                inventoryPresenter.AddOrStackCard(card);
             }
-            
             _zone.CurrentZone.Value++;
             
             Boss.GetUpdatedStats(_zone.CurrentZone);

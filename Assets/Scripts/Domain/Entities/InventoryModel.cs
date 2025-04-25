@@ -75,5 +75,22 @@ namespace Domain.Entities
                 OnSelectionChanged?.Invoke();
             }
         }
+        
+        
+        public void AddOrStackItem(IInventoryItem domainItem)
+        {
+            if (domainItem is not Card newCard) return;
+
+            var existingCard = Items.OfType<Card>().FirstOrDefault(c => c.Id == newCard.Id);
+            if (existingCard != null && newCard.Count.Value > 0)
+            {
+                existingCard.Count.Value += newCard.Count.Value;
+                OnInventoryChanged?.Invoke();
+                return;
+            }
+
+            AddItem(domainItem);
+        }
+
     }
 }
