@@ -52,12 +52,13 @@ public class GameEntryPoint : MonoBehaviour
 
         _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);
 
-        foreach (var card in cards)
-        {
-            _runtimeDomainItems.Add(card);
-            new ItemPresenter().Init(card, itemView);
-
-        }
+        // foreach (var card in cards)
+        // {
+            // _runtimeDomainItems.Add(card);
+            // new ItemPresenter().Init(card, itemView);
+            _runtimeDomainItems.AddRange(cards);
+            _inventoryModel.LoadItems(_runtimeDomainItems);
+        // }
             
         _inventoryModel.LoadItems(_runtimeDomainItems);
             
@@ -66,6 +67,20 @@ public class GameEntryPoint : MonoBehaviour
         //
         // // 3. НАСТРОЙКА КНОПКИ СТАРТА ИГРЫ
         startGameButton.onClick.AddListener(StartGame);
+    }
+    
+    void Start()
+    {
+        var allCards = new CardLoaderService().GetDomainCards();
+        var dropService = new CardDropService(allCards);
+        var drop = dropService.RollDrop();
+
+        if (drop != null)
+        {
+            _inventoryPresenter.AddOrStackCard(drop);
+        }
+        
+        StartBattle(_cardLoaderService.GetDomainCards());
     }
 
     private void StartGame()
@@ -99,7 +114,7 @@ public class GameEntryPoint : MonoBehaviour
     private void StartBattle(List<Card> selectedCards)
     {
         // Создаем и запускаем скрипт боя
-        var battleScript = new BattleScript(_boss, _zone, selectedCards);
+        var battleScript = new BattleScript(_boss, _zone, selectedCards, _inventoryPresenter);
         StartCoroutine(StartBattleLoop(battleScript));
     }
 

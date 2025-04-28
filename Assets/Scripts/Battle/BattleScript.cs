@@ -15,11 +15,12 @@ namespace Battle
         public TotalToolbarStatisticDto TotalToolbarStatistic = new();
         public Boss Boss = new();
         private Zone _zone;
-        
+        private readonly InventoryPresenter _inventoryPresenter;
 
-        public BattleScript(Boss boss, Zone zone, List<Card> cards)
+        public BattleScript(Boss boss, Zone zone, List<Card> cards, InventoryPresenter inventoryPresenter)
         {
             CardList = cards;
+            _inventoryPresenter = inventoryPresenter;
             Boss = boss;
             _zone = zone;
             TotalToolbarStatistic.Cards = cards;
@@ -99,18 +100,22 @@ namespace Battle
             
             var allCards = new CardLoaderService().GetDomainCards();
             var dropService = new CardDropService(allCards);
-            var droppedCards = dropService.RollMultipleDrops(1);
-
-            var inventoryPresenter = InventoryPresenter.Instance;
-
-            foreach (var card in droppedCards)
+            // var droppedCards = dropService.RollMultipleDrops(1);
+            var droppedCard = dropService.RollDrop();
+            if (droppedCard != null)
             {
-                Debug.Log($"Dropped card: {card.Title} (Rarity: {card.Rarity.Value})");
-                // Добавляем в инвентарь:
-                // Вызов InventoryPresenter.AddItemToInventory(card); если у тебя есть к нему доступ
-
-                inventoryPresenter.AddOrStackCard(card);
+                Debug.Log($"Dropped card: {droppedCard.Title}");
+                _inventoryPresenter.AddOrStackCard(droppedCard);
             }
+
+            // foreach (var card in droppedCards)
+            // {
+            //     Debug.Log($"Dropped card: {card.Title} (Rarity: {card.Rarity.Value})");
+            //     // Добавляем в инвентарь:
+            //     // Вызов InventoryPresenter.AddItemToInventory(card); если у тебя есть к нему доступ
+            //
+            //     _inventoryPresenter.AddOrStackCard(card);
+            // }
             _zone.CurrentZone.Value++;
             
             Boss.GetUpdatedStats(_zone.CurrentZone);

@@ -47,6 +47,9 @@ namespace Presentation.Inventory
                     //Если на префабе есть вьюха, то в нее передаем item и  Хандлеры для обработки по типу Drag/Drop/Click
                     itemView.Init(item, HandleSlotClick);
                     _currentSlots.Add(itemView);
+                    
+                    var presenter = new ItemPresenter();
+                    presenter.Init(item.BackingDomainItem as Domain.Entities.Card, itemView);
                 }
                 else
                 {

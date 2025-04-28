@@ -425,6 +425,7 @@ MonoBehaviour:
   bossView: {fileID: 1573589485665451603}
   zoneView: {fileID: 8339082034345045562}
   inventoryView: {fileID: 1248183277}
+  itemView: {fileID: 4695308413792187463, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
   startGameButton: {fileID: 120562473}
   gameUI: {fileID: 219838638797210132}
   cardsToolbarUI: {fileID: 111917831853700696}
