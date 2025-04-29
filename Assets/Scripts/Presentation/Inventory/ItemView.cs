@@ -1,5 +1,6 @@
 ﻿using System;
 using Application.Dto;
+using Domain.Entities;
 using Domain.Interfaces;
 using Presentation.Card;
 using TMPro;
@@ -11,38 +12,24 @@ namespace Presentation.Inventory
 {
     public class ItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [SerializeField]
-        private Image iconImage;
-
-        [SerializeField]
-        private TMP_Text countText;
-
-        public IInventoryItem DomainItem { get; private set; }
-
-        private Action<IInventoryItem> _onSelectCallback;
-
+        [SerializeField] private Image iconImage;
+        [SerializeField] private TMP_Text countText;
 
         private CanvasGroup _canvasGroup;
-
         private RectTransform _rectTransform;
-
         private Transform _originalParent;
-
         private Vector3 _originalPosition;
-
         private int _originalSiblingIndex;
-
-        
         private Transform _inventoryContainerGrid;
 
-        void Awake()
+        public IInventoryItem DomainItem { get; private set; }
+        private Action<IInventoryItem> _onSelectCallback;
+
+        private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
-
-            // iconImage ДОЛЖЕН иметь raycastTarget = true для IPointerClickHandler и др
         }
-
 
         public void Init(Item item, Action<IInventoryItem> onClickCallback, Transform inventoryGrid)
         {
@@ -50,17 +37,10 @@ namespace Presentation.Inventory
             _onSelectCallback = onClickCallback;
             _inventoryContainerGrid = inventoryGrid;
 
-            if (DomainItem is Domain.Entities.Card card && card.Count.Value > 1)
+            if (DomainItem is Domain.Entities.Card card)
             {
-                countText.text = $"X{card.Count.Value}";
-                countText.gameObject.SetActive(true);
+                SetCountText(card.Count.Value > 1 ? $"x{card.Count.Value}" : "", card.Count.Value > 1);
             }
-            else
-            {
-                countText.text = "";
-                countText.gameObject.SetActive(false);
-            }
-
 
             if (iconImage != null)
             {
@@ -69,15 +49,11 @@ namespace Presentation.Inventory
             }
         }
 
-
         public void SetCountText(string text, bool visible)
         {
             countText.text = text;
             countText.gameObject.SetActive(visible);
         }
-
-
-        #region Drag and Drop
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -89,109 +65,74 @@ namespace Presentation.Inventory
             _canvasGroup.blocksRaycasts = false;
         }
 
-
         public void OnDrag(PointerEventData eventData)
         {
             _rectTransform.position = eventData.position;
         }
-
 
         public void OnEndDrag(PointerEventData eventData)
         {
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
 
-            GameObject objectUnderPointer = eventData.pointerEnter;
-
-            ItemView targetItemView = null;
-            GameObject targetToolBarContainer = null;
-            GameObject targetInventoryContainer = null;
-
-            if (objectUnderPointer != null)
-            {
-                targetItemView = objectUnderPointer.GetComponentInParent<ItemView>();
-                targetToolBarContainer = objectUnderPointer.CompareTag("ToolBarContainer") ? objectUnderPointer : null;
-                targetInventoryContainer = objectUnderPointer.CompareTag("Inventory") ? objectUnderPointer : null;
-            }
-
-            if (targetToolBarContainer != null)
-            {
-                if (targetToolBarContainer.transform.childCount >= 5)
-                {
-                    Debug.Log("Toolbar is full!");
-                    ReturnToOriginalPlace();
-                    return;
-                }
-
-                // Создаём копию
-                GameObject newSlot = Instantiate(gameObject, targetToolBarContainer.transform);
-                var itemView = newSlot.GetComponent<ItemView>();
-                itemView.SetCountText("", false); // скрыть количество
-                itemView._onSelectCallback = _onSelectCallback;
-
-                // Уменьшаем количество оригинальной карты
-                if (DomainItem is Domain.Entities.Card card)
-                {
-                    card.Count.Value--;
-                    if (card.Count.Value <= 0)
-                    {
-                        Destroy(gameObject); // удаляем оригинал из Inventory
-                    }
-                    else
-                    {
-                        SetCountText(card.Count.Value > 1 ? $"x{card.Count.Value}" : "", card.Count.Value > 1);
-                        ReturnToOriginalPlace();
-                    }
-                }
-            }
-            else if (targetInventoryContainer != null)
-            {
-                // Перетаскивание обратно в инвентарь
-                if (DomainItem is Domain.Entities.Card card)
-                {
-                    var existingItem = FindItemViewInInventory(card.Id);
-
-                    if (existingItem != null)
-                    {
-                        card.Count.Value++;
-                    }
-                    else
-                    {
-                        GameObject newSlot = Instantiate(gameObject, targetInventoryContainer.transform);
-                        var itemView = newSlot.GetComponent<ItemView>();
-                        itemView._onSelectCallback = _onSelectCallback;
-                        itemView.SetCountText("x1", true);
-                    }
-                }
-
-                Destroy(gameObject);
-            }
-            else
+            GameObject targetObject = eventData.pointerEnter;
+            if (targetObject == null)
             {
                 ReturnToOriginalPlace();
+                return;
             }
-        }
 
+            var targetItemView = targetObject.GetComponentInParent<ItemView>();
+            var targetContainer = targetObject.GetComponentInParent<Transform>();
+
+            if (targetItemView != null && targetItemView != this)
+            {
+                Transform parentA = this.transform.parent;
+                int indexA = this.transform.GetSiblingIndex();
+
+                Transform parentB = targetItemView.transform.parent;
+                int indexB = targetItemView.transform.GetSiblingIndex();
+
+                this.transform.SetParent(parentB);
+                this.transform.SetSiblingIndex(indexB);
+
+                targetItemView.transform.SetParent(parentA);
+                targetItemView.transform.SetSiblingIndex(indexA);
+
+                _rectTransform.localPosition = Vector3.zero;
+                targetItemView._rectTransform.localPosition = Vector3.zero;
+
+                bool inToolbar = parentB.CompareTag("ToolBarContainer");
+                GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
+
+                inToolbar = parentA.CompareTag("ToolBarContainer");
+                targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
+
+                SetCountText(inToolbar ? "" : $"x{((Domain.Entities.Card)DomainItem).Count.Value}", !inToolbar);
+                targetItemView.SetCountText(inToolbar ? "" : $"x{((Domain.Entities.Card)targetItemView.DomainItem).Count.Value}", !inToolbar);
+
+                return;
+            }
+
+            if (targetContainer != null && targetContainer.childCount < 5)
+            {
+                transform.SetParent(targetContainer);
+                transform.localPosition = Vector3.zero;
+
+                bool inToolbar = targetContainer.CompareTag("ToolBarContainer");
+                GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
+                SetCountText(inToolbar ? "" : $"x{((Domain.Entities.Card)DomainItem).Count.Value}", !inToolbar);
+                return;
+            }
+
+            ReturnToOriginalPlace();
+        }
 
         private void ReturnToOriginalPlace()
         {
-            transform.SetParent(_originalParent, true);
+            transform.SetParent(_originalParent);
             transform.SetSiblingIndex(_originalSiblingIndex);
-            transform.localPosition = _originalPosition;
+            transform.localPosition = Vector3.zero;
         }
-
-
-        private ItemView FindItemViewInInventory(int cardId)
-        {
-            // Найти в контейнере Inventory существующий ItemView с этим Id
-            foreach (var itemView in _inventoryContainerGrid.GetComponentsInChildren<ItemView>())
-            {
-                if (itemView.DomainItem.Id == cardId)
-                    return itemView;
-            }
-            return null;
-        }
-
-        #endregion
     }
 }
