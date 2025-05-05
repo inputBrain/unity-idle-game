@@ -31,7 +31,7 @@ namespace Presentation.Inventory
             _rectTransform = GetComponent<RectTransform>();
         }
 
-        public void Init(Item item, Action<IInventoryItem> onClickCallback, Transform inventoryGrid)
+        public void Init(Item item, Action<IInventoryItem> onClickCallback, Transform inventoryGrid, bool isToolbar = false)
         {
             DomainItem = item.BackingDomainItem;
             _onSelectCallback = onClickCallback;
@@ -39,7 +39,13 @@ namespace Presentation.Inventory
 
             if (DomainItem is Domain.Entities.Card card)
             {
-                SetCountText(card.Count.Value > 1 ? $"x{card.Count.Value}" : "", card.Count.Value > 1);
+                SetCountText(isToolbar ? "" : (card.Count.Value > 1 ? $"x{card.Count.Value}" : ""), !isToolbar && card.Count.Value > 1);
+
+                var cardView = GetComponent<CardView>();
+                if (cardView != null)
+                {
+                    cardView.Slider.gameObject.SetActive(isToolbar);
+                }
             }
 
             if (iconImage != null)
@@ -104,11 +110,10 @@ namespace Presentation.Inventory
 
                 bool inToolbar = parentB.CompareTag("ToolBarContainer");
                 GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
+                SetCountText(inToolbar ? "" : $"x{((Domain.Entities.Card)DomainItem).Count.Value}", !inToolbar);
 
                 inToolbar = parentA.CompareTag("ToolBarContainer");
                 targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
-
-                SetCountText(inToolbar ? "" : $"x{((Domain.Entities.Card)DomainItem).Count.Value}", !inToolbar);
                 targetItemView.SetCountText(inToolbar ? "" : $"x{((Domain.Entities.Card)targetItemView.DomainItem).Count.Value}", !inToolbar);
 
                 return;
