@@ -421,15 +421,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c20da664b63e45b4a73bfd13030bea9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalCardStatsView: {fileID: 754386039657464746}
-  bossView: {fileID: 1573589485665451603}
-  zoneView: {fileID: 8339082034345045562}
   inventoryView: {fileID: 1248183277}
-  itemView: {fileID: 4695308413792187463, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
-  startGameButton: {fileID: 120562473}
-  gameUI: {fileID: 219838638797210132}
-  cardsToolbarUI: {fileID: 111917831853700696}
-  inventoryUI: {fileID: 1178043650}
+  toolbarView: {fileID: 7963433776709513934}
+  statsView: {fileID: 754386039657464746}
+  startButton: {fileID: 0}
+  itemSlotPrefab: {fileID: 1342530046900651215, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
+  inventoryContainer: {fileID: 1248183276}
+  toolbarContainer: {fileID: 111917831853700696}
 --- !u!1 &1149751075
 GameObject:
   m_ObjectHideFlags: 0
@@ -4288,6 +4286,7 @@ GameObject:
   - component: {fileID: 7434371051055847700}
   - component: {fileID: 6032148038279638468}
   - component: {fileID: 2056596062286400246}
+  - component: {fileID: 7963433776709513934}
   m_Layer: 5
   m_Name: CardsToolbar
   m_TagString: ToolBarContainer
@@ -4295,6 +4294,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7963433776709513934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7963433776709513933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ce823a83a24c8ebd145e2cde284ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolbarContainerGrid: {fileID: 111917831853700696}
+  itemSlotPrefab: {fileID: 1342530046900651215, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
 --- !u!224 &7966216901962248733
 RectTransform:
   m_ObjectHideFlags: 0
