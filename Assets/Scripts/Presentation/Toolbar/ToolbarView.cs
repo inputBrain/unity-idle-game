@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Application.Dto;
 using Domain.Entities;
 using Domain.Interfaces;
-using Presentation.Card;
 using Presentation.Inventory;
 using UnityEngine;
 
@@ -14,56 +13,54 @@ namespace Presentation.Toolbar
         [SerializeField] private Transform toolbarContainerGrid;
         [SerializeField] private GameObject itemSlotPrefab;
 
-        private readonly List<ItemView> _currentSlots = new();
+        private readonly List<ItemView> _currentToolbarSlots = new();
 
-        public event Action<List<Domain.Entities.Card>> OnToolbarCardsChanged;
+        // На событие подписывается ToolbarPresenter
+        public event Action<IInventoryItem> OnToolbarItemDropped;
 
-        public void DisplayToolbarCards(List<Domain.Entities.Card> cards)
+        public void DisplayToolbarCards(IReadOnlyList<Domain.Entities.Card> cards)
         {
-            foreach (var slot in _currentSlots)
+            ClearToolbar();
+
+            foreach (var card in cards)
+            {
+                if (card == null) continue;
+
+                GameObject slotInstance = Instantiate(itemSlotPrefab, toolbarContainerGrid);
+                var itemView = slotInstance.GetComponent<ItemView>();
+                if (itemView != null)
+                {
+                    var item = new Item(card, LoadSprite(card.IconResourcesPath.Value));
+                    itemView.Init(item, HandleToolbarSlotClick, new RectTransform(), isToolbar: true);
+                    _currentToolbarSlots.Add(itemView);
+                }
+                else
+                {
+                    Debug.LogError("Префаб слота не содержит ItemView.");
+                    Destroy(slotInstance);
+                }
+            }
+        }
+
+        private void ClearToolbar()
+        {
+            foreach (var slot in _currentToolbarSlots)
             {
                 if (slot != null)
                     Destroy(slot.gameObject);
             }
-            _currentSlots.Clear();
-
-            if (toolbarContainerGrid == null || itemSlotPrefab == null)
-            {
-                Debug.LogError("ToolbarView: отсутствует контейнер или префаб.");
-                return;
-            }
-
-            foreach (var card in cards)
-            {
-                var slot = Instantiate(itemSlotPrefab, toolbarContainerGrid);
-                var itemView = slot.GetComponent<ItemView>();
-
-                if (itemView != null)
-                {
-                    var item = new Item(card, Resources.Load<Sprite>(card.IconResourcesPath.Value));
-                    itemView.Init(item, _ => { }, null, true);
-
-                    var presenter = new CardPresenter();
-                    presenter.Init(card, slot.GetComponent<CardView>());
-
-                    _currentSlots.Add(itemView);
-                }
-            }
-
-            OnToolbarCardsChanged?.Invoke(cards);
+            _currentToolbarSlots.Clear();
         }
 
-        public List<Domain.Entities.Card> GetToolbarCards()
+        private void HandleToolbarSlotClick(IInventoryItem clickedItem)
         {
-            var result = new List<Domain.Entities.Card>();
-            foreach (var slot in _currentSlots)
-            {
-                if (slot?.DomainItem is Domain.Entities.Card card)
-                {
-                    result.Add(card);
-                }
-            }
-            return result;
+            OnToolbarItemDropped?.Invoke(clickedItem);
+        }
+
+        private Sprite LoadSprite(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+            return Resources.Load<Sprite>(path);
         }
     }
 }
