@@ -1,14 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Battle;
-using Domain.Entities;
-using Domain.Interfaces;
+using Model.Boss;
+using Model.Card;
+using Model.Inventory;
+using Model.InventoryCard;
+using Model.Zone;
 using Presentation.Boss;
+using Presentation.Entity;
 using Presentation.Inventory;
 using Presentation.TotalStats;
 using Presentation.Zone;
 using Services;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameEntryPoint : MonoBehaviour
@@ -18,14 +23,14 @@ public class GameEntryPoint : MonoBehaviour
     [SerializeField] private BossView bossView;
     [SerializeField] private ZoneView zoneView;
     [SerializeField] private InventoryView inventoryView;
-    [SerializeField] private ItemView itemView;
+    [SerializeField] private EntityView entityView;
         
     // --- Сервисы ---
     private CardLoaderService _cardLoaderService;
 
     // --- Доменные сущности ---
-    private Boss _boss;
-    private Zone _zone;
+    private BossModel _bossModel;
+    private ZoneModel _zoneModel;
 
     [Header("UI Элементы")]
     public Button startGameButton; // Кнопка старта игры
@@ -45,8 +50,8 @@ public class GameEntryPoint : MonoBehaviour
         var cards = _cardLoaderService.GetDomainCards();
 
         // Создание доменных сущностей
-        _zone = new Zone { CurrentZone = { Value = 1 } };
-        _boss = new Boss { CurrentHp = { Value = 100f } };
+        _zoneModel = new ZoneModel { CurrentZone = { Value = 1 } };
+        _bossModel = new BossModel { CurrentHp = { Value = 100f } };
             
         _inventoryModel = new InventoryModel();
 
@@ -63,7 +68,7 @@ public class GameEntryPoint : MonoBehaviour
         _inventoryModel.LoadItems(_runtimeDomainItems);
             
         // // 2. ИНИЦИАЛИЗАЦИЯ ДРУГИХ ПРЕЗЕНТЕРОВ И VIEW 
-        InitOtherUI(_boss, _zone);
+        InitOtherUI(_bossModel, _zoneModel);
         //
         // // 3. НАСТРОЙКА КНОПКИ СТАРТА ИГРЫ
         startGameButton.onClick.AddListener(StartGame);
@@ -86,7 +91,7 @@ public class GameEntryPoint : MonoBehaviour
     private void StartGame()
     {
         // Скрываем ненужный UI
-        startGameButton.gameObject.SetActive(false);
+        // startGameButton.gameObject.SetActive(false);
         inventoryUI.gameObject.SetActive(false);
 
         // Показываем UI боя
@@ -111,26 +116,26 @@ public class GameEntryPoint : MonoBehaviour
         // }
     }
 
-    private void StartBattle(List<Card> selectedCards)
+    private void StartBattle(List<CardModel> userCardCollection)
     {
         // Создаем и запускаем скрипт боя
-        var battleScript = new BattleScript(_boss, _zone, selectedCards, _inventoryPresenter);
+        var battleScript = new BattleScript(_bossModel, _zoneModel, userCardCollection, _inventoryPresenter);
         StartCoroutine(StartBattleLoop(battleScript));
     }
 
     // Инициализация UI, не связанного с инвентарем напрямую
-    private void InitOtherUI(Boss boss, Zone zone)
+    private void InitOtherUI(BossModel bossModel, ZoneModel zoneModel)
     {
         // Инициализация презентера для общих статов карт
         // var allCards = cardInventoryManager.SelectedItems.ToList(); // Получаем выбранные карты из менеджера
         // new TotalCardStatsPresenter().Init(allCards, totalCardStatsView);
         // Инициализация презентеров для босса и зоны
-        new BossPresenter().Init(boss, bossView);
-        new ZonePresenter().Init(zone, zoneView);
+        new BossPresenter().Init(bossModel, bossView);
+        new ZonePresenter().Init(zoneModel, zoneView);
     }
 
     // Создает UI в ТУЛБАРЕ БОЯ для карт, ВЫБРАННЫХ в инвентаре
-    private void InitUISelectedCardsToolbar(List<Card> selectedCards)
+    private void InitUISelectedCardsToolbar(List<CardModel> selectedCards)
     {
         // Создаем CardView (не InventoryItemView!) для каждой выбранной карты
         foreach (var card in selectedCards)

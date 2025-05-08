@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application.Dto;
-using Domain.Entities;
-using Domain.Interfaces;
+using Api.Payload;
+using Model.Card;
+using Model.Inventory;
+using Model.InventoryCard;
 using UnityEngine;
 using Utils;
 using Presentation.Toolbar;
@@ -45,7 +46,7 @@ namespace Presentation.Inventory
                 .Select(domainItem => {
                     var iconPath = domainItem.IconResourcesPath.Value;
                     var icon = LoadSprite(iconPath);
-                    return new Item(domainItem, icon);
+                    return new EntityItem(domainItem, icon);
                 }).ToList();
 
             _inventoryView.DisplayItems(itemsToDisplay);
@@ -91,9 +92,9 @@ namespace Presentation.Inventory
             _spriteCache.Clear();
         }
 
-        public void AddOrStackCard(Domain.Entities.Card card)
+        public void AddOrStackCard(CardModel cardModel)
         {
-            _inventoryModel.AddOrStackItem(card);
+            _inventoryModel.AddOrStackItem(cardModel);
         }
 
         public void AddItemToInventory(IInventoryItem domainItem)
@@ -109,7 +110,7 @@ namespace Presentation.Inventory
         public IEnumerable<IInventoryItem> GetSelectedDomainItems() => _inventoryModel.SelectedItems;
         public void ClearInventorySelection() => _inventoryModel.ClearSelection();
 
-        public bool TryTransferToToolbar(Domain.Entities.Card card)
+        public bool TryTransferToToolbar(CardModel cardModel)
         {
             if (_toolbarPresenter == null)
             {
@@ -117,7 +118,7 @@ namespace Presentation.Inventory
                 return false;
             }
 
-            var alreadyInToolbar = _toolbarPresenter.GetCards().Any(c => c.Id == card.Id);
+            var alreadyInToolbar = _toolbarPresenter.GetCards().Any(c => c.Id == cardModel.Id);
             if (alreadyInToolbar)
             {
                 Debug.Log("InventoryPresenter: Карта уже в тулбаре.");
@@ -130,14 +131,15 @@ namespace Presentation.Inventory
                 return false;
             }
 
-            RemoveItemFromInventory(card);
-            _toolbarPresenter.AddCard(card);
+            RemoveItemFromInventory(cardModel);
+            _toolbarPresenter.AddCard(cardModel);
             return true;
         }
 
-        public void ReturnCardToInventory(Domain.Entities.Card card)
+
+        public void ReturnCardToInventory(CardModel cardModel)
         {
-            AddOrStackCard(card);
+            AddOrStackCard(cardModel);
         }
     }
 }

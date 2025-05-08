@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Interfaces;
+using Api.Payload;
+using Model.Card;
+using Model.InventoryCard;
+using Presentation.Entity;
 using UnityEngine;
 
 namespace Presentation.Inventory
@@ -11,14 +14,14 @@ namespace Presentation.Inventory
         [SerializeField] private Transform inventoryContainerGrid;
         [SerializeField] private GameObject itemSlotPrefab;
 
-        private readonly List<ItemView> _currentSlots = new();
+        private readonly List<EntityView> _currentSlots = new();
         
         // На ивенты подписывается презентер
         public event Action<IInventoryItem> OnItemClicked;
         public event Action<IInventoryItem> OnItemDeleteClicked; 
         public event Action<IInventoryItem> OnToolbarSelected; 
 
-        public void DisplayItems(IReadOnlyList<Application.Dto.Item> itemsToDisplay)
+        public void DisplayItems(IReadOnlyList<EntityItem> itemsToDisplay)
         {
             foreach (var slot in _currentSlots.Where(slot => slot != null))
             {
@@ -41,15 +44,15 @@ namespace Presentation.Inventory
 
                 //Из списка Item создаем GO на сцене из префаба
                 GameObject slotInstance = Instantiate(itemSlotPrefab, inventoryContainerGrid);
-                var itemView = slotInstance.GetComponent<ItemView>();
+                var itemView = slotInstance.GetComponent<EntityView>();
                 if (itemView != null)
                 {
                     //Если на префабе есть вьюха, то в нее передаем item и  Хандлеры для обработки по типу Drag/Drop/Click
                     itemView.Init(item, HandleSlotClick, inventoryContainerGrid);
                     _currentSlots.Add(itemView);
                     
-                    var presenter = new ItemPresenter();
-                    presenter.Init(item.BackingDomainItem as Domain.Entities.Card, itemView);
+                    var presenter = new EntityPresenter();
+                    presenter.Init(item.BackingDomainItem as CardModel, itemView);
                 }
                 else
                 {

@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Domain.Entities;
+using Model.Card;
 
 namespace Services
 {
     public class CardDropService
     {
-        private readonly List<Card> _availableCards;
+        private readonly List<CardModel> _availableCards;
 
-        public CardDropService(List<Card> availableCards)
+        public CardDropService(List<CardModel> availableCards)
         {
             _availableCards = availableCards;
         }
 
-        public Card RollDrop()
+        public CardModel RollDrop()
         {
             var totalChance = _availableCards.Sum(card => card.DropChance.Value);
             var roll = UnityEngine.Random.value * totalChance;
@@ -32,9 +32,9 @@ namespace Services
         }
 
         
-        public List<Card> RollMultipleDrops(int count)
+        public List<CardModel> RollMultipleDrops(int count)
         {
-            var drops = new List<Card>();
+            var drops = new List<CardModel>();
             for (var i = 0; i < count; i++)
             {
                 var droppedCard = RollDrop();

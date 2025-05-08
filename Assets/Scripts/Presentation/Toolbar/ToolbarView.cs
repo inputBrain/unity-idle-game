@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Application.Dto;
-using Domain.Entities;
-using Domain.Interfaces;
+using Api.Payload;
+using Model.Card;
+using Model.InventoryCard;
+using Presentation.Entity;
 using Presentation.Inventory;
 using UnityEngine;
 
@@ -13,12 +14,12 @@ namespace Presentation.Toolbar
         [SerializeField] private Transform toolbarContainerGrid;
         [SerializeField] private GameObject itemSlotPrefab;
 
-        private readonly List<ItemView> _currentToolbarSlots = new();
+        private readonly List<EntityView> _currentToolbarSlots = new();
 
         // На событие подписывается ToolbarPresenter
         public event Action<IInventoryItem> OnToolbarItemDropped;
 
-        public void DisplayToolbarCards(IReadOnlyList<Domain.Entities.Card> cards)
+        public void DisplayToolbarCards(IReadOnlyList<CardModel> cards)
         {
             ClearToolbar();
 
@@ -27,10 +28,10 @@ namespace Presentation.Toolbar
                 if (card == null) continue;
 
                 GameObject slotInstance = Instantiate(itemSlotPrefab, toolbarContainerGrid);
-                var itemView = slotInstance.GetComponent<ItemView>();
+                var itemView = slotInstance.GetComponent<EntityView>();
                 if (itemView != null)
                 {
-                    var item = new Item(card, LoadSprite(card.IconResourcesPath.Value));
+                    var item = new EntityItem(card, LoadSprite(card.IconResourcesPath.Value));
                     itemView.Init(item, HandleToolbarSlotClick, new RectTransform(), isToolbar: true);
                     _currentToolbarSlots.Add(itemView);
                 }

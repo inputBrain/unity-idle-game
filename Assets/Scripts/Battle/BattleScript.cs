@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Application.Dto;
-using Domain.Entities;
+using Api.Payload;
+using Model.Boss;
+using Model.Card;
+using Model.Zone;
 using Presentation.Inventory;
+using Presentation.TotalStats;
 using Services;
 using UnityEngine;
 
@@ -10,22 +13,22 @@ namespace Battle
 {
     public class BattleScript
     {
-        public List<Card> CardList = new();
+        public List<CardModel> CardList = new();
 
-        public TotalToolbarStatisticDto TotalToolbarStatistic = new();
-        public Boss Boss = new();
-        private Zone _zone;
+        public TotalToolbarStatsViewModel TotalToolbarStatistic = new();
+        public BossModel BossModel = new();
+        private ZoneModel _zoneModel;
         private readonly InventoryPresenter _inventoryPresenter;
 
-        public BattleScript(Boss boss, Zone zone, List<Card> cards, InventoryPresenter inventoryPresenter)
+        public BattleScript(BossModel bossModel, ZoneModel zoneModel, List<CardModel> cards, InventoryPresenter inventoryPresenter)
         {
             CardList = cards;
             _inventoryPresenter = inventoryPresenter;
-            Boss = boss;
-            _zone = zone;
+            BossModel = bossModel;
+            _zoneModel = zoneModel;
             TotalToolbarStatistic.Cards = cards;
 
-            _zone.CurrentZone.Value = 1;
+            _zoneModel.CurrentZone.Value = 1;
         }
         
         public void BattleUpdate()
@@ -34,7 +37,7 @@ namespace Battle
             DealDamageToBoss();
             DealDamageToTeam();
 
-            if (Boss.CurrentHp <= 0)
+            if (BossModel.CurrentHp <= 0)
             {
                 OnBossDefeated();
             }
@@ -70,13 +73,13 @@ namespace Battle
             // }
 
             
-            Boss.CurrentHp.Value -= totalDamage;
+            BossModel.CurrentHp.Value -= totalDamage;
         }
 
         
         private void DealDamageToTeam()
         {
-            var damageToTeam = Boss.Attack;
+            var damageToTeam = BossModel.Attack;
             
             
                 //TODO:
@@ -116,19 +119,19 @@ namespace Battle
             //
             //     _inventoryPresenter.AddOrStackCard(card);
             // }
-            _zone.CurrentZone.Value++;
+            _zoneModel.CurrentZone.Value++;
             
-            Boss.GetUpdatedStats(_zone.CurrentZone);
+            BossModel.GetUpdatedStats(_zoneModel.CurrentZone);
             
         }
         
         
         private void OnEnemyWin()
         {
-            _zone.CurrentZone.Value--;
-            if (_zone.CurrentZone <= 0)
+            _zoneModel.CurrentZone.Value--;
+            if (_zoneModel.CurrentZone <= 0)
             {
-                _zone.CurrentZone.Value = 1;
+                _zoneModel.CurrentZone.Value = 1;
             }
             
             // Boss.Attack -= 100f;
@@ -172,18 +175,18 @@ namespace Battle
         }
 
         
-        private static float CalculateExpToNextLevel(Card card)
+        private static float CalculateExpToNextLevel(CardModel cardModel)
         {
-            var scale = card.Rarity.Value switch
+            var scale = cardModel.Rarity.Value switch
             {
                 (int)Rarity.Common => 1.01f,
                 (int)Rarity.Rare => 1.02f,
                 (int)Rarity.Epic => 1.05f,
                 (int)Rarity.Legendary => 1.1f,
-                _ => throw new ArgumentException($"Undefined card rarity: {card.Rarity}. Cannot calculate experience")
+                _ => throw new ArgumentException($"Undefined card rarity: {cardModel.Rarity}. Cannot calculate experience")
             };
 
-            return card.StartBaseExp * Mathf.Pow(card.Level, scale);
+            return cardModel.StartBaseExp * Mathf.Pow(cardModel.Level, scale);
         }
     }
 }

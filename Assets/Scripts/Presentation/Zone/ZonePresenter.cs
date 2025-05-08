@@ -1,32 +1,34 @@
-﻿namespace Presentation.Zone
+﻿using Model.Zone;
+
+namespace Presentation.Zone
 {
     public class ZonePresenter
     {
-        private Domain.Entities.Zone _zone;
+        private ZoneModel _zoneModel;
         private ZoneView _zoneView;
 
 
-        public void Init(Domain.Entities.Zone zone, ZoneView zoneView)
+        public void Init(ZoneModel zoneModel, ZoneView zoneView)
         {
             _zoneView = zoneView;
-            _zone = zone;
+            _zoneModel = zoneModel;
 
-            _zone.CurrentZone.OnValueChanged += _zoneView.UpdateZoneText;
+            _zoneModel.CurrentZone.OnValueChanged += _zoneView.UpdateZoneText;
         }
         
         
         public  void IncreaseZone()
         {
-            _zone.CurrentZone.Value++;
+            _zoneModel.CurrentZone.Value++;
         }        
         
         public  void DecreaseZone()
         {
-            if (_zone.CurrentZone.Value <= 1)
+            if (_zoneModel.CurrentZone.Value <= 1)
             {
                 return;
             }
-            _zone.CurrentZone.Value--;
+            _zoneModel.CurrentZone.Value--;
         }
     }
 }

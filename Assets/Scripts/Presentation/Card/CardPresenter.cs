@@ -1,26 +1,28 @@
-﻿namespace Presentation.Card
+﻿using Model.Card;
+
+namespace Presentation.Card
 {
     public class CardPresenter
     {
-        private Domain.Entities.Card _card;
+        private CardModel _cardModel;
         private CardView _cardView;
 
-        public void Init(Domain.Entities.Card card, CardView cardView)
+        public void Init(CardModel cardModel, CardView cardView)
         {
-            _card = card;
+            _cardModel = cardModel;
             _cardView = cardView;
             
-            UpdateIcon(card.IconResourcesPath.Value);
-            UpdateSlider(card.ExpCurrent, card.ExpToNextLevel);
+            UpdateIcon(cardModel.IconResourcesPath.Value);
+            UpdateSlider(cardModel.ExpCurrent, cardModel.ExpToNextLevel);
             
-            _card.IconResourcesPath.OnValueChanged += UpdateIcon;
-            _card.Level.OnValueChanged += _cardView.SetLevel;
+            _cardModel.IconResourcesPath.OnValueChanged += UpdateIcon;
+            _cardModel.Level.OnValueChanged += _cardView.SetLevel;
             
-            _card.ExpCurrent.OnValueChanged += _cardView.SetSliderCurrentExp;
-            _card.ExpToNextLevel.OnValueChanged += _cardView.SetSliderNextExp;
+            _cardModel.ExpCurrent.OnValueChanged += _cardView.SetSliderCurrentExp;
+            _cardModel.ExpToNextLevel.OnValueChanged += _cardView.SetSliderNextExp;
             
-            _card.ExpCurrent.OnValueChanged += _cardView.SetTextCurrentExp;
-            _card.ExpToNextLevel.OnValueChanged += _cardView.SetTextNextExp;
+            _cardModel.ExpCurrent.OnValueChanged += _cardView.SetTextCurrentExp;
+            _cardModel.ExpToNextLevel.OnValueChanged += _cardView.SetTextNextExp;
         }
 
 

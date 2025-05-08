@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Model.Card;
+using Model.InventoryCard;
 using Presentation.TotalStats;
 
 namespace Presentation.Toolbar
@@ -7,7 +9,7 @@ namespace Presentation.Toolbar
     public class ToolbarPresenter
     {
         private readonly ToolbarView _toolbarView;
-        private readonly List<Domain.Entities.Card> _toolbarCards = new();
+        private readonly List<CardModel> _toolbarCards = new();
         private readonly TotalCardStatsPresenter _statsPresenter;
         private readonly TotalCardStatsView _statsView;
 
@@ -22,26 +24,26 @@ namespace Presentation.Toolbar
             _toolbarView.OnToolbarItemDropped += HandleItemDropped;
         }
 
-        public void AddCard(Domain.Entities.Card card)
+        public void AddCard(CardModel cardModel)
         {
-            if (card == null) return;
+            if (cardModel == null) return;
             if (_toolbarCards.Count >= MaxToolbarCards) return;
-            if (_toolbarCards.Contains(card)) return;
+            if (_toolbarCards.Contains(cardModel)) return;
 
-            _toolbarCards.Add(card);
+            _toolbarCards.Add(cardModel);
             UpdateToolbarView();
         }
 
-        public void RemoveCard(Domain.Entities.Card card)
+        public void RemoveCard(CardModel cardModel)
         {
-            if (card == null) return;
-            _toolbarCards.Remove(card);
+            if (cardModel == null) return;
+            _toolbarCards.Remove(cardModel);
             UpdateToolbarView();
         }
 
-        private void HandleItemDropped(Domain.Interfaces.IInventoryItem domainItem)
+        private void HandleItemDropped(IInventoryItem domainItem)
         {
-            if (domainItem is Domain.Entities.Card card)
+            if (domainItem is CardModel card)
             {
                 if (_toolbarCards.Contains(card))
                 {
@@ -60,6 +62,6 @@ namespace Presentation.Toolbar
             _statsPresenter.Init(_toolbarCards, _statsView);
         }
 
-        public IReadOnlyList<Domain.Entities.Card> GetCards() => _toolbarCards;
+        public IReadOnlyList<CardModel> GetCards() => _toolbarCards;
     }
 }

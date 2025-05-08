@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Model.Card;
 
 namespace Presentation.TotalStats
 {
     public class TotalCardStatsPresenter
     {
         private TotalCardStatsView _view;
-        private List<Domain.Entities.Card> _cards;
+        private List<CardModel> _cards;
         
-        public void Init(List<Domain.Entities.Card> cards, TotalCardStatsView view)
+        public void Init(List<CardModel> cards, TotalCardStatsView view)
         {
             _cards = cards;
             _view = view;

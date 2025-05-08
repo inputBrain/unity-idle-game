@@ -1,27 +1,29 @@
-﻿namespace Presentation.Boss
+﻿using Model.Boss;
+
+namespace Presentation.Boss
 {
     public class BossPresenter
     {
-        private Domain.Entities.Boss _boss;
+        private BossModel _bossModel;
 
         private BossView _bossView;
 
 
-        public void Init(Domain.Entities.Boss boss, BossView bossView)
+        public void Init(BossModel bossModel, BossView bossView)
         {
-            _boss = boss;
+            _bossModel = bossModel;
             _bossView = bossView;
 
-            UpdateSlider(_boss.MaxHp.Value, boss.CurrentHp.Value);
+            UpdateSlider(_bossModel.MaxHp.Value, bossModel.CurrentHp.Value);
 
-            _boss.CurrentHp.OnValueChanged += _ => UpdateSlider();
-            _boss.MaxHp.OnValueChanged += _ => UpdateSlider();
+            _bossModel.CurrentHp.OnValueChanged += _ => UpdateSlider();
+            _bossModel.MaxHp.OnValueChanged += _ => UpdateSlider();
 
         }
 
         private void UpdateSlider()
         {
-            _bossView.SetSliderHp(_boss.MaxHp.Value, _boss.CurrentHp.Value);
+            _bossView.SetSliderHp(_bossModel.MaxHp.Value, _bossModel.CurrentHp.Value);
         }
 
 

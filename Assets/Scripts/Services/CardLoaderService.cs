@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Entities;
+using Model.Card;
 using ScriptableObjects.Config;
 using UnityEngine;
 using Utils;
@@ -10,22 +10,21 @@ namespace Services
 {
     public class CardLoaderService
     {
-        private static IEnumerable<CardObject> GetCardsObject()
+        private static IEnumerable<CardScriptableObject> GetCardsObject()
         {
-            var loadedCards = ResourceLoadUtils.GetAllScriptableObjects<CardObject>("/Data/CharacterCards").ToList();
+            var loadedCards = ResourceLoadUtils.GetAllScriptableObjects<CardScriptableObject>("/Data/CharacterCards").ToList();
             Debug.Log("Загружено карточек: " + loadedCards.Count);
             return loadedCards;
         }
 
-        public List<Card> GetDomainCards()
+        public List<CardModel> GetDomainCards()
         {
             return GetCardsObject().Select(so =>
             {
-                var card = new Card
+                var card = new CardModel
                 {
                     Id = so.Id,
                     Title = so.Title,
-                    InstanceId = Guid.NewGuid(),
                     StartBaseExp = so.StartBaseExp,
                     IconResourcesPath = { Value = $"CharacterCards/{so.Image.name}" },
                     Level = { Value = so.Level },
