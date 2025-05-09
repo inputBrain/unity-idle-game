@@ -38,21 +38,22 @@ namespace Presentation.Inventory
 
             if (itemsToDisplay == null) return;
 
-            foreach (var item in itemsToDisplay) 
+            foreach (var item in itemsToDisplay.Select((value, index)=> new {value, index}))
             {
                  if (item == null) continue;
 
                 //Из списка Item создаем GO на сцене из префаба
                 GameObject slotInstance = Instantiate(itemSlotPrefab, inventoryContainerGrid);
+                slotInstance.name = item.index.ToString(); 
                 var itemView = slotInstance.GetComponent<EntityView>();
                 if (itemView != null)
                 {
                     //Если на префабе есть вьюха, то в нее передаем item и  Хандлеры для обработки по типу Drag/Drop/Click
-                    itemView.Init(item, HandleSlotClick, inventoryContainerGrid);
+                    itemView.Init(item.value, HandleSlotClick, inventoryContainerGrid);
                     _currentSlots.Add(itemView);
                     
                     var presenter = new EntityPresenter();
-                    presenter.Init(item.BackingDomainItem as CardModel, itemView);
+                    presenter.Init(item.value.BackingDomainItem as CardModel, itemView);
                 }
                 else
                 {

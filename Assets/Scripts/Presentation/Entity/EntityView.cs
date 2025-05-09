@@ -69,6 +69,7 @@ namespace Presentation.Entity
 
             _canvasGroup.alpha = 0.7f;
             _canvasGroup.blocksRaycasts = false;
+            transform.SetParent(transform.parent.parent);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -91,30 +92,25 @@ namespace Presentation.Entity
             var targetItemView = targetObject.GetComponentInParent<EntityView>();
             var targetContainer = targetObject.GetComponentInParent<Transform>();
 
+            //Если под нами карточка и єто не мі
             if (targetItemView != null && targetItemView != this)
             {
-                Transform parentA = this.transform.parent;
-                int indexA = this.transform.GetSiblingIndex();
+                Transform swappedParent = targetItemView.transform.parent;
+                int  swappedSiblingIndex = targetItemView.transform.GetSiblingIndex();
 
-                Transform parentB = targetItemView.transform.parent;
-                int indexB = targetItemView.transform.GetSiblingIndex();
+                this.transform.SetParent(swappedParent);
+                this.transform.SetSiblingIndex(swappedSiblingIndex);
 
-                this.transform.SetParent(parentB);
-                this.transform.SetSiblingIndex(indexB);
+                targetItemView.transform.SetParent(_originalParent);
+                targetItemView.transform.SetSiblingIndex(_originalSiblingIndex);
 
-                targetItemView.transform.SetParent(parentA);
-                targetItemView.transform.SetSiblingIndex(indexA);
-
-                _rectTransform.localPosition = Vector3.zero;
-                targetItemView._rectTransform.localPosition = Vector3.zero;
-
-                bool inToolbar = parentB.CompareTag("ToolBarContainer");
-                GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
-                SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
-
-                inToolbar = parentA.CompareTag("ToolBarContainer");
-                targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
-                targetItemView.SetCountText(inToolbar ? "" : $"x{((CardModel)targetItemView.DomainItem).Count.Value}", !inToolbar);
+                // bool inToolbar = parentB.CompareTag("ToolBarContainer");
+                // GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
+                // SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
+                //
+                // inToolbar = parentA.CompareTag("ToolBarContainer");
+                // targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
+                // targetItemView.SetCountText(inToolbar ? "" : $"x{((CardModel)targetItemView.DomainItem).Count.Value}", !inToolbar);
 
                 return;
             }
@@ -137,7 +133,6 @@ namespace Presentation.Entity
         {
             transform.SetParent(_originalParent);
             transform.SetSiblingIndex(_originalSiblingIndex);
-            transform.localPosition = Vector3.zero;
         }
     }
 }

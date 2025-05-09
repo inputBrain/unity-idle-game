@@ -7,6 +7,10 @@ namespace Model.InventoryCard
         int Id { get; }
         string Title { get; }
         ReactiveProperty<string> IconResourcesPath { get; }
+        public ReactiveProperty<int> Count { get; }
+        
+        
+
         Guid InstanceId { get; }
     }
 }
