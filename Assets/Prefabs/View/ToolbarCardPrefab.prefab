@@ -242,6 +242,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 7627084447180866362}
   countText: {fileID: 4635709159825596587}
+  InventoryContainer: {fileID: 0}
+  ToolbarContainer: {fileID: 0}
 --- !u!225 &7827090824725585079
 CanvasGroup:
   m_ObjectHideFlags: 0

@@ -15,6 +15,9 @@ namespace Presentation.Entity
         [SerializeField] private Image iconImage;
         [SerializeField] private TMP_Text countText;
 
+        [SerializeField] private Transform InventoryContainer;
+        [SerializeField] private Transform ToolbarContainer;
+
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
         private Transform _originalParent;
@@ -93,28 +96,45 @@ namespace Presentation.Entity
             var targetContainer = targetObject.GetComponentInParent<Transform>();
 
             //Если под нами карточка и єто не мі
-            if (targetItemView != null && targetItemView != this)
+            if (targetItemView != null)
             {
                 Transform swappedParent = targetItemView.transform.parent;
-                int  swappedSiblingIndex = targetItemView.transform.GetSiblingIndex();
+                
+                bool inToolbar = swappedParent.gameObject.CompareTag("ToolBarContainer");
+                bool inInventory = swappedParent.gameObject.CompareTag("InventoryContainer");
+                
+                if (inToolbar || inInventory)
+                {
+                    int swappedSiblingIndex = targetItemView.transform.GetSiblingIndex();
 
-                this.transform.SetParent(swappedParent);
-                this.transform.SetSiblingIndex(swappedSiblingIndex);
+                    this.transform.SetParent(swappedParent);
+                    this.transform.SetSiblingIndex(swappedSiblingIndex);
 
-                targetItemView.transform.SetParent(_originalParent);
-                targetItemView.transform.SetSiblingIndex(_originalSiblingIndex);
+                    targetItemView.transform.SetParent(_originalParent);
+                    targetItemView.transform.SetSiblingIndex(_originalSiblingIndex);
 
-                // bool inToolbar = parentB.CompareTag("ToolBarContainer");
-                // GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
-                // SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
-                //
-                // inToolbar = parentA.CompareTag("ToolBarContainer");
-                // targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
-                // targetItemView.SetCountText(inToolbar ? "" : $"x{((CardModel)targetItemView.DomainItem).Count.Value}", !inToolbar);
+                    if (inToolbar)
+                    {
+                        GetComponent<CardView>()?.Slider.gameObject.SetActive(true);
+                        SetCountText($"x{((CardModel)DomainItem).Count.Value}", false);
+                        
+                        targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(false);
+                        targetItemView.SetCountText($"x{((CardModel)DomainItem).Count.Value}", true);
+                    }
+                    else
+                    {
+                        GetComponent<CardView>()?.Slider.gameObject.SetActive(false);
+                        SetCountText($"x{((CardModel)DomainItem).Count.Value}", true);
+                        
+                        targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(false);
+                        targetItemView.SetCountText($"x{((CardModel)DomainItem).Count.Value}", true);
+                    }
+                }
 
                 return;
             }
 
+            //TODO: 
             if (targetContainer != null && targetContainer.childCount < 5)
             {
                 transform.SetParent(targetContainer);
