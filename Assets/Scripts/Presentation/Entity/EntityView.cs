@@ -15,18 +15,15 @@ namespace Presentation.Entity
         [SerializeField] private Image iconImage;
         [SerializeField] private TMP_Text countText;
 
-        [SerializeField] private Transform InventoryContainer;
-        [SerializeField] private Transform ToolbarContainer;
+        private Transform _inventoryContainer;
+        private Transform _toolbarContainer;
 
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
         private Transform _originalParent;
-        private Vector3 _originalPosition;
         private int _originalSiblingIndex;
-        private Transform _inventoryContainerGrid;
 
         public IInventoryItem DomainItem { get; private set; }
-        private Action<IInventoryItem> _onSelectCallback;
 
         private void Awake()
         {
@@ -34,12 +31,19 @@ namespace Presentation.Entity
             _rectTransform = GetComponent<RectTransform>();
         }
 
-        public void Init(EntityItem entityItem, Action<IInventoryItem> onClickCallback, Transform inventoryGrid, bool isToolbar = false)
+        
+        public void Init(
+            EntityItem entityItem,
+            Transform inventoryContainer = null,
+            Transform toolbarContainer = null,
+            bool isToolbar = false
+        )
         {
             DomainItem = entityItem.BackingDomainItem;
-            _onSelectCallback = onClickCallback;
-            _inventoryContainerGrid = inventoryGrid;
+            _inventoryContainer = inventoryContainer;
+            _toolbarContainer = toolbarContainer;
 
+            //TODO: temp set. Remove it after test
             if (DomainItem is CardModel card)
             {
                 SetCountText(isToolbar ? "" : (card.Count.Value > 1 ? $"x{card.Count.Value}" : ""), !isToolbar && card.Count.Value > 1);
@@ -57,6 +61,8 @@ namespace Presentation.Entity
                 iconImage.enabled = entityItem.DisplayIcon != null;
             }
         }
+        
+        
 
         public void SetCountText(string text, bool visible)
         {
@@ -66,13 +72,12 @@ namespace Presentation.Entity
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _originalPosition = transform.localPosition;
             _originalParent = transform.parent;
             _originalSiblingIndex = transform.GetSiblingIndex();
 
             _canvasGroup.alpha = 0.7f;
             _canvasGroup.blocksRaycasts = false;
-            transform.SetParent(transform.parent.parent);
+            // transform.SetParent(transform.parent.parent);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -82,77 +87,72 @@ namespace Presentation.Entity
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _canvasGroup.alpha = 1f;
+            _canvasGroup.alpha        = 1f;
             _canvasGroup.blocksRaycasts = true;
-
-            GameObject targetObject = eventData.pointerEnter;
-            if (targetObject == null)
+            
+            var goHit = eventData.pointerCurrentRaycast.gameObject;
+            var other = goHit?.GetComponentInParent<EntityView>();
+            if (other != null && other != this)
             {
-                ReturnToOriginalPlace();
+                SwapWith(other);
                 return;
             }
-
-            var targetItemView = targetObject.GetComponentInParent<EntityView>();
-            var targetContainer = targetObject.GetComponentInParent<Transform>();
-
-            //Если под нами карточка и єто не мі
-            if (targetItemView != null)
+            
+            var container = GetDropContainer(goHit);
+            if (container != null)
             {
-                Transform swappedParent = targetItemView.transform.parent;
-                
-                bool inToolbar = swappedParent.gameObject.CompareTag("ToolBarContainer");
-                bool inInventory = swappedParent.gameObject.CompareTag("InventoryContainer");
-                
-                if (inToolbar || inInventory)
-                {
-                    int swappedSiblingIndex = targetItemView.transform.GetSiblingIndex();
-
-                    this.transform.SetParent(swappedParent);
-                    this.transform.SetSiblingIndex(swappedSiblingIndex);
-
-                    targetItemView.transform.SetParent(_originalParent);
-                    targetItemView.transform.SetSiblingIndex(_originalSiblingIndex);
-
-                    if (inToolbar)
-                    {
-                        GetComponent<CardView>()?.Slider.gameObject.SetActive(true);
-                        SetCountText($"x{((CardModel)DomainItem).Count.Value}", false);
-                        
-                        targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(false);
-                        targetItemView.SetCountText($"x{((CardModel)DomainItem).Count.Value}", true);
-                    }
-                    else
-                    {
-                        GetComponent<CardView>()?.Slider.gameObject.SetActive(false);
-                        SetCountText($"x{((CardModel)DomainItem).Count.Value}", true);
-                        
-                        targetItemView.GetComponent<CardView>()?.Slider.gameObject.SetActive(false);
-                        targetItemView.SetCountText($"x{((CardModel)DomainItem).Count.Value}", true);
-                    }
-                }
-
-                return;
-            }
-
-            //TODO: 
-            if (targetContainer != null && targetContainer.childCount < 5)
-            {
-                transform.SetParent(targetContainer);
-                transform.localPosition = Vector3.zero;
-
-                bool inToolbar = targetContainer.CompareTag("ToolBarContainer");
-                GetComponent<CardView>()?.Slider.gameObject.SetActive(inToolbar);
-                SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
+                transform.SetParent(container);
+                transform.SetSiblingIndex(container.childCount - 1);
+                OnDroppedInContainer(container == _toolbarContainer);
                 return;
             }
 
             ReturnToOriginalPlace();
         }
 
+
         private void ReturnToOriginalPlace()
         {
             transform.SetParent(_originalParent);
             transform.SetSiblingIndex(_originalSiblingIndex);
+            OnDroppedInContainer(_originalParent == _toolbarContainer);
+        }
+        
+        
+
+        private Transform GetDropContainer(GameObject go)
+        {
+            if (go == null) return null;
+            if (go.CompareTag("InventoryContainer")) return _inventoryContainer;
+            if (go.CompareTag("ToolBarContainer")) return _toolbarContainer;
+            return GetDropContainer(go.transform.parent?.gameObject);
+        }
+
+        
+        private void SwapWith(EntityView other)
+        {
+            var myParent   = _originalParent;
+            var myIndex    = _originalSiblingIndex;
+            var theirParent= other.transform.parent;
+            var theirIndex = other.transform.GetSiblingIndex();
+
+            // меняем местами
+            transform.SetParent(theirParent);
+            transform.SetSiblingIndex(theirIndex);
+
+            other.transform.SetParent(myParent);
+            other.transform.SetSiblingIndex(myIndex);
+
+            // обновляем UI-стейт у обеих
+            OnDroppedInContainer(transform.parent == _toolbarContainer);
+            other.OnDroppedInContainer(other.transform.parent == _toolbarContainer);
+        }
+
+        private void OnDroppedInContainer(bool inToolbar)
+        {
+            var view = GetComponent<CardView>();
+            view.Slider.gameObject.SetActive(inToolbar);
+            SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
         }
     }
 }

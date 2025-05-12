@@ -34,11 +34,6 @@ namespace Presentation.Inventory
             HandleInventoryChanged();
         }
 
-        public void SetToolbarPresenter(ToolbarPresenter toolbarPresenter)
-        {
-            _toolbarPresenter = toolbarPresenter;
-        }
-
         private void HandleInventoryChanged()
         {
             var itemsToDisplay = _inventoryModel.Items
