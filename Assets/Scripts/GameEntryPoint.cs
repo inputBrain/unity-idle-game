@@ -32,11 +32,11 @@ public class GameEntryPoint : MonoBehaviour
     private BossModel _bossModel;
     private ZoneModel _zoneModel;
 
-    [Header("UI Элементы")]
-    public Button startGameButton; // Кнопка старта игры
-    public Transform gameUI; // Панель с игровым UI (босс, зона и т.д.)
-    public Transform cardsToolbarUI; // Панель для отображения выбранных карт в бою
-    public Transform inventoryUI; // Панель с UI инвентаря
+    // [Header("UI Элементы")]
+    // public Button startGameButton; // Кнопка старта игры
+    // public Transform gameUI; // Панель с игровым UI (босс, зона и т.д.)
+    // public Transform cardsToolbarUI; // Панель для отображения выбранных карт в бою
+    // public Transform inventoryUI; // Панель с UI инвентаря
         
     //доменные сущности для инвентаря
     private List<IInventoryItem> _runtimeDomainItems = new();
@@ -71,7 +71,7 @@ public class GameEntryPoint : MonoBehaviour
         InitOtherUI(_bossModel, _zoneModel);
         //
         // // 3. НАСТРОЙКА КНОПКИ СТАРТА ИГРЫ
-        startGameButton.onClick.AddListener(StartGame);
+        // startGameButton.onClick.AddListener(StartGame);
     }
     
     void Start()
@@ -92,11 +92,11 @@ public class GameEntryPoint : MonoBehaviour
     {
         // Скрываем ненужный UI
         // startGameButton.gameObject.SetActive(false);
-        inventoryUI.gameObject.SetActive(false);
-
-        // Показываем UI боя
-        gameUI.gameObject.SetActive(true);
-        cardsToolbarUI.gameObject.SetActive(true); // Показываем тулбар для карт боя
+        // inventoryUI.gameObject.SetActive(false);
+        //
+        // // Показываем UI боя
+        // gameUI.gameObject.SetActive(true);
+        // cardsToolbarUI.gameObject.SetActive(true); // Показываем тулбар для карт боя
 
 
         // ПОЛУЧАЕМ ВЫБРАННЫЕ КАРТЫ ИЗ МЕНЕДЖЕРА ИНВЕНТАРЯ

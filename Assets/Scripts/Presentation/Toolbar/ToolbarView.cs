@@ -32,7 +32,7 @@ namespace Presentation.Toolbar
                 if (itemView != null)
                 {
                     var item = new EntityItem(card, LoadSprite(card.IconResourcesPath.Value));
-                    itemView.Init(item, null, toolbarContainerGrid, isToolbar: true);
+                    itemView.Init(item, isToolbar: true);
                     _currentToolbarSlots.Add(itemView);
                 }
                 else

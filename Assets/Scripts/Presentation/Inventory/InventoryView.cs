@@ -49,7 +49,7 @@ namespace Presentation.Inventory
                 if (itemView != null)
                 {
                     //Если на префабе есть вьюха, то в нее передаем item и  Хандлеры для обработки по типу Drag/Drop/Click
-                    itemView.Init(item.value, inventoryContainerGrid, null, inventoryContainerGrid);
+                    itemView.Init(item.value);
                     _currentSlots.Add(itemView);
                     
                     var presenter = new EntityPresenter();

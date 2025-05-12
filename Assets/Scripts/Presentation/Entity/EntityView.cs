@@ -32,16 +32,11 @@ namespace Presentation.Entity
         }
 
         
-        public void Init(
-            EntityItem entityItem,
-            Transform inventoryContainer = null,
-            Transform toolbarContainer = null,
-            bool isToolbar = false
-        )
+        public void Init(EntityItem entityItem, bool isToolbar = false)
         {
             DomainItem = entityItem.BackingDomainItem;
-            _inventoryContainer = inventoryContainer;
-            _toolbarContainer = toolbarContainer;
+            _inventoryContainer = UIManager.I.InventoryContainer;
+            _toolbarContainer   = UIManager.I.ToolbarContainer;
 
             //TODO: temp set. Remove it after test
             if (DomainItem is CardModel card)
@@ -153,6 +148,14 @@ namespace Presentation.Entity
             var view = GetComponent<CardView>();
             view.Slider.gameObject.SetActive(inToolbar);
             SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
+        }
+        
+        
+        
+        public void OnDropped(bool inToolbar)
+        {
+            GetComponent<CardView>().Slider.gameObject.SetActive(inToolbar);
+            // …и остальной UI-апдейт
         }
     }
 }
