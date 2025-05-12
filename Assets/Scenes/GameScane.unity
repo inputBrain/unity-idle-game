@@ -612,6 +612,7 @@ GameObject:
   m_Component:
   - component: {fileID: 980808827}
   - component: {fileID: 980808828}
+  - component: {fileID: 980808829}
   m_Layer: 0
   m_Name: Program.cs
   m_TagString: Untagged
@@ -651,10 +652,20 @@ MonoBehaviour:
   zoneView: {fileID: 8339082034345045562}
   inventoryView: {fileID: 1248183277}
   entityView: {fileID: 4695308413792187463, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
-  startGameButton: {fileID: 0}
-  gameUI: {fileID: 0}
-  cardsToolbarUI: {fileID: 111917831853700696}
-  inventoryUI: {fileID: 1178043650}
+--- !u!114 &980808829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980808826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932e98585d3448669ce3f1f977142031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InventoryContainer: {fileID: 1844720196}
+  ToolbarContainer: {fileID: 111917831853700696}
 --- !u!1 &1149751075
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,6 +859,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1248183276}
   - component: {fileID: 1248183277}
+  - component: {fileID: 1248183278}
   m_Layer: 5
   m_Name: -- Inventory View --
   m_TagString: Untagged
@@ -888,6 +900,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryContainerGrid: {fileID: 1844720196}
   itemSlotPrefab: {fileID: 1342530046900651215, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
+--- !u!114 &1248183278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1248183275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1085d5ab41304a25bed0852a97fe69b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isToolbarZone: 0
 --- !u!1 &1293011752
 GameObject:
   m_ObjectHideFlags: 0
@@ -4745,6 +4770,7 @@ GameObject:
   - component: {fileID: 6032148038279638468}
   - component: {fileID: 2056596062286400246}
   - component: {fileID: 7963433776709513934}
+  - component: {fileID: 7963433776709513935}
   m_Layer: 5
   m_Name: -- Toolbar View --
   m_TagString: ToolBarContainer
@@ -4766,6 +4792,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toolbarContainerGrid: {fileID: 111917831853700696}
   itemSlotPrefab: {fileID: 1342530046900651215, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
+--- !u!114 &7963433776709513935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7963433776709513933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1085d5ab41304a25bed0852a97fe69b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isToolbarZone: 1
 --- !u!224 &7966216901962248733
 RectTransform:
   m_ObjectHideFlags: 0
