@@ -859,7 +859,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1248183276}
   - component: {fileID: 1248183277}
-  - component: {fileID: 1248183278}
   m_Layer: 5
   m_Name: -- Inventory View --
   m_TagString: Untagged
@@ -900,19 +899,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryContainerGrid: {fileID: 1844720196}
   itemSlotPrefab: {fileID: 1342530046900651215, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
---- !u!114 &1248183278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1248183275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1085d5ab41304a25bed0852a97fe69b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isToolbarZone: 0
 --- !u!1 &1293011752
 GameObject:
   m_ObjectHideFlags: 0
@@ -1486,6 +1472,7 @@ GameObject:
   - component: {fileID: 1844720197}
   - component: {fileID: 1844720199}
   - component: {fileID: 1844720200}
+  - component: {fileID: 1844720201}
   m_Layer: 5
   m_Name: Inventory Container Grid
   m_TagString: Inventory
@@ -1575,6 +1562,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1844720201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844720195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1085d5ab41304a25bed0852a97fe69b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isToolbarZone: 0
 --- !u!1 &2100421916
 GameObject:
   m_ObjectHideFlags: 0

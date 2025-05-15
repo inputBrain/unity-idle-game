@@ -157,4 +157,12 @@ public class GameEntryPoint : MonoBehaviour
 
         Debug.Log("Бой завершен!");
     }
+    
+    
+    private void OnDisable()
+    {
+        Debug.LogError($"GameEntryPoint отключён! Объект: {gameObject.name}");
+        Debug.LogError(new System.Diagnostics.StackTrace());
+    }
+
 }

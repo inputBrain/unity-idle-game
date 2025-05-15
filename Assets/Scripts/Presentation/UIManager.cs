@@ -2,6 +2,7 @@
 
 namespace Presentation
 {
+    [DefaultExecutionOrder(-100)] 
     public class UIManager : MonoBehaviour
     {
         public static UIManager I { get; private set; }
