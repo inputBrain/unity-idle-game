@@ -92,18 +92,28 @@ namespace Presentation.Entity
                 SwapWith(other);
                 return;
             }
-            
-            var container = GetDropContainer(goHit);
-            if (container != null)
+
+            Transform dropContainer = null;
+            foreach (var hovered in eventData.hovered)
             {
-                transform.SetParent(container);
-                transform.SetSiblingIndex(container.childCount - 1);
-                OnDroppedInContainer(container == _toolbarContainer);
+                dropContainer = GetDropContainer(hovered);
+                if (dropContainer != null) break;
+            }
+
+            // 3) Если контейнер найден — пересадим туда на последний слот
+            if (dropContainer != null)
+            {
+                transform.SetParent(dropContainer);
+                // childCount ещё не включает нашу карточку, поэтому -1
+                transform.SetSiblingIndex(dropContainer.childCount - 1);
+                OnDroppedInContainer(dropContainer == _toolbarContainer);
                 return;
             }
 
+            // 4) Иначе — возвращаем на исходное место
             ReturnToOriginalPlace();
         }
+
 
 
         private void ReturnToOriginalPlace()
@@ -118,10 +128,18 @@ namespace Presentation.Entity
         private Transform GetDropContainer(GameObject go)
         {
             if (go == null) return null;
-            if (go.CompareTag("InventoryContainer")) return _inventoryContainer;
-            if (go.CompareTag("ToolBarContainer")) return _toolbarContainer;
-            return GetDropContainer(go.transform.parent?.gameObject);
+
+            if (go.transform == _inventoryContainer    ||
+                go.transform.IsChildOf(_inventoryContainer))
+                return _inventoryContainer;
+
+            if (go.transform == _toolbarContainer      ||
+                go.transform.IsChildOf(_toolbarContainer))
+                return _toolbarContainer;
+
+            return null;
         }
+
 
         
         private void SwapWith(EntityView other)
