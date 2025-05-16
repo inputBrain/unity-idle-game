@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Api.Payload;
 using Model.Card;
 using Model.InventoryCard;
@@ -82,36 +83,43 @@ namespace Presentation.Entity
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _canvasGroup.alpha        = 1f;
+            _canvasGroup.alpha         = 1f;
             _canvasGroup.blocksRaycasts = true;
-            
-            var goHit = eventData.pointerCurrentRaycast.gameObject;
-            var other = goHit?.GetComponentInParent<EntityView>();
+
+            // 1) Сначала пробуем свапнуть
+            var other = eventData.pointerCurrentRaycast.gameObject?.GetComponentInParent<EntityView>();
             if (other != null && other != this)
             {
                 SwapWith(other);
                 return;
             }
 
-            Transform dropContainer = null;
-            foreach (var hovered in eventData.hovered)
+            // 2) Ищем контейнер в hovered-списке
+            Transform dropContainer = eventData.hovered
+                .Select(go => GetDropContainer(go))
+                .FirstOrDefault(c => c != null);
+
+            // 3) Fallback: проверяем попадание курсора внутрь Rect, даже без Graphic Raycast Target
+            if (dropContainer == null)
             {
-                dropContainer = GetDropContainer(hovered);
-                if (dropContainer != null) break;
+                if (IsPointerInRect(_inventoryContainer, eventData))
+                    dropContainer = _inventoryContainer;
+                else if (IsPointerInRect(_toolbarContainer, eventData))
+                    dropContainer = _toolbarContainer;
             }
 
-            // 3) Если контейнер найден — пересадим туда на последний слот
+            // 4) Если контейнер найден — вставляем в конец
             if (dropContainer != null)
             {
                 transform.SetParent(dropContainer);
-                // childCount ещё не включает нашу карточку, поэтому -1
                 transform.SetSiblingIndex(dropContainer.childCount - 1);
                 OnDroppedInContainer(dropContainer == _toolbarContainer);
-                return;
             }
-
-            // 4) Иначе — возвращаем на исходное место
-            ReturnToOriginalPlace();
+            else
+            {
+                // за пределами зон — возвращаем на старое место
+                ReturnToOriginalPlace();
+            }
         }
 
 
@@ -124,19 +132,22 @@ namespace Presentation.Entity
         }
         
         
+        private bool IsPointerInRect(Transform container, PointerEventData eventData)
+        {
+            var rt = container as RectTransform;
+            return RectTransformUtility.RectangleContainsScreenPoint(
+                rt,
+                eventData.position,
+                eventData.pressEventCamera);
+        }
 
         private Transform GetDropContainer(GameObject go)
         {
             if (go == null) return null;
-
-            if (go.transform == _inventoryContainer    ||
-                go.transform.IsChildOf(_inventoryContainer))
+            if (go.transform == _inventoryContainer || go.transform.IsChildOf(_inventoryContainer))
                 return _inventoryContainer;
-
-            if (go.transform == _toolbarContainer      ||
-                go.transform.IsChildOf(_toolbarContainer))
+            if (go.transform == _toolbarContainer   || go.transform.IsChildOf(_toolbarContainer))
                 return _toolbarContainer;
-
             return null;
         }
 
@@ -156,7 +167,7 @@ namespace Presentation.Entity
             other.transform.SetParent(myParent);
             other.transform.SetSiblingIndex(myIndex);
 
-            // обновляем UI-стейт у обеих
+
             OnDroppedInContainer(transform.parent == _toolbarContainer);
             other.OnDroppedInContainer(other.transform.parent == _toolbarContainer);
         }
