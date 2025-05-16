@@ -83,32 +83,36 @@ namespace Presentation.Entity
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _canvasGroup.alpha         = 1f;
+            // 1) Восстановим визуал
+            _canvasGroup.alpha          = 1f;
             _canvasGroup.blocksRaycasts = true;
 
-            // 1) Сначала пробуем свапнуть
-            var other = eventData.pointerCurrentRaycast.gameObject?.GetComponentInParent<EntityView>();
+            // 2) Попробуем свапнуть, но только если other в toolbar или в активном inventory
+            var goHit = eventData.pointerCurrentRaycast.gameObject;
+            var other = goHit?.GetComponentInParent<EntityView>();
             if (other != null && other != this)
             {
-                SwapWith(other);
-                return;
+                var parent = other.transform.parent;
+                bool otherInToolbar   = parent == _toolbarContainer;
+                bool otherInInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
+                if (otherInToolbar || otherInInventory)
+                {
+                    SwapWith(other);
+                    return;
+                }
             }
 
-            // 2) Ищем контейнер в hovered-списке
-            Transform dropContainer = eventData.hovered
-                .Select(go => GetDropContainer(go))
-                .FirstOrDefault(c => c != null);
+            // 3) Определяем, куда мы дропим: toolbar или inventory?
+            bool pointerInToolbar   = IsPointerOver(_toolbarContainer, eventData);
+            bool pointerInInventory = _inventoryContainer.gameObject.activeInHierarchy && IsPointerOver(_inventoryContainer, eventData);
 
-            // 3) Fallback: проверяем попадание курсора внутрь Rect, даже без Graphic Raycast Target
-            if (dropContainer == null)
-            {
-                if (IsPointerInRect(_inventoryContainer, eventData))
-                    dropContainer = _inventoryContainer;
-                else if (IsPointerInRect(_toolbarContainer, eventData))
-                    dropContainer = _toolbarContainer;
-            }
+            Transform dropContainer = null;
+            if (pointerInToolbar)
+                dropContainer = _toolbarContainer;
+            else if (pointerInInventory)
+                dropContainer = _inventoryContainer;
 
-            // 4) Если контейнер найден — вставляем в конец
+            // 4) Если дроп корректный — в конце контейнера, иначе — назад
             if (dropContainer != null)
             {
                 transform.SetParent(dropContainer);
@@ -117,40 +121,26 @@ namespace Presentation.Entity
             }
             else
             {
-                // за пределами зон — возвращаем на старое место
-                ReturnToOriginalPlace();
+                // возвращаем в исходный контейнер в конец
+                transform.SetParent(_originalParent);
+                transform.SetSiblingIndex(_originalParent.childCount - 1);
+                OnDroppedInContainer(_originalParent == _toolbarContainer);
             }
         }
 
 
-
-        private void ReturnToOriginalPlace()
+        /// <summary>
+        /// Проверяет, находится ли точка курсора внутри RectTransform контейнера.
+        /// </summary>
+        private bool IsPointerOver(Transform container, PointerEventData eventData)
         {
-            transform.SetParent(_originalParent);
-            transform.SetSiblingIndex(_originalSiblingIndex);
-            OnDroppedInContainer(_originalParent == _toolbarContainer);
-        }
-        
-        
-        private bool IsPointerInRect(Transform container, PointerEventData eventData)
-        {
+            if (container == null) return false;
             var rt = container as RectTransform;
             return RectTransformUtility.RectangleContainsScreenPoint(
                 rt,
                 eventData.position,
                 eventData.pressEventCamera);
         }
-
-        private Transform GetDropContainer(GameObject go)
-        {
-            if (go == null) return null;
-            if (go.transform == _inventoryContainer || go.transform.IsChildOf(_inventoryContainer))
-                return _inventoryContainer;
-            if (go.transform == _toolbarContainer   || go.transform.IsChildOf(_toolbarContainer))
-                return _toolbarContainer;
-            return null;
-        }
-
 
         
         private void SwapWith(EntityView other)
