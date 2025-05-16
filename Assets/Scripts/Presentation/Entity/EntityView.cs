@@ -74,6 +74,7 @@ namespace Presentation.Entity
             _canvasGroup.alpha = 0.7f;
             _canvasGroup.blocksRaycasts = false;
             // transform.SetParent(transform.parent.parent);
+            transform.SetParent(transform.root);
         }
 
         public void OnDrag(PointerEventData eventData)
