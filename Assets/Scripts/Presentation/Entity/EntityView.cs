@@ -94,8 +94,8 @@ namespace Presentation.Entity
             if (other != null && other != this)
             {
                 var parent = other.transform.parent;
-                bool otherInToolbar   = parent == _toolbarContainer;
-                bool otherInInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
+                var otherInToolbar   = parent == _toolbarContainer;
+                var otherInInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
                 if (otherInToolbar || otherInInventory)
                 {
                     SwapWith(other);
@@ -103,28 +103,33 @@ namespace Presentation.Entity
                 }
             }
 
-            // 3) Определяем, куда мы дропим: toolbar или inventory?
-            bool pointerInToolbar   = IsPointerOver(_toolbarContainer, eventData);
-            bool pointerInInventory = _inventoryContainer.gameObject.activeInHierarchy && IsPointerOver(_inventoryContainer, eventData);
+
+            var pointerInToolbar   = IsPointerOver(_toolbarContainer, eventData);
+            var pointerInInventory = _inventoryContainer.gameObject.activeInHierarchy && IsPointerOver(_inventoryContainer, eventData);
 
             Transform dropContainer = null;
-            if (pointerInToolbar)
-                dropContainer = _toolbarContainer;
-            else if (pointerInInventory)
-                dropContainer = _inventoryContainer;
+    
 
-            // 4) Если дроп корректный — в конце контейнера, иначе — назад
+            if (pointerInToolbar && _toolbarContainer.childCount <= 5)
+            {
+                dropContainer = _toolbarContainer;
+            }
+            else if (pointerInInventory)
+            {
+                dropContainer = _inventoryContainer;
+            }
+            
             if (dropContainer != null)
             {
                 transform.SetParent(dropContainer);
-                transform.SetSiblingIndex(dropContainer.childCount - 1);
+                transform.SetAsLastSibling();
                 OnDroppedInContainer(dropContainer == _toolbarContainer);
             }
             else
             {
-                // возвращаем в исходный контейнер в конец
+                // возвращаем в исходный контейнер и ставим в конец
                 transform.SetParent(_originalParent);
-                transform.SetSiblingIndex(_originalParent.childCount - 1);
+                transform.SetAsLastSibling();
                 OnDroppedInContainer(_originalParent == _toolbarContainer);
             }
         }
@@ -137,6 +142,7 @@ namespace Presentation.Entity
         {
             if (container == null) return false;
             var rt = container as RectTransform;
+            
             return RectTransformUtility.RectangleContainsScreenPoint(
                 rt,
                 eventData.position,
@@ -151,7 +157,7 @@ namespace Presentation.Entity
             var theirParent= other.transform.parent;
             var theirIndex = other.transform.GetSiblingIndex();
 
-            // меняем местами
+
             transform.SetParent(theirParent);
             transform.SetSiblingIndex(theirIndex);
 
