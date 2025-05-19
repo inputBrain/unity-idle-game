@@ -15,81 +15,83 @@ namespace Model.Inventory
         public event Action OnInventoryChanged;
         public event Action OnSelectionChanged;
 
+        private void RaiseInventoryChanged() => OnInventoryChanged?.Invoke();
+        private void RaiseSelectionChanged() => OnSelectionChanged?.Invoke();
 
         public void AddItem(IInventoryItem domainItem)
         {
             if (domainItem == null || Items.Contains(domainItem)) return;
+
             Items.Add(domainItem);
-            //Добавили в модель item? Уведомили подписчиков
-            OnInventoryChanged?.Invoke();
+            RaiseInventoryChanged();
         }
+
 
         public void RemoveItem(IInventoryItem domainItem)
         {
             if (domainItem == null) return;
 
-            var removed = Items.Remove(domainItem);
-            if (removed)
+            if (Items.Remove(domainItem))
             {
-                var selectionChanged = SelectedItems.Remove(domainItem);
-                OnInventoryChanged?.Invoke();
-                if (selectionChanged)
-                {
-                    OnSelectionChanged?.Invoke();
-                }
+                bool wasSelected = SelectedItems.Remove(domainItem);
+                RaiseInventoryChanged();
+                if (wasSelected) RaiseSelectionChanged();
             }
         }
+
 
         public void ToggleSelection(IInventoryItem itemToToggle)
         {
             if (itemToToggle == null || !Items.Contains(itemToToggle)) return;
-            
+
             Debug.LogWarning($"InventoryModel: Выбрал {itemToToggle.Title}");
 
             if (!SelectedItems.Add(itemToToggle))
-            {
                 SelectedItems.Remove(itemToToggle);
-            }
-            OnSelectionChanged?.Invoke();
+
+            RaiseSelectionChanged();
         }
+
 
         public void ClearSelection()
         {
-            if (SelectedItems.Count <= 0) return;
+            if (SelectedItems.Count == 0) return;
+
             SelectedItems.Clear();
-            OnSelectionChanged?.Invoke();
+            RaiseSelectionChanged();
         }
+
 
         public void LoadItems(IEnumerable<IInventoryItem> domainItems)
         {
-             if (domainItems == null) return;
-             Items.Clear();
-             Items.AddRange(domainItems.Where(item => item != null));
-            
-            OnInventoryChanged?.Invoke();
-            
+            if (domainItems == null) return;
+
+            Items.Clear();
+            Items.AddRange(domainItems.Where(item => item != null));
+            RaiseInventoryChanged();
+
             if (SelectedItems.Count > 0)
             {
                 SelectedItems.Clear();
-                OnSelectionChanged?.Invoke();
+                RaiseSelectionChanged();
             }
         }
-        
-        
+
+
         public void AddOrStackItem(IInventoryItem domainItem)
         {
-            if (domainItem is not CardModel newCard) return;
+            if (domainItem is not CardModel newCard || newCard.Count.Value <= 0) return;
 
             var existingCard = Items.OfType<CardModel>().FirstOrDefault(c => c.Id == newCard.Id);
-            if (existingCard != null && newCard.Count.Value > 0)
+            if (existingCard != null)
             {
                 existingCard.Count.Value += newCard.Count.Value;
-                OnInventoryChanged?.Invoke();
-                return;
+                RaiseInventoryChanged();
             }
-
-            AddItem(domainItem);
+            else
+            {
+                AddItem(newCard);
+            }
         }
-
     }
 }

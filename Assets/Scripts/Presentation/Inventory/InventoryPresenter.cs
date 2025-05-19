@@ -104,37 +104,5 @@ namespace Presentation.Inventory
 
         public IEnumerable<IInventoryItem> GetSelectedDomainItems() => _inventoryModel.SelectedItems;
         public void ClearInventorySelection() => _inventoryModel.ClearSelection();
-
-        public bool TryTransferToToolbar(CardModel cardModel)
-        {
-            if (_toolbarPresenter == null)
-            {
-                Debug.LogWarning("InventoryPresenter: ToolbarPresenter не задан.");
-                return false;
-            }
-
-            var alreadyInToolbar = _toolbarPresenter.GetCards().Any(c => c.Id == cardModel.Id);
-            if (alreadyInToolbar)
-            {
-                Debug.Log("InventoryPresenter: Карта уже в тулбаре.");
-                return false;
-            }
-
-            if (_toolbarPresenter.GetCards().Count >= 5)
-            {
-                Debug.Log("InventoryPresenter: Тулбар заполнен.");
-                return false;
-            }
-
-            RemoveItemFromInventory(cardModel);
-            _toolbarPresenter.AddCard(cardModel);
-            return true;
-        }
-
-
-        public void ReturnCardToInventory(CardModel cardModel)
-        {
-            AddOrStackCard(cardModel);
-        }
     }
 }

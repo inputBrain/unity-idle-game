@@ -65,7 +65,7 @@ public class GameEntryPoint : MonoBehaviour
             _inventoryModel.LoadItems(_runtimeDomainItems);
         // }
             
-        _inventoryModel.LoadItems(_runtimeDomainItems);
+        // _inventoryModel.LoadItems(_runtimeDomainItems);
             
         // // 2. ИНИЦИАЛИЗАЦИЯ ДРУГИХ ПРЕЗЕНТЕРОВ И VIEW 
         InitOtherUI(_bossModel, _zoneModel);
@@ -77,13 +77,13 @@ public class GameEntryPoint : MonoBehaviour
     void Start()
     {
         var allCards = new CardLoaderService().GetDomainCards();
-        var dropService = new CardDropService(allCards);
-        var drop = dropService.RollDrop();
-
-        if (drop != null)
-        {
-            _inventoryPresenter.AddOrStackCard(drop);
-        }
+        // var dropService = new CardDropService(allCards);
+        // var drop = dropService.RollDrop();
+    
+        // if (drop != null)
+        // {
+        //     _inventoryPresenter.AddOrStackCard(drop);
+        // }
         
         StartBattle(_cardLoaderService.GetDomainCards());
     }

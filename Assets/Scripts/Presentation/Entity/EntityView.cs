@@ -42,7 +42,10 @@ namespace Presentation.Entity
             //TODO: temp set. Remove it after test
             if (DomainItem is CardModel card)
             {
-                SetCountText(isToolbar ? "" : (card.Count.Value > 1 ? $"x{card.Count.Value}" : ""), !isToolbar && card.Count.Value > 1);
+                SetCountText(
+                    isToolbar ? "" : card.Count.Value >= 1 ? $"x{card.Count.Value}" : "",
+                    !isToolbar && card.Count.Value >= 1
+                );
 
                 var cardView = GetComponent<CardView>();
                 if (cardView != null)
