@@ -14,6 +14,7 @@ namespace Presentation.Card
             
             UpdateIcon(cardModel.IconResourcesPath.Value);
             UpdateSlider(cardModel.ExpCurrent, cardModel.ExpToNextLevel);
+            _cardView.SetCount(cardModel.Count.Value);
             
             _cardModel.IconResourcesPath.OnValueChanged += UpdateIcon;
             _cardModel.Level.OnValueChanged += _cardView.SetLevel;
@@ -23,6 +24,8 @@ namespace Presentation.Card
             
             _cardModel.ExpCurrent.OnValueChanged += _cardView.SetTextCurrentExp;
             _cardModel.ExpToNextLevel.OnValueChanged += _cardView.SetTextNextExp;
+            
+            _cardModel.Count.OnValueChanged += _cardView.SetCount;
         }
 
 

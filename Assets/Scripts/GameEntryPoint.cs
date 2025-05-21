@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Battle;
 using Model.Boss;
 using Model.Card;
@@ -15,6 +16,8 @@ using Services;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using API;
+using Presentation.Card;
 
 public class GameEntryPoint : MonoBehaviour
 {
@@ -27,6 +30,7 @@ public class GameEntryPoint : MonoBehaviour
         
     // --- Сервисы ---
     private CardLoaderService _cardLoaderService;
+    private IUserService _userService; 
 
     // --- Доменные сущности ---
     private BossModel _bossModel;
@@ -47,25 +51,24 @@ public class GameEntryPoint : MonoBehaviour
     {
         // Инициализация сервиса и загрузка доменных карт
         _cardLoaderService = new CardLoaderService();
-        var cards = _cardLoaderService.GetDomainCards();
 
         // Создание доменных сущностей
         _zoneModel = new ZoneModel { CurrentZone = { Value = 1 } };
-        _bossModel = new BossModel { CurrentHp = { Value = 100f } };
+        _bossModel = new BossModel { CurrentHp = { Value = 2000f } };
             
         _inventoryModel = new InventoryModel();
-
         _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);
 
+        _userService = new FakeUserService();
+        
         // foreach (var card in cards)
         // {
             // _runtimeDomainItems.Add(card);
             // new ItemPresenter().Init(card, itemView);
-            _runtimeDomainItems.AddRange(cards);
-            _inventoryModel.LoadItems(_runtimeDomainItems);
+            // _runtimeDomainItems.AddRange(cards);
+            // _inventoryModel.LoadItems(_runtimeDomainItems);
         // }
-            
-        // _inventoryModel.LoadItems(_runtimeDomainItems);
+        
             
         // // 2. ИНИЦИАЛИЗАЦИЯ ДРУГИХ ПРЕЗЕНТЕРОВ И VIEW 
         InitOtherUI(_bossModel, _zoneModel);
@@ -74,20 +77,40 @@ public class GameEntryPoint : MonoBehaviour
         // startGameButton.onClick.AddListener(StartGame);
     }
     
-    void Start()
-    {
-        var allCards = new CardLoaderService().GetDomainCards();
-        // var dropService = new CardDropService(allCards);
-        // var drop = dropService.RollDrop();
-    
-        // if (drop != null)
-        // {
-        //     _inventoryPresenter.AddOrStackCard(drop);
-        // }
-        
-        StartBattle(_cardLoaderService.GetDomainCards());
-    }
+    // void Start()
+    // {
+    //     var allCards = new CardLoaderService().GetDomainCards();
+    //     // var dropService = new CardDropService(allCards);
+    //     // var drop = dropService.RollDrop();
+    //
+    //     // if (drop != null)
+    //     // {
+    //     //     _inventoryPresenter.AddOrStackCard(drop);
+    //     // }
+    //     
+    //     StartBattle(_cardLoaderService.GetDomainCards());
+    // }
 
+
+    private async void Start()
+    {
+        var user = await _userService.GetCurrentUserAsync();
+
+        _inventoryModel.LoadItems(user.InventoryModel.Items);
+
+        Debug.Log($"User: == {user.Nickname} ==  Has {_inventoryModel.Items.Count} cards");
+        
+        
+        
+        var cardsForBattle = _inventoryModel.Items.OfType<CardModel>().ToList();
+        
+        InitUISelectedCardsToolbar(cardsForBattle);
+        
+        StartBattle(cardsForBattle);
+    }
+    
+    
+    
     private void StartGame()
     {
         // Скрываем ненужный UI
@@ -142,7 +165,7 @@ public class GameEntryPoint : MonoBehaviour
         {
             // Используем другой префаб и другой презентер CardPresenter
             // CardView newCardView = Instantiate(cardViewPrefab, cardsToolbarUI);
-            // new CardPresenter().Init(card, newCardView);
+            new CardPresenter().Init(card, newCardView);
         }
     }
 

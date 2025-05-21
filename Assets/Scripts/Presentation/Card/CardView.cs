@@ -13,6 +13,8 @@ namespace Presentation.Card
 
         public TMP_Text ExpToNextLevel;
 
+        public TMP_Text CountText;
+        
         public Image CardImage;
 
         public Slider Slider;
@@ -54,5 +56,12 @@ namespace Presentation.Card
         {
             CardImage.sprite = Resources.Load<Sprite>(path);
         }
+        
+        
+        public void SetCount(int count)
+        {
+            CountText.text = count.ToString();
+        }
+
     }
 }

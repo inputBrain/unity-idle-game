@@ -4,6 +4,9 @@ using Model.Card;
 
 namespace Presentation.TotalStats
 {
+    /// <summary>
+    /// Main stats model
+    /// </summary>
     public class TotalToolbarStatsViewModel
     {
         public IList<CardModel> Cards = new List<CardModel>();

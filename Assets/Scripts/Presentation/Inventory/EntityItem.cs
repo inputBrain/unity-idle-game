@@ -1,7 +1,7 @@
 ﻿using Model.InventoryCard;
 using UnityEngine;
 
-namespace Api.Payload
+namespace Presentation.Inventory
 {
     public class EntityItem
     {

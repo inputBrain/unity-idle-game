@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Api.Payload;
 using Model.Card;
 using Model.InventoryCard;
 using Presentation.Card;
+using Presentation.Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +13,9 @@ namespace Presentation.Entity
 {
     public class EntityView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        private CardModel _cardModel;
+        private InventoryPresenter _inventoryPresenter;
+        
         [SerializeField] private Image iconImage;
         [SerializeField] private TMP_Text countText;
 
@@ -74,9 +77,8 @@ namespace Presentation.Entity
             _originalParent = transform.parent;
             _originalSiblingIndex = transform.GetSiblingIndex();
 
-            _canvasGroup.alpha = 0.7f;
+            _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = false;
-            // transform.SetParent(transform.parent.parent);
             transform.SetParent(transform.root);
         }
 
@@ -97,9 +99,9 @@ namespace Presentation.Entity
             if (other != null && other != this)
             {
                 var parent = other.transform.parent;
-                var otherInToolbar   = parent == _toolbarContainer;
-                var otherInInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
-                if (otherInToolbar || otherInInventory)
+                var isOtherInToolbar   = parent == _toolbarContainer;
+                var isOtherInInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
+                if (isOtherInToolbar || isOtherInInventory)
                 {
                     SwapWith(other);
                     return;
@@ -172,19 +174,31 @@ namespace Presentation.Entity
             other.OnDroppedInContainer(other.transform.parent == _toolbarContainer);
         }
 
-        private void OnDroppedInContainer(bool inToolbar)
+        private void OnDroppedInContainer(bool isToolbarZone)
         {
             var view = GetComponent<CardView>();
-            view.Slider.gameObject.SetActive(inToolbar);
-            SetCountText(inToolbar ? "" : $"x{((CardModel)DomainItem).Count.Value}", !inToolbar);
+            view.Slider.gameObject.SetActive(isToolbarZone);
+            SetCountText(isToolbarZone ? "" : $"x{((CardModel)DomainItem).Count.Value}", !isToolbarZone);
         }
         
         
         
-        public void OnDropped(bool inToolbar)
+        public void OnDropped(bool isToolbarZone)
         {
-            GetComponent<CardView>().Slider.gameObject.SetActive(inToolbar);
-            // …и остальной UI-апдейт
+            
+            if (!isToolbarZone)
+            {
+                // сбросили в инвентарь — добавляем или стэкаем
+                _inventoryPresenter.AddOrStackCard(_cardModel);
+                GetComponent<CardView>().Slider.gameObject.SetActive(false);
+                
+            }
+            else
+            {
+                // _inventoryPresenter.RemoveItemFromInventory(_cardModel);
+                GetComponent<CardView>().Slider.gameObject.SetActive(true);
+                // …и остальной UI-апдейт
+            }
         }
     }
 }

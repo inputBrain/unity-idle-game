@@ -31,4 +31,8 @@ namespace Presentation.Zone
             _zoneModel.CurrentZone.Value--;
         }
     }
+    
+    
+    
+    
 }

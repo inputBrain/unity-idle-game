@@ -32,6 +32,15 @@ namespace Presentation.TotalStats
         }
 
 
+        public void SetCardOnToolbar(CardModel card)
+        {
+            var existCard = _cards.FirstOrDefault(x => x.Id == card.Id);
+            
+            if (existCard == null)
+            {
+                _cards.Add(card);
+            }
+        }
 
         private void InitTotalStats()
         {
