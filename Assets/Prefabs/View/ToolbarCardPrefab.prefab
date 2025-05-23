@@ -225,7 +225,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Level: {fileID: 5959650608582258519}
   ExpCurrent: {fileID: 4530976218816929501}
-  ExpToNextLevel: {fileID: 0}
+  ExpToNextLevel: {fileID: 4530976218816929501}
+  CountText: {fileID: 4635709159825596587}
   CardImage: {fileID: 7627084447180866362}
   Slider: {fileID: 826240172999203419}
 --- !u!114 &4695308413792187463
