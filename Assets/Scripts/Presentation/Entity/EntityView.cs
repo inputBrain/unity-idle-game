@@ -31,37 +31,31 @@ namespace Presentation.Entity
 
         private void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup   = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
-        }
 
-        
-        public void Init(EntityItem entityItem, bool isToolbar = false)
-        {
-            DomainItem = entityItem.BackingDomainItem;
             _inventoryContainer = UIManager.I.InventoryContainer;
             _toolbarContainer   = UIManager.I.ToolbarContainer;
+        }
 
-            //TODO: temp set. Remove it after test
-            if (DomainItem is CardModel card)
-            {
-                SetCountText(
-                    isToolbar ? "" : card.Count.Value >= 1 ? $"x{card.Count.Value}" : "",
-                    !isToolbar && card.Count.Value >= 1
-                );
 
-                var cardView = GetComponent<CardView>();
-                if (cardView != null)
-                {
-                    cardView.Slider.gameObject.SetActive(isToolbar);
-                }
-            }
+        public void Init(CardModel cardModel, InventoryPresenter inventoryPresenter, bool isToolbar = false)
+        {
+            _cardModel          = cardModel;
+            _inventoryPresenter = inventoryPresenter;
+            DomainItem          = cardModel;
 
-            if (iconImage != null)
-            {
-                iconImage.sprite = entityItem.DisplayIcon;
-                iconImage.enabled = entityItem.DisplayIcon != null;
-            }
+            if (iconImage != null && cardModel.IconResourcesPath.Value != null)
+                iconImage.sprite = Resources.Load<Sprite>(cardModel.IconResourcesPath.Value);
+
+            SetCountText(
+                !isToolbar && cardModel.Count.Value > 1 ? $"x{cardModel.Count.Value}" : "",
+                !isToolbar && cardModel.Count.Value > 1
+            );
+
+            var cardView = GetComponent<CardView>();
+            if (cardView != null)
+                cardView.Slider.gameObject.SetActive(isToolbar);
         }
         
         
