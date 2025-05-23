@@ -20,8 +20,6 @@ namespace Presentation.Toolbar
             _toolbarView = toolbarView ?? throw new ArgumentNullException(nameof(toolbarView));
             _statsView = statsView ?? throw new ArgumentNullException(nameof(statsView));
             _statsPresenter = new TotalCardStatsPresenter();
-
-            _toolbarView.OnToolbarItemDropped += HandleItemDropped;
         }
 
         public void AddCard(CardModel cardModel)
@@ -58,7 +56,6 @@ namespace Presentation.Toolbar
 
         private void UpdateToolbarView()
         {
-            _toolbarView.DisplayToolbarCards(_toolbarCards);
             _statsPresenter.Init(_toolbarCards, _statsView);
         }
 
