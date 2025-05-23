@@ -62,7 +62,7 @@ public class GameEntryPoint : MonoBehaviour
     private void Awake()
     {
         _zoneModel = new ZoneModel {CurrentZone = {Value = 1}};
-        _bossModel = new BossModel {CurrentHp = {Value = 2000f}};
+        _bossModel = new BossModel {CurrentHp = {Value = 100f}};
         
         _inventoryModel = new InventoryModel();
         _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);

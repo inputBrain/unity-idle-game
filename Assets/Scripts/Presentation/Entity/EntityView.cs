@@ -182,14 +182,11 @@ namespace Presentation.Entity
             
             if (!isToolbarZone)
             {
-                // сбросили в инвентарь — добавляем или стэкаем
-                _inventoryPresenter.AddOrStackCard(_cardModel);
                 GetComponent<CardView>().Slider.gameObject.SetActive(false);
                 
             }
             else
             {
-                // _inventoryPresenter.RemoveItemFromInventory(_cardModel);
                 GetComponent<CardView>().Slider.gameObject.SetActive(true);
                 // …и остальной UI-апдейт
             }

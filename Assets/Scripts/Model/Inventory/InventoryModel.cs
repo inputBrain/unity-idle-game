@@ -85,7 +85,7 @@ namespace Model.Inventory
             var existingCard = Items.OfType<CardModel>().FirstOrDefault(c => c.Id == newCard.Id);
             if (existingCard != null)
             {
-                existingCard.Count.Value += newCard.Count.Value;
+                existingCard.Count.Value += 1;
                 RaiseInventoryChanged();
             }
             else
