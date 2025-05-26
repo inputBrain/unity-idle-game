@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Model.Card;
-using Model.InventoryCard;
-using Presentation.Entity;
+﻿using Presentation.Entity;
 using UnityEngine;
 
 namespace Presentation.Inventory

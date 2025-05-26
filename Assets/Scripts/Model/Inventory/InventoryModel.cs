@@ -92,6 +92,8 @@ namespace Model.Inventory
             {
                 AddItem(newCard);
             }
+            
+            OnInventoryChanged?.Invoke();
         }
     }
 }

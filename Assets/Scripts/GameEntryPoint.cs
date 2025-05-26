@@ -14,6 +14,7 @@ using Presentation.Zone;
 using UnityEngine;
 using API;
 using Presentation.Card;
+using Services;
 
 public class GameEntryPoint : MonoBehaviour
 {
@@ -33,7 +34,6 @@ public class GameEntryPoint : MonoBehaviour
     [SerializeField]
     private EntityView entityView;
 
-
     [Header("Toolbar UI")]
     [SerializeField]
     private EntityView toolbarCardPrefab;
@@ -50,6 +50,9 @@ public class GameEntryPoint : MonoBehaviour
     private ZoneModel _zoneModel;
 
     private BossModel _bossModel;
+
+
+    private CardLoaderService _cardLoaderService;
 
 
     // [Header("Start game UI elements")]
@@ -70,6 +73,7 @@ public class GameEntryPoint : MonoBehaviour
         new BossPresenter().Init(_bossModel, bossView);
         new ZonePresenter().Init(_zoneModel, zoneView);
 
+        _cardLoaderService = new CardLoaderService();
         _userService = new FakeUserService();
     }
 
@@ -81,17 +85,19 @@ public class GameEntryPoint : MonoBehaviour
 
         Debug.Log($"User -- {user.Nickname} --  has {_inventoryModel.Items.Count} cards");
 
+        var allDomainCards = _cardLoaderService.GetDomainCards();
+
         var cardsForBattle = _inventoryModel.Items.OfType<CardModel>().ToList();
 
         InitUISelectedCardsToolbar(cardsForBattle);
 
-        StartBattle(cardsForBattle);
+        StartBattle(allDomainCards, cardsForBattle);
     }
 
 
-    private void StartBattle(List<CardModel> userCardCollection)
+    private void StartBattle(List<CardModel> allDomainCards, List<CardModel> userCardsForBattle)
     {
-        var battleScript = new BattleScript(_bossModel, _zoneModel, userCardCollection, _inventoryPresenter);
+        var battleScript = new BattleScript(_bossModel, _zoneModel, allDomainCards, userCardsForBattle, _inventoryPresenter);
         StartCoroutine(StartBattleLoop(battleScript));
     }
 

@@ -12,20 +12,31 @@ namespace Battle
 {
     public class BattleScript
     {
+        private readonly CardDropService _dropService;
+        private readonly InventoryPresenter _inventoryPresenter;
+        
+        
         public List<CardModel> CardList = new();
 
         public TotalToolbarStatsViewModel TotalToolbarStatistic = new();
         public BossModel BossModel = new();
         private ZoneModel _zoneModel;
-        private readonly InventoryPresenter _inventoryPresenter;
 
-        public BattleScript(BossModel bossModel, ZoneModel zoneModel, List<CardModel> cards, InventoryPresenter inventoryPresenter)
+        public BattleScript(
+            BossModel bossModel,
+            ZoneModel zoneModel,
+            List<CardModel> allDomainCards,
+            List<CardModel> initialUserCards,
+            InventoryPresenter inventoryPresenter
+        )
         {
-            CardList = cards;
+            _dropService = new CardDropService(allDomainCards);
             _inventoryPresenter = inventoryPresenter;
+            
+            CardList = initialUserCards;
             BossModel = bossModel;
             _zoneModel = zoneModel;
-            TotalToolbarStatistic.Cards = cards;
+            TotalToolbarStatistic.Cards = initialUserCards;
 
             _zoneModel.CurrentZone.Value = 1;
         }
@@ -99,15 +110,12 @@ namespace Battle
         private void OnBossDefeated()
         {
             ReceiveExp();
-            
-            var allCards = new CardLoaderService().GetDomainCards();
-            var dropService = new CardDropService(allCards);
-            // var droppedCards = dropService.RollMultipleDrops(1);
-            var droppedCard = dropService.RollDrop();
-            if (droppedCard != null)
+
+            var drop = _dropService.RollDrop();
+            if (drop != null)
             {
-                Debug.Log($"Dropped card: {droppedCard.Title}");
-                _inventoryPresenter.AddOrStackCard(droppedCard);
+                Debug.Log($"Dropped card: {drop.Title}");
+                _inventoryPresenter.AddOrStackCard(drop);
             }
 
             // foreach (var card in droppedCards)
