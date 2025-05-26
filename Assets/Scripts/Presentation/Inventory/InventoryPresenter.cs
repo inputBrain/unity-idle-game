@@ -13,23 +13,28 @@ namespace Presentation.Inventory
 
         public InventoryPresenter(InventoryModel model, InventoryView view)
         {
-            _model = model ?? throw new ArgumentNullException(nameof(model));
-            _view  = view  ?? throw new ArgumentNullException(nameof(view));
-
+            _model = model;
+            _view  = view;
+            
             _model.OnInventoryChanged += HandleInventoryChanged;
+            _model.OnSelectionChanged += HandleInventoryChanged;
             HandleInventoryChanged();
         }
 
         private void HandleInventoryChanged()
         {
             _view.ClearAllItems();
-            foreach (var card in _model.Items.OfType<CardModel>())
+            
+            var toShow = _model.Items
+                .OfType<CardModel>()
+                .Where(c => !_model.SelectedItems.OfType<CardModel>().Contains(c))
+                .ToList();
+
+            foreach (var card in toShow)
             {
                 var slot = _view.SpawnItemView();
                 slot.Init(card, this, isToolbar: false);
-
-                var cardView = slot.GetComponent<CardView>();
-                new CardPresenter().Init(card, cardView);
+                new CardPresenter().Init(card, slot.GetComponent<CardView>());
             }
         }
 

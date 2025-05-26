@@ -23,7 +23,7 @@ namespace API
         {
             var allCards = _cardLoader.GetDomainCards();
             
-            var selected = allCards.Where(x => x.Id is 1 or 2 or 3).Select(x => new CardModel
+            var selected = allCards.Where(x => x.Id is 1).Select(x => new CardModel
                 {
                     Id = x.Id,
                     Title = x.Title,

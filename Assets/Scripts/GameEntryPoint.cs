@@ -64,7 +64,15 @@ public class GameEntryPoint : MonoBehaviour
     private void Awake()
     {
         _zoneModel = new ZoneModel {CurrentZone = {Value = 1}};
-        _bossModel = new BossModel {CurrentHp = {Value = 100f}};
+        _bossModel = new BossModel
+        {
+            BaseHp = 100f,
+            MaxHp = {Value = 100f},
+            CurrentHp = {Value = 100f},
+            Attack = { Value = 10f},
+            ExpReward = { Value = 5},
+            GoldReward = { Value = 5}
+        };
         
         _inventoryModel = new InventoryModel();
         _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);
@@ -86,7 +94,10 @@ public class GameEntryPoint : MonoBehaviour
     private async void Start()
     {
         var user = await _userService.GetCurrentUserAsync();
-        _inventoryModel.LoadItems(user.InventoryModel.Items);
+        _inventoryModel = user.InventoryModel;
+        _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);
+
+        _inventoryModel.OnSelectionChanged += UpdateToolbarAndStats;
 
 
         UpdateToolbarAndStats();
