@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Model.Boss;
 using Model.Card;
 using Model.Zone;
@@ -12,33 +13,24 @@ namespace Battle
 {
     public class BattleScript
     {
-        private readonly CardDropService _dropService;
-        private readonly InventoryPresenter _inventoryPresenter;
-        
-        
-        public List<CardModel> CardList = new();
-
-        public TotalToolbarStatsViewModel TotalToolbarStatistic = new();
-        public BossModel BossModel = new();
-        private ZoneModel _zoneModel;
+        private readonly TotalToolbarStatsViewModel _stats;
+        private readonly InventoryPresenter       _inventoryPresenter;
+        private readonly CardDropService          _dropService;
+        private readonly BossModel                _bossModel;
+        private readonly ZoneModel                _zoneModel;
 
         public BattleScript(
             BossModel bossModel,
             ZoneModel zoneModel,
             List<CardModel> allDomainCards,
-            List<CardModel> initialUserCards,
-            InventoryPresenter inventoryPresenter
-        )
+            InventoryPresenter inventoryPresenter,
+            TotalToolbarStatsViewModel statsModel)
         {
-            _dropService = new CardDropService(allDomainCards);
+            _bossModel          = bossModel;
+            _zoneModel          = zoneModel;
             _inventoryPresenter = inventoryPresenter;
-            
-            CardList = initialUserCards;
-            BossModel = bossModel;
-            _zoneModel = zoneModel;
-            TotalToolbarStatistic.Cards = initialUserCards;
-
-            _zoneModel.CurrentZone.Value = 1;
+            _stats              = statsModel;
+            _dropService        = new CardDropService(allDomainCards);
         }
         
         public void BattleUpdate()
@@ -47,63 +39,59 @@ namespace Battle
             DealDamageToBoss();
             DealDamageToTeam();
 
-            if (BossModel.CurrentHp <= 0)
-            {
+            if (_bossModel.CurrentHp.Value <= 0)
                 OnBossDefeated();
-            }
 
-            if (TotalToolbarStatistic.Hp <= 0)
-            {
+            if (_stats.Hp <= 0)
                 OnEnemyWin();
-            }
         }
 
 
-        private void HpRegeneration()
-        {
-            foreach (var card in CardList)
-            {
-                card.CurrentHp.Value += TotalToolbarStatistic.HpRegeneration;
-                if (card.CurrentHp > card.MaxHp)
-                {
-                    card.CurrentHp.Value = card.MaxHp;
-                }
-            }
-        }
+        // private void HpRegeneration()
+        // {
+        //     foreach (var card in CardList)
+        //     {
+        //         card.CurrentHp.Value += _stats.HpRegeneration;
+        //         if (card.CurrentHp > card.MaxHp)
+        //         {
+        //             card.CurrentHp.Value = card.MaxHp;
+        //         }
+        //     }
+        // }
      
         
         private void DealDamageToBoss()
         {
-            var totalDamage = TotalToolbarStatistic.Attack;
+            // var totalDamage = _stats.Attack;
 
             // Critical attack case TODO:
-            // if (Random.value * 100 < TotalToolbarStatistic.Crit)
+            // if (Random.value * 100 < _stats.Crit)
             // {
-            //     totalDamage *= 1 + TotalToolbarStatistic.CritDmg / 10f;
+            //     totalDamage *= 1 + _stats.CritDmg / 10f;
             // }
 
+            if (_stats.Cards.Any())
+                _bossModel.CurrentHp.Value -= _stats.Attack;
             
-            BossModel.CurrentHp.Value -= totalDamage;
+            // _bossModel.CurrentHp.Value -= totalDamage;
         }
 
         
         private void DealDamageToTeam()
         {
-            var damageToTeam = BossModel.Attack;
-            
+            var dmgToTeam = _bossModel.Attack.Value;
+            _stats.GetDamage(dmgToTeam);
             
                 //TODO:
-            // if (Random.value * 100 < TotalToolbarStatistic.Evade)
+            // if (Random.value * 100 < _stats.Evade)
             // {
             //     return;
             // }
             //
-            // if (Random.value * 100 < TotalToolbarStatistic.Block)
+            // if (Random.value * 100 < _stats.Block)
             // {
-            //     damageToTeam *= (1 - TotalToolbarStatistic.BlockPower / 100f);
+            //     damageToTeam *= (1 - _stats.BlockPower / 100f);
             // }
-
-            TotalToolbarStatistic.GetDamage(damageToTeam);
         }
         
 
@@ -128,7 +116,7 @@ namespace Battle
             // }
             _zoneModel.CurrentZone.Value++;
             
-            BossModel.GetUpdatedStats(_zoneModel.CurrentZone);
+            _bossModel.GetUpdatedStats(_zoneModel.CurrentZone);
             
         }
         
@@ -148,35 +136,32 @@ namespace Battle
         
         private void ReceiveExp()
         {
-            if (CardList.Count <= 0)
-            {
+
+            var toolbarCards = _stats.Cards;
+            if (toolbarCards == null || toolbarCards.Count == 0)
                 return;
-            }
 
-            //TODO: implement reward for boss wave
-            float experience = 200f;
-            
-            var expPerCard = experience / CardList.Count;
+            const float totalExperience = 200f;
+            var expPerCard = totalExperience / toolbarCards.Count;
 
-            foreach (var card in CardList)
+            foreach (var card in toolbarCards)
             {
                 card.ExpCurrent.Value += expPerCard;
-                if (card.ExpCurrent >= card.ExpToNextLevel)
+                
+                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value)
                 {
-                    while (card.ExpCurrent >= card.ExpToNextLevel)
-                    {
-                        card.Level.Value += 1;
-                        card.MaxHp.Value += 1.1f;
-                        card.CurrentHp.Value += 1.1f;
-                        //TODO:
-                        // card.HpRegeneration *= 1.1f;
-                        card.Attack.Value += 1.1f;
-                        card.Evade.Value += 1.1f;
-                        card.Block.Value += 1.1f;
-                        card.BlockPower.Value += 1.1f;
-                        card.ExpCurrent.Value -= card.ExpToNextLevel;
-                        card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
-                    }
+
+                    card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
+
+                    card.Level.Value += 1;
+                    card.MaxHp.Value     += 1.1f;
+                    card.CurrentHp.Value += 1.1f;
+                    card.Attack.Value    += 1.1f;
+                    card.Evade.Value     += 1.1f;
+                    card.Block.Value     += 1.1f;
+                    card.BlockPower.Value+= 1.1f;
+                    
+                    card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
                 }
             }
         }

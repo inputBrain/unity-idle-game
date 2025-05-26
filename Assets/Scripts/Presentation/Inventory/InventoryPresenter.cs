@@ -38,5 +38,8 @@ namespace Presentation.Inventory
 
         public void Dispose()
             => _model.OnInventoryChanged -= HandleInventoryChanged;
+        
+        public void ToggleSelection(CardModel card)
+            => _model.ToggleSelection(card);
     }
 }

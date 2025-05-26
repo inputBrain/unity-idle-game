@@ -41,18 +41,17 @@ public class GameEntryPoint : MonoBehaviour
     [SerializeField]
     private Transform cardsToolbarUI;
 
-    private IUserService _userService;
 
-    private InventoryModel _inventoryModel;
-
-    private InventoryPresenter _inventoryPresenter;
-
-    private ZoneModel _zoneModel;
-
-    private BossModel _bossModel;
+    private IUserService                   _userService;
+    private InventoryModel                 _inventoryModel;
+    private InventoryPresenter             _inventoryPresenter;
+    private ZoneModel                      _zoneModel;
+    private BossModel                      _bossModel;
+    private CardLoaderService              _cardLoaderService;
 
 
-    private CardLoaderService _cardLoaderService;
+    private TotalToolbarStatsViewModel     _statsModel;
+    private TotalCardStatsPresenter        _statsPresenter;
 
 
     // [Header("Start game UI elements")]
@@ -72,9 +71,15 @@ public class GameEntryPoint : MonoBehaviour
 
         new BossPresenter().Init(_bossModel, bossView);
         new ZonePresenter().Init(_zoneModel, zoneView);
-
+        
         _cardLoaderService = new CardLoaderService();
-        _userService = new FakeUserService();
+        _userService       = new FakeUserService();
+
+        _statsModel     = new TotalToolbarStatsViewModel();
+        _statsPresenter = new TotalCardStatsPresenter();
+
+
+        _inventoryModel.OnSelectionChanged += UpdateToolbarAndStats;
     }
 
 
@@ -83,21 +88,24 @@ public class GameEntryPoint : MonoBehaviour
         var user = await _userService.GetCurrentUserAsync();
         _inventoryModel.LoadItems(user.InventoryModel.Items);
 
-        Debug.Log($"User -- {user.Nickname} --  has {_inventoryModel.Items.Count} cards");
+
+        UpdateToolbarAndStats();
+
 
         var allDomainCards = _cardLoaderService.GetDomainCards();
-
-        var cardsForBattle = _inventoryModel.Items.OfType<CardModel>().ToList();
-
-        InitUISelectedCardsToolbar(cardsForBattle);
-
-        StartBattle(allDomainCards, cardsForBattle);
+        StartBattle(allDomainCards);
     }
 
 
-    private void StartBattle(List<CardModel> allDomainCards, List<CardModel> userCardsForBattle)
+    private void StartBattle(List<CardModel> allDomainCards)
     {
-        var battleScript = new BattleScript(_bossModel, _zoneModel, allDomainCards, userCardsForBattle, _inventoryPresenter);
+        var battleScript = new BattleScript(
+            _bossModel,
+            _zoneModel,
+            allDomainCards,
+            _inventoryPresenter,
+            _statsModel
+        );
         StartCoroutine(StartBattleLoop(battleScript));
     }
 
@@ -106,14 +114,16 @@ public class GameEntryPoint : MonoBehaviour
     {
         foreach (Transform t in cardsToolbarUI)
             Destroy(t.gameObject);
-
-
+        
         foreach (var card in selectedCards)
         {
-            var instance = Instantiate(toolbarCardPrefab, cardsToolbarUI, worldPositionStays: false);
+            var instance = Instantiate(
+                toolbarCardPrefab,
+                cardsToolbarUI,
+                worldPositionStays: false
+            );
 
             instance.Init(card, _inventoryPresenter, isToolbar: true);
-
             var cardView = instance.GetComponent<CardView>();
             new CardPresenter().Init(card, cardView);
         }
@@ -122,11 +132,25 @@ public class GameEntryPoint : MonoBehaviour
 
     private IEnumerator StartBattleLoop(BattleScript battleScript)
     {
-        //ToDo: battleScript.IsBattleOngoing()
         while (true)
         {
             battleScript.BattleUpdate();
             yield return new WaitForSeconds(1f);
         }
+    }
+    
+    
+    
+    private void UpdateToolbarAndStats()
+    {
+        var toolbarCards = _inventoryModel
+            .SelectedItems
+            .OfType<CardModel>()
+            .ToList();
+        
+        _statsModel.Cards = toolbarCards;
+        _statsPresenter.Init(toolbarCards, totalCardStatsView);
+
+        InitUISelectedCardsToolbar(toolbarCards);
     }
 }

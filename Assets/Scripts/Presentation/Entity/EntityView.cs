@@ -173,6 +173,11 @@ namespace Presentation.Entity
             var view = GetComponent<CardView>();
             view.Slider.gameObject.SetActive(isToolbarZone);
             SetCountText(isToolbarZone ? "" : $"x{((CardModel)DomainItem).Count.Value}", !isToolbarZone);
+            
+            if (isToolbarZone)
+                _inventoryPresenter.ToggleSelection(_cardModel);
+            else
+                _inventoryPresenter.ToggleSelection(_cardModel);
         }
         
         
