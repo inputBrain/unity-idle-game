@@ -184,6 +184,7 @@ namespace Presentation.Entity
         
         public void OnDropped(bool isToolbarZone)
         {
+            var cardView = GetComponent<CardView>();
             
             if (!isToolbarZone)
             {
@@ -194,6 +195,9 @@ namespace Presentation.Entity
             {
                 GetComponent<CardView>().Slider.gameObject.SetActive(true);
                 // …и остальной UI-апдейт
+                
+                cardView.SetTextCurrentExp(_cardModel.ExpCurrent);
+                cardView.SetTextNextExp(_cardModel.ExpToNextLevel);
             }
         }
     }
