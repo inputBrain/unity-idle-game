@@ -3,6 +3,7 @@
     public class BossModel : ReactiveProperty<BossModel>
     {
         public float BaseHp { get; set; }
+        public float BaseAttack { get; set; }
 
         public ReactiveProperty<float> CurrentHp { get; } = new();
         public ReactiveProperty<float> MaxHp { get; } = new();
@@ -14,7 +15,7 @@
         {
             MaxHp.Value = BaseHp * zone;
             CurrentHp.Value = MaxHp.Value;
-            Attack.Value += 100f;
+            Attack.Value = BaseAttack * (zone / 10f);
         }
     }
 }

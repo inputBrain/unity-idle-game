@@ -67,10 +67,11 @@ public class GameEntryPoint : MonoBehaviour
         _bossModel = new BossModel
         {
             BaseHp = 100f,
+            BaseAttack = 100f,
             MaxHp = {Value = 100f},
             CurrentHp = {Value = 100f},
             Attack = { Value = 10f},
-            ExpReward = { Value = 5},
+            ExpReward = { Value = 50},
             GoldReward = { Value = 5}
         };
         

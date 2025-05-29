@@ -10,6 +10,7 @@ namespace ScriptableObjects.Config
         public int Id;
         public string Title;
         public int Level = 1;
+        public int Rank = 1;
         public float ExpCurrent;
         public float ExpToNextLevel;
         public float StartBaseExp;

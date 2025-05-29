@@ -104,6 +104,8 @@ namespace Battle
             {
                 Debug.Log($"Dropped card: {drop.Title}");
                 _inventoryPresenter.AddOrStackCard(drop);
+                
+                
             }
 
             // foreach (var card in droppedCards)
@@ -136,11 +138,11 @@ namespace Battle
         
         private void ReceiveExp()
         {
-
             var toolbarCards = _stats.Cards;
             if (toolbarCards == null || toolbarCards.Count == 0)
                 return;
 
+            // TODO: total experience implementation
             const float totalExperience = 200f;
             var expPerCard = totalExperience / toolbarCards.Count;
 
@@ -151,6 +153,7 @@ namespace Battle
                 while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value)
                 {
 
+                    card.Rank.Value += 1;
                     card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
 
                     card.Level.Value += 1;

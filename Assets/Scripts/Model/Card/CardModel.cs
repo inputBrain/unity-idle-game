@@ -10,6 +10,8 @@ namespace Model.Card
         public ReactiveProperty<string> IconResourcesPath { get; } = new();
         public Guid InstanceId { get; set; }
         public float StartBaseExp { get; set; }
+        
+        public ReactiveProperty<int> Rank { get; } = new();
 
         public ReactiveProperty<int> Level { get; } = new();
         public ReactiveProperty<float> ExpCurrent { get; } = new();
