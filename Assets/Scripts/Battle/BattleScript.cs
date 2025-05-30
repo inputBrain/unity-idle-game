@@ -143,7 +143,7 @@ namespace Battle
                 return;
 
             // TODO: total experience implementation
-            const float totalExperience = 200f;
+            const float totalExperience = 10f;
             var expPerCard = totalExperience / toolbarCards.Count;
 
             foreach (var card in toolbarCards)
