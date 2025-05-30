@@ -66,12 +66,12 @@ public class GameEntryPoint : MonoBehaviour
         _zoneModel = new ZoneModel {CurrentZone = {Value = 1}};
         _bossModel = new BossModel
         {
-            BaseHp = 100f,
+            BaseHp = 20f,
             BaseAttack = 100f,
-            MaxHp = {Value = 100f},
-            CurrentHp = {Value = 100f},
+            MaxHp = {Value = 20f},
+            CurrentHp = {Value = 20f},
             Attack = { Value = 10f},
-            ExpReward = { Value = 50},
+            ExpReward = { Value = 20},
             GoldReward = { Value = 5}
         };
         
