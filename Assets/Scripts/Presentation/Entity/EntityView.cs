@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Model.Card;
+﻿using Model.Card;
 using Model.InventoryCard;
 using Presentation.Card;
 using Presentation.Inventory;
@@ -83,13 +81,10 @@ namespace Presentation.Entity
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            // 1) Восстановим визуал
             _canvasGroup.alpha          = 1f;
             _canvasGroup.blocksRaycasts = true;
-
-            // 2) Попробуем свапнуть, но только если other в toolbar или в активном inventory
-            var goHit = eventData.pointerCurrentRaycast.gameObject;
-            var other = goHit?.GetComponentInParent<EntityView>();
+            
+            var other = eventData.pointerCurrentRaycast.gameObject?.GetComponentInParent<EntityView>();
             if (other != null && other != this)
             {
                 var parent = other.transform.parent;
@@ -107,26 +102,38 @@ namespace Presentation.Entity
             var pointerInInventory = _inventoryContainer.gameObject.activeInHierarchy && IsPointerOver(_inventoryContainer, eventData);
 
             Transform dropContainer = null;
-    
+            var isToolbarZone = false;
 
             if (pointerInToolbar && _toolbarContainer.childCount <= 5)
             {
                 dropContainer = _toolbarContainer;
+                isToolbarZone = true;
             }
             else if (pointerInInventory)
             {
                 dropContainer = _inventoryContainer;
+                isToolbarZone  = false;
             }
             
             if (dropContainer != null)
             {
                 transform.SetParent(dropContainer);
                 transform.SetAsLastSibling();
-                OnDroppedInContainer(dropContainer == _toolbarContainer);
+                
+                if (dropContainer != _originalParent)
+                {
+                    if (isToolbarZone && !_inventoryPresenter.IsSelected(_cardModel))
+                        _inventoryPresenter.ToggleSelection(_cardModel);
+
+                    else if (!isToolbarZone && _inventoryPresenter.IsSelected(_cardModel))
+                        _inventoryPresenter.ToggleSelection(_cardModel);
+                }
+
+                OnDroppedInContainer(isToolbarZone);
+            
             }
             else
             {
-                // возвращаем в исходный контейнер и ставим в конец
                 transform.SetParent(_originalParent);
                 transform.SetAsLastSibling();
                 OnDroppedInContainer(_originalParent == _toolbarContainer);
@@ -162,42 +169,36 @@ namespace Presentation.Entity
 
             other.transform.SetParent(myParent);
             other.transform.SetSiblingIndex(myIndex);
-
-
+            
             OnDroppedInContainer(transform.parent == _toolbarContainer);
             other.OnDroppedInContainer(other.transform.parent == _toolbarContainer);
         }
 
-        private void OnDroppedInContainer(bool isToolbarZone)
+        public void OnDroppedInContainer(bool isToolbarZone)
         {
             var view = GetComponent<CardView>();
+
+            SetCountText(
+                !isToolbarZone && _cardModel.Count.Value > 1
+                    ? $"x{_cardModel.Count.Value}"
+                    : "",
+                !isToolbarZone && _cardModel.Count.Value > 1
+            );
+
             view.Slider.gameObject.SetActive(isToolbarZone);
-            SetCountText(isToolbarZone ? "" : $"x{((CardModel)DomainItem).Count.Value}", !isToolbarZone);
-            
+
+
+            view.Level.gameObject.SetActive(isToolbarZone);
+            view.ExpCurrent.gameObject.SetActive(isToolbarZone);
+            view.ExpToNextLevel.gameObject.SetActive(isToolbarZone);
+
             if (isToolbarZone)
-                _inventoryPresenter.ToggleSelection(_cardModel);
-            else
-                _inventoryPresenter.ToggleSelection(_cardModel);
-        }
-        
-        
-        
-        public void OnDropped(bool isToolbarZone)
-        {
-            var cardView = GetComponent<CardView>();
-            
-            if (!isToolbarZone)
             {
-                GetComponent<CardView>().Slider.gameObject.SetActive(false);
-                
-            }
-            else
-            {
-                GetComponent<CardView>().Slider.gameObject.SetActive(true);
-                // …и остальной UI-апдейт
-                
-                cardView.SetTextCurrentExp(_cardModel.ExpCurrent);
-                cardView.SetTextNextExp(_cardModel.ExpToNextLevel);
+                view.SetLevel(_cardModel.Level.Value);
+                view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
+                view.SetSliderNextExp(_cardModel.ExpToNextLevel.Value);
+                view.SetTextCurrentExp(_cardModel.ExpCurrent.Value);
+                view.SetTextNextExp(_cardModel.ExpToNextLevel.Value);
             }
         }
     }

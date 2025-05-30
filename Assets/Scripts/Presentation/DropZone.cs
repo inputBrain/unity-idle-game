@@ -12,7 +12,7 @@ namespace Presentation
             var card = e.pointerDrag?.GetComponent<EntityView>();
             if (card==null) return;
             card.transform.SetParent(transform);
-            card.OnDropped(isToolbarZone);
+            card.OnDroppedInContainer(isToolbarZone);
         }
     }
 

@@ -37,6 +37,9 @@ namespace Presentation.Inventory
                 new CardPresenter().Init(card, slot.GetComponent<CardView>());
             }
         }
+        
+        public bool IsSelected(CardModel card) 
+            => _model.SelectedItems.OfType<CardModel>().Contains(card);
 
         public void AddOrStackCard(CardModel cardModel)
             => _model.AddOrStackItem(cardModel);
