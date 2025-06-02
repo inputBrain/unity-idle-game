@@ -46,10 +46,6 @@ namespace Presentation.Entity
             if (iconImage != null && cardModel.IconResourcesPath.Value != null)
                 iconImage.sprite = Resources.Load<Sprite>(cardModel.IconResourcesPath.Value);
 
-            SetCountText(
-                !isToolbar && cardModel.Count.Value > 1 ? $"x{cardModel.Count.Value}" : "",
-                !isToolbar && cardModel.Count.Value > 1
-            );
 
             var cardView = GetComponent<CardView>();
             if (cardView != null)
@@ -58,11 +54,11 @@ namespace Presentation.Entity
         
         
 
-        public void SetCountText(string text, bool visible)
-        {
-            countText.text = text;
-            countText.gameObject.SetActive(visible);
-        }
+        // public void SetCountText(string text, bool visible)
+        // {
+        //     countText.text = text;
+        //     countText.gameObject.SetActive(visible);
+        // }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -177,28 +173,29 @@ namespace Presentation.Entity
         public void OnDroppedInContainer(bool isToolbarZone)
         {
             var view = GetComponent<CardView>();
-
-            SetCountText(
-                !isToolbarZone && _cardModel.Count.Value > 1
-                    ? $"x{_cardModel.Count.Value}"
-                    : "",
-                !isToolbarZone && _cardModel.Count.Value > 1
-            );
-
-            view.Slider.gameObject.SetActive(isToolbarZone);
-
-
-            view.Level.gameObject.SetActive(isToolbarZone);
-            view.ExpCurrent.gameObject.SetActive(isToolbarZone);
-            view.ExpToNextLevel.gameObject.SetActive(isToolbarZone);
-
+            
             if (isToolbarZone)
             {
+                view.Slider.gameObject.SetActive(true);
+                view.Level.gameObject.SetActive(true);
+                view.ExpCurrent.gameObject.SetActive(true);
+                view.ExpToNextLevel.gameObject.SetActive(true);
+                
                 view.SetLevel(_cardModel.Level.Value);
-                view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
                 view.SetSliderNextExp(_cardModel.ExpToNextLevel.Value);
-                view.SetTextCurrentExp(_cardModel.ExpCurrent.Value);
+                view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
                 view.SetTextNextExp(_cardModel.ExpToNextLevel.Value);
+                view.SetTextCurrentExp(_cardModel.ExpCurrent.Value);
+            }
+            else
+            {
+                view.Slider.gameObject.SetActive(false);
+                view.Level.gameObject.SetActive(false);
+                view.ExpCurrent.gameObject.SetActive(false);
+                view.ExpToNextLevel.gameObject.SetActive(false);
+
+                view.CountText.gameObject.SetActive(true);
+                view.CountText.text = $"x{_cardModel.Count.Value}";
             }
         }
     }

@@ -60,7 +60,7 @@ namespace Presentation.Card
         
         public void SetCount(int count)
         {
-            CountText.text = count.ToString();
+            CountText.text = $"x{count}";
         }
 
     }
