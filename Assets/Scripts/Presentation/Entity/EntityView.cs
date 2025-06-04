@@ -112,7 +112,7 @@ namespace Presentation.Entity
 
             if (dropContainer != null)
             {
-                if (!isToolbarZone && _originalParent == _toolbarContainer && _toolbarContainer.childCount == 1)
+                if (!isToolbarZone && _originalParent == _toolbarContainer && _toolbarContainer.childCount == 0)
                 {
                     transform.SetParent(_toolbarContainer);
                     transform.SetAsLastSibling();
@@ -192,8 +192,7 @@ namespace Presentation.Entity
                 view.SetLevel(_cardModel.Level.Value);
                 view.SetSliderNextExp(_cardModel.ExpToNextLevel.Value);
                 view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
-                view.SetTextNextExp(_cardModel.ExpToNextLevel.Value);
-                view.SetTextCurrentExp(_cardModel.ExpCurrent.Value);
+                view.SetExpText(_cardModel.ExpCurrent.Value, _cardModel.ExpToNextLevel.Value);
             }
             else
             {
