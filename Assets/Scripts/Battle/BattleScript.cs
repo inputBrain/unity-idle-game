@@ -52,12 +52,7 @@ namespace Battle
             if (_stats.Cards == null || _stats.Cards.Count == 0)
                 return;
 
-            foreach (var card in _stats.Cards)
-            {
-                card.CurrentHp.Value = Mathf.Min(
-                    card.CurrentHp.Value + _stats.HpRegeneration,
-                    card.MaxHp.Value);
-            }
+            _stats.RegenerateHp();
         }
      
         
@@ -155,8 +150,7 @@ namespace Battle
                     card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
 
                     card.Level.Value += 1;
-                    if (card.Rank.Value < CardModel.MaxRank)
-                        card.Rank.Value += 1;
+                    // TODO: scale stats based on level and rank
 
                     card.MaxHp.Value      += 1.1f;
                     card.CurrentHp.Value  += 1.1f;
