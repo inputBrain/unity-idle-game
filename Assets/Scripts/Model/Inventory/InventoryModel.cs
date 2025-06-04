@@ -80,7 +80,7 @@ namespace Model.Inventory
 
         public void AddOrStackItem(IInventoryItem domainItem)
         {
-            const int maxRank = 10;
+            const int maxRank = CardModel.MaxRank;
 
             if (domainItem is not CardModel newCard || newCard.Count.Value <= 0) 
                 return;

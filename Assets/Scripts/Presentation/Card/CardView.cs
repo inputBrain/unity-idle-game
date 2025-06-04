@@ -21,6 +21,11 @@ namespace Presentation.Card
 
         public Slider Slider;
 
+        public void SetMaxLevel()
+        {
+            Slider.value    = Slider.maxValue = 1f;
+            ExpCurrent.text = "max level";
+        }
 
         public void SetLevel(int level)
         {
