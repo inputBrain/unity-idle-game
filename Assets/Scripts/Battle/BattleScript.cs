@@ -33,9 +33,10 @@ namespace Battle
             _dropService        = new CardDropService(allDomainCards);
         }
         
-        public void BattleUpdate()
+        public void BattleUpdate(float deltaTime)
         {
-            HpRegeneration();
+            HpRegeneration(deltaTime);
+
             DealDamageToBoss();
             DealDamageToTeam();
 
@@ -47,12 +48,13 @@ namespace Battle
         }
 
 
-        private void HpRegeneration()
+        private void HpRegeneration(float deltaTime)
+
         {
             if (_stats.Cards == null || _stats.Cards.Count == 0)
                 return;
 
-            _stats.RegenerateHp();
+            _stats.RegenerateHp(deltaTime);
         }
      
         

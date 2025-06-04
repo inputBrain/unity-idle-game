@@ -38,13 +38,13 @@ namespace Presentation.TotalStats
             }
         }
 
-        public void RegenerateHp()
+        public void RegenerateHp(float deltaTime)
         {
             foreach (var card in Cards)
             {
                 card.CurrentHp.Value = Mathf.Min(
-                    card.CurrentHp.Value + card.HpRegeneration.Value,
-                    card.MaxHp.Value);
+                card.CurrentHp.Value + card.HpRegeneration.Value * deltaTime,
+                card.MaxHp.Value);
             }
         }
     }
