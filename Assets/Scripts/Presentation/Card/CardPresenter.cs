@@ -16,9 +16,10 @@ namespace Presentation.Card
             UpdateSlider(cardModel.ExpCurrent, cardModel.ExpToNextLevel);
             _cardView.SetCount(cardModel.Count.Value);
             _cardView.SetRank(_cardModel.Rank.Value);
+            UpdateLevel(_cardModel.Level.Value);
 
             _cardModel.IconResourcesPath.OnValueChanged += UpdateIcon;
-            _cardModel.Level.OnValueChanged += _cardView.SetLevel;
+            _cardModel.Level.OnValueChanged += UpdateLevel;
 
             _cardModel.ExpCurrent.OnValueChanged += _cardView.SetSliderCurrentExp;
             _cardModel.ExpToNextLevel.OnValueChanged += _cardView.SetSliderNextExp;
@@ -44,9 +45,24 @@ namespace Presentation.Card
 
         private void UpdateExpText(float _)
         {
-            _cardView.SetExpText(
-                _cardModel.ExpCurrent.Value,
-                _cardModel.ExpToNextLevel.Value);
+            if (_cardModel.Level.Value >= CardModel.MaxLevel)
+            {
+                _cardView.SetMaxLevel();
+            }
+            else
+            {
+                _cardView.SetExpText(
+                    _cardModel.ExpCurrent.Value,
+                    _cardModel.ExpToNextLevel.Value);
+            }
+        }
+
+        private void UpdateLevel(int level)
+        {
+            if (level >= CardModel.MaxLevel)
+                _cardView.SetMaxLevel();
+            else
+                _cardView.SetLevel(level);
         }
     }
 }
