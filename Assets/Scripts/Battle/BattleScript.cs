@@ -136,6 +136,9 @@ namespace Battle
         }
 
         
+        private const int MaxRank = 10;
+        private const int MaxLevel = 100;
+
         private void ReceiveExp()
         {
             var toolbarCards = _stats.Cards;
@@ -147,20 +150,21 @@ namespace Battle
 
             foreach (var card in toolbarCards)
             {
-                if (card.Rank.Value >= 10)
+                if (card.Level.Value >= MaxLevel)
                 {
-                    card.Count.Value += 1;
+                    card.ExpCurrent.Value = card.ExpToNextLevel.Value;
                     continue;
                 }
 
                 card.ExpCurrent.Value += expPerCard;
 
-                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value && card.Rank.Value < 10)
+                while (card.Level.Value < MaxLevel && card.ExpCurrent.Value >= card.ExpToNextLevel.Value)
                 {
                     card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
 
                     card.Level.Value += 1;
-                    card.Rank.Value  += 1;
+                    if (card.Rank.Value < MaxRank)
+                        card.Rank.Value  += 1;
 
                     card.MaxHp.Value     += 1.1f;
                     card.CurrentHp.Value += 1.1f;
@@ -170,13 +174,11 @@ namespace Battle
                     card.BlockPower.Value+= 1.1f;
 
                     card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
+                }
 
-                    if (card.Rank.Value >= 10)
-                    {
-                        card.ExpCurrent.Value = 0;
-                        card.Count.Value += 1;
-                        break;
-                    }
+                if (card.Level.Value >= MaxLevel)
+                {
+                    card.ExpCurrent.Value = card.ExpToNextLevel.Value;
                 }
             }
         }

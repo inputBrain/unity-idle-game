@@ -34,7 +34,9 @@ namespace Presentation.Inventory
             {
                 var slot = _view.SpawnItemView();
                 slot.Init(card, this, isToolbar: false);
-                new CardPresenter().Init(card, slot.GetComponent<CardView>());
+                var view = slot.GetComponent<CardView>();
+                new CardPresenter().Init(card, view);
+                slot.OnDroppedInContainer(false);
             }
         }
         

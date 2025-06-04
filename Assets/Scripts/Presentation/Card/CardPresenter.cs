@@ -4,6 +4,7 @@ namespace Presentation.Card
 {
     public class CardPresenter
     {
+        private const int MaxLevel = 100;
         private CardModel _cardModel;
         private CardView _cardView;
 
@@ -16,16 +17,16 @@ namespace Presentation.Card
             UpdateSlider(cardModel.ExpCurrent, cardModel.ExpToNextLevel);
             _cardView.SetCount(cardModel.Count.Value);
             _cardView.SetRank(_cardModel.Rank.Value);
-            
+
             _cardModel.IconResourcesPath.OnValueChanged += UpdateIcon;
             _cardModel.Level.OnValueChanged += _cardView.SetLevel;
-            
+
             _cardModel.ExpCurrent.OnValueChanged += _cardView.SetSliderCurrentExp;
             _cardModel.ExpToNextLevel.OnValueChanged += _cardView.SetSliderNextExp;
-            
-            _cardModel.ExpCurrent.OnValueChanged += _cardView.SetTextCurrentExp;
-            _cardModel.ExpToNextLevel.OnValueChanged += _cardView.SetTextNextExp;
-            
+
+            _cardModel.ExpCurrent.OnValueChanged += UpdateExpText;
+            _cardModel.ExpToNextLevel.OnValueChanged += UpdateExpText;
+
             _cardModel.Count.OnValueChanged += _cardView.SetCount;
         }
 
@@ -40,6 +41,20 @@ namespace Presentation.Card
         {
             _cardView.SetSliderCurrentExp(a);
             _cardView.SetSliderNextExp(b);
+        }
+
+        private void UpdateExpText(float _)
+        {
+            if (_cardModel.Level.Value >= MaxLevel)
+            {
+                _cardView.SetMaxLevelText();
+            }
+            else
+            {
+                _cardView.SetExpText(
+                    _cardModel.ExpCurrent.Value,
+                    _cardModel.ExpToNextLevel.Value);
+            }
         }
     }
 }

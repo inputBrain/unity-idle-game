@@ -112,7 +112,7 @@ namespace Presentation.Entity
 
             if (dropContainer != null)
             {
-                if (!isToolbarZone && _originalParent == _toolbarContainer && _toolbarContainer.childCount == 1)
+                if (!isToolbarZone && _originalParent == _toolbarContainer && _toolbarContainer.childCount == 0)
                 {
                     transform.SetParent(_toolbarContainer);
                     transform.SetAsLastSibling();
@@ -184,27 +184,30 @@ namespace Presentation.Entity
             {
                 view.Slider.gameObject.SetActive(true);
                 view.Level.gameObject.SetActive(true);
-                view.Rank.gameObject.SetActive(true);
+                view.Rank.gameObject.SetActive(false);
+                view.CountText.gameObject.SetActive(false);
                 view.ExpCurrent.gameObject.SetActive(true);
                 view.ExpToNextLevel.gameObject.SetActive(true);
 
                 view.SetLevel(_cardModel.Level.Value);
-                view.SetRank(_cardModel.Rank.Value);
                 view.SetSliderNextExp(_cardModel.ExpToNextLevel.Value);
                 view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
-                view.SetTextNextExp(_cardModel.ExpToNextLevel.Value);
-                view.SetTextCurrentExp(_cardModel.ExpCurrent.Value);
+                if (_cardModel.Level.Value >= 100)
+                    view.SetMaxLevelText();
+                else
+                    view.SetExpText(_cardModel.ExpCurrent.Value, _cardModel.ExpToNextLevel.Value);
             }
             else
             {
                 view.Slider.gameObject.SetActive(false);
                 view.Level.gameObject.SetActive(false);
-                view.Rank.gameObject.SetActive(false);
+                view.Rank.gameObject.SetActive(true);
                 view.ExpCurrent.gameObject.SetActive(false);
                 view.ExpToNextLevel.gameObject.SetActive(false);
 
                 view.CountText.gameObject.SetActive(true);
                 view.SetCount(_cardModel.Count.Value);
+                view.SetRank(_cardModel.Rank.Value);
             }
         }
     }

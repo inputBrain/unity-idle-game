@@ -45,16 +45,25 @@ namespace Presentation.Card
         }
 
 
-        public void SetTextNextExp(float nextExp)
+        public void SetExpText(float currentExp, float nextExp)
         {
-            ExpToNextLevel.text = "/" + (int) nextExp;
+            ExpCurrent.text = $"{(int)currentExp} / {(int)nextExp}";
         }
 
+        public void SetMaxLevelText()
+        {
+            ExpCurrent.text = "max level";
+        }
+
+        public void SetTextNextExp(float nextExp)
+        {
+            // keep backward compatibility
+            SetExpText(Slider.value, nextExp);
+        }
 
         public void SetTextCurrentExp(float currentExp)
         {
-
-            ExpCurrent.text = ((int) currentExp).ToString(CultureInfo.InvariantCulture);
+            SetExpText(currentExp, Slider.maxValue);
         }
 
 
