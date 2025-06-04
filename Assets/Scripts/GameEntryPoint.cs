@@ -150,10 +150,11 @@ public class GameEntryPoint : MonoBehaviour
 
     private IEnumerator StartBattleLoop(BattleScript battleScript)
     {
+        const float tick = 1f;
         while (true)
         {
-            battleScript.BattleUpdate();
-            yield return new WaitForSeconds(1f);
+            battleScript.BattleUpdate(tick);
+            yield return new WaitForSeconds(tick);
         }
     }
     
