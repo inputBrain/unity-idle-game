@@ -23,8 +23,7 @@ namespace Presentation.Card
 
         public void SetMaxLevel()
         {
-            Level.text = "max level";
-            Slider.value = Slider.maxValue;
+            Slider.value    = Slider.maxValue = 1f;
             ExpCurrent.text = "max level";
         }
 
