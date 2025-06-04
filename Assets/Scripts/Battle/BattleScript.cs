@@ -147,36 +147,36 @@ namespace Battle
 
             foreach (var card in toolbarCards)
             {
-                if (card.Rank.Value >= 10)
-                {
-                    card.Count.Value += 1;
-                    continue;
-                }
-
                 card.ExpCurrent.Value += expPerCard;
 
-                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value && card.Rank.Value < 10)
+                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value && card.Level.Value < CardModel.MaxLevel)
                 {
                     card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
 
                     card.Level.Value += 1;
-                    card.Rank.Value  += 1;
+                    if (card.Rank.Value < CardModel.MaxRank)
+                        card.Rank.Value += 1;
 
-                    card.MaxHp.Value     += 1.1f;
-                    card.CurrentHp.Value += 1.1f;
-                    card.Attack.Value    += 1.1f;
-                    card.Evade.Value     += 1.1f;
-                    card.Block.Value     += 1.1f;
-                    card.BlockPower.Value+= 1.1f;
+                    card.MaxHp.Value      += 1.1f;
+                    card.CurrentHp.Value  += 1.1f;
+                    card.Attack.Value     += 1.1f;
+                    card.Evade.Value      += 1.1f;
+                    card.Block.Value      += 1.1f;
+                    card.BlockPower.Value += 1.1f;
 
                     card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
 
-                    if (card.Rank.Value >= 10)
+                    if (card.Level.Value >= CardModel.MaxLevel)
                     {
-                        card.ExpCurrent.Value = 0;
-                        card.Count.Value += 1;
+                        card.Level.Value = CardModel.MaxLevel;
+                        card.ExpCurrent.Value = card.ExpToNextLevel.Value;
                         break;
                     }
+                }
+
+                if (card.Level.Value >= CardModel.MaxLevel)
+                {
+                    card.ExpCurrent.Value = card.ExpToNextLevel.Value;
                 }
             }
         }
