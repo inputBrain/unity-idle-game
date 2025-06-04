@@ -35,7 +35,7 @@ namespace Battle
         
         public void BattleUpdate()
         {
-            // HpRegeneration();
+            HpRegeneration();
             DealDamageToBoss();
             DealDamageToTeam();
 
@@ -47,22 +47,26 @@ namespace Battle
         }
 
 
-        // private void HpRegeneration()
-        // {
-        //     foreach (var card in CardList)
-        //     {
-        //         card.CurrentHp.Value += _stats.HpRegeneration;
-        //         if (card.CurrentHp > card.MaxHp)
-        //         {
-        //             card.CurrentHp.Value = card.MaxHp;
-        //         }
-        //     }
-        // }
+        private void HpRegeneration()
+        {
+            if (_stats.Cards == null || _stats.Cards.Count == 0)
+                return;
+
+            foreach (var card in _stats.Cards)
+            {
+                card.CurrentHp.Value = Mathf.Min(
+                    card.CurrentHp.Value + _stats.HpRegeneration,
+                    card.MaxHp.Value);
+            }
+        }
      
         
         private void DealDamageToBoss()
         {
-            // var totalDamage = _stats.Attack;
+            if (_stats.Cards == null || _stats.Cards.Count == 0)
+                return;
+
+            var totalDamage = _stats.Cards.Sum(card => card.Attack.Value);
 
             // Critical attack case TODO:
             // if (Random.value * 100 < _stats.Crit)
@@ -70,10 +74,7 @@ namespace Battle
             //     totalDamage *= 1 + _stats.CritDmg / 10f;
             // }
 
-            if (_stats.Cards.Any())
-                _bossModel.CurrentHp.Value -= _stats.Attack;
-            
-            // _bossModel.CurrentHp.Value -= totalDamage;
+            _bossModel.CurrentHp.Value -= totalDamage;
         }
 
         
