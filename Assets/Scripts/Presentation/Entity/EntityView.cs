@@ -184,12 +184,12 @@ namespace Presentation.Entity
             {
                 view.Slider.gameObject.SetActive(true);
                 view.Level.gameObject.SetActive(true);
-                view.Rank.gameObject.SetActive(true);
+                view.Rank.gameObject.SetActive(false);
+                view.CountText.gameObject.SetActive(false);
                 view.ExpCurrent.gameObject.SetActive(true);
                 view.ExpToNextLevel.gameObject.SetActive(true);
 
                 view.SetLevel(_cardModel.Level.Value);
-                view.SetRank(_cardModel.Rank.Value);
                 view.SetSliderNextExp(_cardModel.ExpToNextLevel.Value);
                 view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
                 view.SetTextNextExp(_cardModel.ExpToNextLevel.Value);
@@ -199,12 +199,13 @@ namespace Presentation.Entity
             {
                 view.Slider.gameObject.SetActive(false);
                 view.Level.gameObject.SetActive(false);
-                view.Rank.gameObject.SetActive(false);
+                view.Rank.gameObject.SetActive(true);
                 view.ExpCurrent.gameObject.SetActive(false);
                 view.ExpToNextLevel.gameObject.SetActive(false);
 
                 view.CountText.gameObject.SetActive(true);
                 view.SetCount(_cardModel.Count.Value);
+                view.SetRank(_cardModel.Rank.Value);
             }
         }
     }

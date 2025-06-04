@@ -100,6 +100,11 @@ public class GameEntryPoint : MonoBehaviour
 
         _inventoryModel.OnSelectionChanged += UpdateToolbarAndStats;
 
+        if (!_inventoryModel.SelectedItems.Any() && _inventoryModel.Items.OfType<CardModel>().Any())
+        {
+            var firstCard = _inventoryModel.Items.OfType<CardModel>().First();
+            _inventoryModel.ToggleSelection(firstCard);
+        }
 
         UpdateToolbarAndStats();
 
@@ -138,6 +143,7 @@ public class GameEntryPoint : MonoBehaviour
             instance.Init(card, _inventoryPresenter, isToolbar: true);
             var cardView = instance.GetComponent<CardView>();
             new CardPresenter().Init(card, cardView);
+            instance.OnDroppedInContainer(true);
         }
     }
 
@@ -164,5 +170,7 @@ public class GameEntryPoint : MonoBehaviour
         _statsPresenter.Init(toolbarCards, totalCardStatsView);
 
         InitUISelectedCardsToolbar(toolbarCards);
+
+        _bossModel.GetUpdatedStats(_zoneModel.CurrentZone);
     }
 }
