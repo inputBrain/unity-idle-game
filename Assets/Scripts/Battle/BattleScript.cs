@@ -142,29 +142,41 @@ namespace Battle
             if (toolbarCards == null || toolbarCards.Count == 0)
                 return;
 
-            // TODO: total experience implementation
-            const float totalExperience = 10f;
+            const float totalExperience = 200f;
             var expPerCard = totalExperience / toolbarCards.Count;
 
             foreach (var card in toolbarCards)
             {
-                card.ExpCurrent.Value += expPerCard;
-                
-                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value)
+                if (card.Rank.Value >= 10)
                 {
+                    card.Count.Value += 1;
+                    continue;
+                }
 
-                    card.Rank.Value += 1;
+                card.ExpCurrent.Value += expPerCard;
+
+                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value && card.Rank.Value < 10)
+                {
                     card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
 
                     card.Level.Value += 1;
+                    card.Rank.Value  += 1;
+
                     card.MaxHp.Value     += 1.1f;
                     card.CurrentHp.Value += 1.1f;
                     card.Attack.Value    += 1.1f;
                     card.Evade.Value     += 1.1f;
                     card.Block.Value     += 1.1f;
                     card.BlockPower.Value+= 1.1f;
-                    
+
                     card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
+
+                    if (card.Rank.Value >= 10)
+                    {
+                        card.ExpCurrent.Value = 0;
+                        card.Count.Value += 1;
+                        break;
+                    }
                 }
             }
         }

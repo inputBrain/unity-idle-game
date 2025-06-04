@@ -15,6 +15,7 @@ namespace Presentation.Card
             UpdateIcon(cardModel.IconResourcesPath.Value);
             UpdateSlider(cardModel.ExpCurrent, cardModel.ExpToNextLevel);
             _cardView.SetCount(cardModel.Count.Value);
+            _cardView.SetRank(_cardModel.Rank.Value);
             
             _cardModel.IconResourcesPath.OnValueChanged += UpdateIcon;
             _cardModel.Level.OnValueChanged += _cardView.SetLevel;

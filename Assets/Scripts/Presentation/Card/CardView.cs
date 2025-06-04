@@ -8,6 +8,8 @@ namespace Presentation.Card
     public class CardView : MonoBehaviour
     {
         public TMP_Text Level;
+        
+        public TMP_Text Rank;
 
         public TMP_Text ExpCurrent;
 
@@ -24,7 +26,12 @@ namespace Presentation.Card
         {
             Level.text = "lvl: " + level;
         }
+        
 
+        public void SetRank(int rank)
+        {
+            Rank.text = "Rank: " + rank;
+        }
 
         public void SetSliderCurrentExp(float currentExp)
         {
@@ -62,6 +69,5 @@ namespace Presentation.Card
         {
             CountText.text = $"x{count}";
         }
-
     }
 }

@@ -79,20 +79,19 @@ namespace Presentation.Entity
         {
             _canvasGroup.alpha          = 1f;
             _canvasGroup.blocksRaycasts = true;
-            
+
             var other = eventData.pointerCurrentRaycast.gameObject?.GetComponentInParent<EntityView>();
             if (other != null && other != this)
             {
                 var parent = other.transform.parent;
-                var isOtherInToolbar   = parent == _toolbarContainer;
-                var isOtherInInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
-                if (isOtherInToolbar || isOtherInInventory)
+                var isOtherToolbar   = parent == _toolbarContainer;
+                var isOtherInventory = parent == _inventoryContainer && _inventoryContainer.gameObject.activeInHierarchy;
+                if (isOtherToolbar || isOtherInventory)
                 {
                     SwapWith(other);
                     return;
                 }
             }
-
 
             var pointerInToolbar   = IsPointerOver(_toolbarContainer, eventData);
             var pointerInInventory = _inventoryContainer.gameObject.activeInHierarchy && IsPointerOver(_inventoryContainer, eventData);
@@ -100,7 +99,7 @@ namespace Presentation.Entity
             Transform dropContainer = null;
             var isToolbarZone = false;
 
-            if (pointerInToolbar && _toolbarContainer.childCount <= 5)
+            if (pointerInToolbar && _toolbarContainer.childCount < 6)
             {
                 dropContainer = _toolbarContainer;
                 isToolbarZone = true;
@@ -110,28 +109,35 @@ namespace Presentation.Entity
                 dropContainer = _inventoryContainer;
                 isToolbarZone  = false;
             }
-            
+
             if (dropContainer != null)
             {
+                if (!isToolbarZone && _originalParent == _toolbarContainer && _toolbarContainer.childCount == 1)
+                {
+                    transform.SetParent(_toolbarContainer);
+                    transform.SetAsLastSibling();
+                    OnDroppedInContainer(true);
+                    return;
+                }
+
                 transform.SetParent(dropContainer);
                 transform.SetAsLastSibling();
-                
+
+
                 if (dropContainer != _originalParent)
                 {
                     if (isToolbarZone && !_inventoryPresenter.IsSelected(_cardModel))
                         _inventoryPresenter.ToggleSelection(_cardModel);
-
                     else if (!isToolbarZone && _inventoryPresenter.IsSelected(_cardModel))
                         _inventoryPresenter.ToggleSelection(_cardModel);
                 }
 
                 OnDroppedInContainer(isToolbarZone);
-            
             }
             else
             {
                 transform.SetParent(_originalParent);
-                transform.SetAsLastSibling();
+                transform.SetSiblingIndex(_originalSiblingIndex);
                 OnDroppedInContainer(_originalParent == _toolbarContainer);
             }
         }
@@ -173,15 +179,17 @@ namespace Presentation.Entity
         public void OnDroppedInContainer(bool isToolbarZone)
         {
             var view = GetComponent<CardView>();
-            
+
             if (isToolbarZone)
             {
                 view.Slider.gameObject.SetActive(true);
                 view.Level.gameObject.SetActive(true);
+                view.Rank.gameObject.SetActive(true);
                 view.ExpCurrent.gameObject.SetActive(true);
                 view.ExpToNextLevel.gameObject.SetActive(true);
-                
+
                 view.SetLevel(_cardModel.Level.Value);
+                view.SetRank(_cardModel.Rank.Value);
                 view.SetSliderNextExp(_cardModel.ExpToNextLevel.Value);
                 view.SetSliderCurrentExp(_cardModel.ExpCurrent.Value);
                 view.SetTextNextExp(_cardModel.ExpToNextLevel.Value);
@@ -191,11 +199,12 @@ namespace Presentation.Entity
             {
                 view.Slider.gameObject.SetActive(false);
                 view.Level.gameObject.SetActive(false);
+                view.Rank.gameObject.SetActive(false);
                 view.ExpCurrent.gameObject.SetActive(false);
                 view.ExpToNextLevel.gameObject.SetActive(false);
 
                 view.CountText.gameObject.SetActive(true);
-                view.CountText.text = $"x{_cardModel.Count.Value}";
+                view.SetCount(_cardModel.Count.Value);
             }
         }
     }
