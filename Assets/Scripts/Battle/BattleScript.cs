@@ -36,6 +36,7 @@ namespace Battle
         public void BattleUpdate(float deltaTime)
         {
             HpRegeneration(deltaTime);
+
             DealDamageToBoss();
             DealDamageToTeam();
 
@@ -48,6 +49,7 @@ namespace Battle
 
 
         private void HpRegeneration(float deltaTime)
+
         {
             if (_stats.Cards == null || _stats.Cards.Count == 0)
                 return;
