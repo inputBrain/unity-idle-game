@@ -8,6 +8,8 @@ namespace Presentation.Inventory
         [SerializeField] private Transform itemsContainer;
         [SerializeField] private EntityView itemPrefab;
 
+        public Transform ItemsContainer => itemsContainer;
+
         public void ClearAllItems()
         {
             foreach (Transform t in itemsContainer) Destroy(t.gameObject);

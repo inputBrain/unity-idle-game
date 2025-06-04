@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Model.Card;
+using UnityEngine;
 
 namespace Presentation.TotalStats
 {
@@ -34,6 +35,16 @@ namespace Presentation.TotalStats
             foreach (var card in Cards)
             {
                 card.CurrentHp.Value -= damage / Cards.Count;
+            }
+        }
+
+        public void RegenerateHp(float deltaTime)
+        {
+            foreach (var card in Cards)
+            {
+                card.CurrentHp.Value = Mathf.Min(
+                    card.CurrentHp.Value + card.HpRegeneration.Value * deltaTime,
+                    card.MaxHp.Value);
             }
         }
     }

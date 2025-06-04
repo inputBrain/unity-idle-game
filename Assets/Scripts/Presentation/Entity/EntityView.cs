@@ -99,7 +99,7 @@ namespace Presentation.Entity
             Transform dropContainer = null;
             var isToolbarZone = false;
 
-            if (pointerInToolbar && _toolbarContainer.childCount < 6)
+            if (pointerInToolbar && _toolbarContainer.childCount < 5)
             {
                 dropContainer = _toolbarContainer;
                 isToolbarZone = true;
@@ -160,20 +160,37 @@ namespace Presentation.Entity
         
         private void SwapWith(EntityView other)
         {
-            var myParent   = _originalParent;
-            var myIndex    = _originalSiblingIndex;
-            var theirParent= other.transform.parent;
-            var theirIndex = other.transform.GetSiblingIndex();
-
+            var myParent    = _originalParent;
+            var myIndex     = _originalSiblingIndex;
+            var theirParent = other.transform.parent;
+            var theirIndex  = other.transform.GetSiblingIndex();
 
             transform.SetParent(theirParent);
             transform.SetSiblingIndex(theirIndex);
 
             other.transform.SetParent(myParent);
             other.transform.SetSiblingIndex(myIndex);
-            
-            OnDroppedInContainer(transform.parent == _toolbarContainer);
-            other.OnDroppedInContainer(other.transform.parent == _toolbarContainer);
+
+            var myToolbar    = transform.parent == _toolbarContainer;
+            var otherToolbar = other.transform.parent == _toolbarContainer;
+
+            var otherCard = other.DomainItem as CardModel;
+
+            if (myToolbar && !_inventoryPresenter.IsSelected(_cardModel))
+                _inventoryPresenter.ToggleSelection(_cardModel);
+            else if (!myToolbar && _inventoryPresenter.IsSelected(_cardModel))
+                _inventoryPresenter.ToggleSelection(_cardModel);
+
+            if (otherCard != null)
+            {
+                if (otherToolbar && !_inventoryPresenter.IsSelected(otherCard))
+                    _inventoryPresenter.ToggleSelection(otherCard);
+                else if (!otherToolbar && _inventoryPresenter.IsSelected(otherCard))
+                    _inventoryPresenter.ToggleSelection(otherCard);
+            }
+
+            OnDroppedInContainer(myToolbar);
+            other.OnDroppedInContainer(otherToolbar);
         }
 
         public void OnDroppedInContainer(bool isToolbarZone)

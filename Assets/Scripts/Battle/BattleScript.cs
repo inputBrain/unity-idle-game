@@ -33,9 +33,9 @@ namespace Battle
             _dropService        = new CardDropService(allDomainCards);
         }
         
-        public void BattleUpdate()
+        public void BattleUpdate(float deltaTime)
         {
-            // HpRegeneration();
+            HpRegeneration(deltaTime);
             DealDamageToBoss();
             DealDamageToTeam();
 
@@ -47,22 +47,21 @@ namespace Battle
         }
 
 
-        // private void HpRegeneration()
-        // {
-        //     foreach (var card in CardList)
-        //     {
-        //         card.CurrentHp.Value += _stats.HpRegeneration;
-        //         if (card.CurrentHp > card.MaxHp)
-        //         {
-        //             card.CurrentHp.Value = card.MaxHp;
-        //         }
-        //     }
-        // }
+        private void HpRegeneration(float deltaTime)
+        {
+            if (_stats.Cards == null || _stats.Cards.Count == 0)
+                return;
+
+            _stats.RegenerateHp(deltaTime);
+        }
      
         
         private void DealDamageToBoss()
         {
-            // var totalDamage = _stats.Attack;
+            if (_stats.Cards == null || _stats.Cards.Count == 0)
+                return;
+
+            var totalDamage = _stats.Cards.Sum(card => card.Attack.Value);
 
             // Critical attack case TODO:
             // if (Random.value * 100 < _stats.Crit)
@@ -70,10 +69,7 @@ namespace Battle
             //     totalDamage *= 1 + _stats.CritDmg / 10f;
             // }
 
-            if (_stats.Cards.Any())
-                _bossModel.CurrentHp.Value -= _stats.Attack;
-            
-            // _bossModel.CurrentHp.Value -= totalDamage;
+            _bossModel.CurrentHp.Value -= totalDamage;
         }
 
         
@@ -147,36 +143,35 @@ namespace Battle
 
             foreach (var card in toolbarCards)
             {
-                if (card.Rank.Value >= 10)
-                {
-                    card.Count.Value += 1;
-                    continue;
-                }
-
                 card.ExpCurrent.Value += expPerCard;
 
-                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value && card.Rank.Value < 10)
+                while (card.ExpCurrent.Value >= card.ExpToNextLevel.Value && card.Level.Value < CardModel.MaxLevel)
                 {
                     card.ExpCurrent.Value -= card.ExpToNextLevel.Value;
 
                     card.Level.Value += 1;
-                    card.Rank.Value  += 1;
+                    // TODO: scale stats based on level and rank
 
-                    card.MaxHp.Value     += 1.1f;
-                    card.CurrentHp.Value += 1.1f;
-                    card.Attack.Value    += 1.1f;
-                    card.Evade.Value     += 1.1f;
-                    card.Block.Value     += 1.1f;
-                    card.BlockPower.Value+= 1.1f;
+                    card.MaxHp.Value      += 1.1f;
+                    card.CurrentHp.Value  += 1.1f;
+                    card.Attack.Value     += 1.1f;
+                    card.Evade.Value      += 1.1f;
+                    card.Block.Value      += 1.1f;
+                    card.BlockPower.Value += 1.1f;
 
                     card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
 
-                    if (card.Rank.Value >= 10)
+                    if (card.Level.Value >= CardModel.MaxLevel)
                     {
-                        card.ExpCurrent.Value = 0;
-                        card.Count.Value += 1;
+                        card.Level.Value = CardModel.MaxLevel;
+                        card.ExpCurrent.Value = card.ExpToNextLevel.Value;
                         break;
                     }
+                }
+
+                if (card.Level.Value >= CardModel.MaxLevel)
+                {
+                    card.ExpCurrent.Value = card.ExpToNextLevel.Value;
                 }
             }
         }
