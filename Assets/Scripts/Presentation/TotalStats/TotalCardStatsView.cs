@@ -30,7 +30,7 @@ namespace Presentation.TotalStats
         public TMP_Text HpOnSlider;
 
         [SerializeField]
-        private float _sliderAnimDuration = 0.5f;
+        private float _sliderAnimDuration = 1f;
 
         private Coroutine _sliderRoutine;
 
