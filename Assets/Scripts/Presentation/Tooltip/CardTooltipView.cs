@@ -61,6 +61,7 @@ namespace Presentation.Tooltip
             if (blockPowerText != null) blockPowerText.text = $"BlockPower: {(int)card.BlockPower.Value}%";
             if (evadeText != null) evadeText.text = $"Evade: {(int)card.Evade.Value}%";
 
+
             if (_rect != null)
                 _rect.anchoredPosition = Vector2.zero;
 
