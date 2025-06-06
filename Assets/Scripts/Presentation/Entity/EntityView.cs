@@ -99,6 +99,7 @@ namespace Presentation.Entity
             Transform dropContainer = null;
             var isToolbarZone = false;
 
+
             if (pointerInToolbar && _toolbarContainer.childCount <= 5)
             {
                 dropContainer = _toolbarContainer;

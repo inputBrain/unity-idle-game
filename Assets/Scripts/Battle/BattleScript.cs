@@ -36,6 +36,7 @@ namespace Battle
         public void BattleUpdate(float deltaTime)
         {
             HpRegeneration(deltaTime);
+
             DealDamageToBoss();
             DealDamageToTeam();
 
