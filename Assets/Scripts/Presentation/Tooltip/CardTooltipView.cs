@@ -1,3 +1,4 @@
+using System.Collections;
 using Model.Card;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Presentation.Tooltip
     /// </summary>
     public class CardTooltipView : MonoBehaviour
     {
+        [Header("UI References")]
         [SerializeField] private Image iconImage;
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Text levelText;
@@ -22,7 +24,26 @@ namespace Presentation.Tooltip
         [SerializeField] private TMP_Text blockPowerText;
         [SerializeField] private TMP_Text evadeText;
 
-        public void Show(CardModel card, Vector3 position)
+        [Header("Modal Behaviour")]
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private float fadeDuration = 0.25f;
+
+        private Coroutine _fadeRoutine;
+        private RectTransform _rect;
+
+        private void Awake()
+        {
+            _rect = GetComponent<RectTransform>();
+            if (canvasGroup == null)
+                canvasGroup = GetComponent<CanvasGroup>();
+
+            if (canvasGroup != null)
+                canvasGroup.alpha = 0f;
+
+            gameObject.SetActive(false);
+        }
+
+        public void Show(CardModel card)
         {
             if (card == null) return;
 
@@ -40,13 +61,48 @@ namespace Presentation.Tooltip
             if (blockPowerText != null) blockPowerText.text = $"BlockPower: {(int)card.BlockPower.Value}%";
             if (evadeText != null) evadeText.text = $"Evade: {(int)card.Evade.Value}%";
 
-            transform.position = position;
+
+            if (_rect != null)
+                _rect.anchoredPosition = Vector2.zero;
+
             gameObject.SetActive(true);
+
+            if (_fadeRoutine != null)
+                StopCoroutine(_fadeRoutine);
+            _fadeRoutine = StartCoroutine(Fade(1f));
         }
 
         public void Hide()
         {
-            gameObject.SetActive(false);
+            if (_fadeRoutine != null)
+                StopCoroutine(_fadeRoutine);
+            _fadeRoutine = StartCoroutine(Fade(0f));
+        }
+
+        private IEnumerator Fade(float target)
+        {
+            if (canvasGroup == null)
+            {
+                gameObject.SetActive(target > 0f);
+                yield break;
+            }
+
+            float startAlpha = canvasGroup.alpha;
+            float time = 0f;
+
+            if (target > 0f)
+                gameObject.SetActive(true);
+
+            while (time < fadeDuration)
+            {
+                time += Time.unscaledDeltaTime;
+                canvasGroup.alpha = Mathf.Lerp(startAlpha, target, time / fadeDuration);
+                yield return null;
+            }
+
+            canvasGroup.alpha = target;
+            if (target <= 0f)
+                gameObject.SetActive(false);
         }
     }
 }
