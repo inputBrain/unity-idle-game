@@ -23,6 +23,9 @@ namespace Presentation.TotalStats
 
         public void GetDamage(float damage)
         {
+            if (Cards == null || Cards.Count == 0)
+                return;
+
             if (Cards.Sum(c => c.CurrentHp) - damage < 0)
             {
                 foreach (var c in Cards)

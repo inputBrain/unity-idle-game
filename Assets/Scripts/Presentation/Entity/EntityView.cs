@@ -99,7 +99,8 @@ namespace Presentation.Entity
             Transform dropContainer = null;
             var isToolbarZone = false;
 
-            if (pointerInToolbar && _toolbarContainer.childCount < 5)
+
+            if (pointerInToolbar && _toolbarContainer.childCount <= 5)
             {
                 dropContainer = _toolbarContainer;
                 isToolbarZone = true;
@@ -222,6 +223,9 @@ namespace Presentation.Entity
                 view.CountText.gameObject.SetActive(true);
                 view.SetCount(_cardModel.Count.Value);
                 view.SetRank(_cardModel.Rank.Value);
+
+                if (_cardModel != null)
+                    _cardModel.CurrentHp.Value = _cardModel.MaxHp.Value;
             }
         }
     }

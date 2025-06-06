@@ -49,7 +49,6 @@ namespace Battle
 
 
         private void HpRegeneration(float deltaTime)
-
         {
             if (_stats.Cards == null || _stats.Cards.Count == 0)
                 return;
