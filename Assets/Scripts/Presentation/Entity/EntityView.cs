@@ -237,7 +237,7 @@ namespace Presentation.Entity
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (_tooltip != null && _cardModel != null)
-                _tooltip.Show(_cardModel, eventData.position);
+                _tooltip.Show(_cardModel);
         }
 
         public void OnPointerExit(PointerEventData eventData)
