@@ -2,6 +2,7 @@
 using Model.InventoryCard;
 using Presentation.Card;
 using Presentation.Inventory;
+using Presentation.Tooltip;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Presentation.Entity
 {
-    public class EntityView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class EntityView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         private CardModel _cardModel;
         private InventoryPresenter _inventoryPresenter;
@@ -25,6 +26,8 @@ namespace Presentation.Entity
         private Transform _originalParent;
         private int _originalSiblingIndex;
 
+        private CardTooltipView _tooltip;
+
         public IInventoryItem DomainItem { get; private set; }
 
         private void Awake()
@@ -34,6 +37,8 @@ namespace Presentation.Entity
 
             _inventoryContainer = UIManager.I.InventoryContainer;
             _toolbarContainer   = UIManager.I.ToolbarContainer;
+
+            _tooltip = FindObjectOfType<CardTooltipView>(true);
         }
 
 
@@ -227,6 +232,18 @@ namespace Presentation.Entity
                 if (_cardModel != null)
                     _cardModel.CurrentHp.Value = _cardModel.MaxHp.Value;
             }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_tooltip != null && _cardModel != null)
+                _tooltip.Show(_cardModel);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (_tooltip != null)
+                _tooltip.Hide();
         }
     }
 }
