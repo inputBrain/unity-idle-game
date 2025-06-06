@@ -80,19 +80,19 @@ namespace Model.Inventory
 
         public void AddOrStackItem(IInventoryItem domainItem)
         {
-            const int maxRank = 10;
+            const int maxRank = CardModel.MaxRank;
 
-            if (domainItem is not CardModel newCard || newCard.Count.Value <= 0) 
+            if (domainItem is not CardModel newCard || newCard.Count.Value <= 0)
                 return;
             
             var existingCard = Items.OfType<CardModel>().FirstOrDefault(c => c.Id == newCard.Id);
 
             if (existingCard != null)
             {
+                existingCard.Count.Value += 1;
+
                 if (existingCard.Rank.Value < maxRank)
                 {
-                    existingCard.Count.Value += 1;
-
                     var requiredForNextRank = (decimal)Math.Pow(2, existingCard.Rank.Value);
 
                     if (existingCard.Count.Value >= requiredForNextRank)
@@ -100,10 +100,6 @@ namespace Model.Inventory
                         existingCard.Rank.Value += 1;
                         existingCard.Count.Value = 1;
                     }
-                }
-                else
-                {
-                    existingCard.Count.Value = Math.Min(existingCard.Count.Value + 1, 1024);
                 }
 
                 RaiseInventoryChanged();

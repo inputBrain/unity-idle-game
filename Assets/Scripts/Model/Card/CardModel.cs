@@ -5,6 +5,8 @@ namespace Model.Card
 {
     public class CardModel : IInventoryItem
     {
+        public const int MaxRank = 10;
+        public const int MaxLevel = 100;
         public int Id { get; set; }
         public string Title { get; set; }
         public ReactiveProperty<string> IconResourcesPath { get; } = new();
