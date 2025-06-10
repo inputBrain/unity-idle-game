@@ -44,8 +44,6 @@ namespace Model.Inventory
         {
             if (itemToToggle == null || !Items.Contains(itemToToggle)) return;
 
-            Debug.LogWarning($"InventoryModel: Выбрал {itemToToggle.Title}");
-
             if (!SelectedItems.Add(itemToToggle))
                 SelectedItems.Remove(itemToToggle);
 
