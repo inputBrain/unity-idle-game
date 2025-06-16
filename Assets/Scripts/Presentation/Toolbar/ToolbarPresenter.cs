@@ -10,16 +10,18 @@ namespace Presentation.Toolbar
     {
         private readonly ToolbarView _toolbarView;
         private readonly List<CardModel> _toolbarCards = new();
-        private readonly TotalCardStatsPresenter _statsPresenter;
-        private readonly TotalCardStatsView _statsView;
+        private readonly TotalCardStatsPresenter   _statsPresenter;
+        private readonly TotalCardStatsView        _statsView;
+        private readonly TotalToolbarStatsViewModel _statsModel;
 
         private const int MaxToolbarCards = 5;
 
-        public ToolbarPresenter(ToolbarView toolbarView, TotalCardStatsView statsView)
+        public ToolbarPresenter(ToolbarView toolbarView, TotalCardStatsView statsView, TotalToolbarStatsViewModel statsModel)
         {
             _toolbarView = toolbarView ?? throw new ArgumentNullException(nameof(toolbarView));
             _statsView = statsView ?? throw new ArgumentNullException(nameof(statsView));
             _statsPresenter = new TotalCardStatsPresenter();
+            _statsModel     = statsModel ?? throw new ArgumentNullException(nameof(statsModel));
         }
 
         public void AddCard(CardModel cardModel)
@@ -56,7 +58,7 @@ namespace Presentation.Toolbar
 
         private void UpdateToolbarView()
         {
-            _statsPresenter.Init(_toolbarCards, _statsView);
+            _statsPresenter.Init(_toolbarCards, _statsModel, _statsView);
         }
 
         public IReadOnlyList<CardModel> GetCards() => _toolbarCards;

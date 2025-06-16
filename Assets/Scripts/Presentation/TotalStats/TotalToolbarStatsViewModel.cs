@@ -11,6 +11,8 @@ namespace Presentation.TotalStats
     public class TotalToolbarStatsViewModel
     {
         public IList<CardModel> Cards = new List<CardModel>();
+
+        public event System.Action<float, float> OnTeamHpChanged;
         public float Hp => Cards.Sum(card => card.CurrentHp);
         public float HpRegeneration => Cards.Sum(card => card.HpRegeneration);
         public float Attack => Cards.Sum(card => card.Attack);
@@ -39,6 +41,10 @@ namespace Presentation.TotalStats
             {
                 card.CurrentHp.Value -= damage / Cards.Count;
             }
+
+            OnTeamHpChanged?.Invoke(
+                Cards.Sum(c => c.MaxHp.Value),
+                Cards.Sum(c => c.CurrentHp.Value));
         }
 
         public void RegenerateHp(float deltaTime)
@@ -46,9 +52,13 @@ namespace Presentation.TotalStats
             foreach (var card in Cards)
             {
                 card.CurrentHp.Value = Mathf.Min(
-                card.CurrentHp.Value + card.HpRegeneration.Value * deltaTime,
-                card.MaxHp.Value);
+                    card.CurrentHp.Value + card.HpRegeneration.Value * deltaTime,
+                    card.MaxHp.Value);
             }
+
+            OnTeamHpChanged?.Invoke(
+                Cards.Sum(c => c.MaxHp.Value),
+                Cards.Sum(c => c.CurrentHp.Value));
         }
     }
 }

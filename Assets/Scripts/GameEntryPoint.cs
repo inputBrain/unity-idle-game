@@ -168,7 +168,7 @@ public class GameEntryPoint : MonoBehaviour
             .ToList();
         
         _statsModel.Cards = toolbarCards;
-        _statsPresenter.Init(toolbarCards, totalCardStatsView);
+        _statsPresenter.Init(toolbarCards, _statsModel, totalCardStatsView);
 
         InitUISelectedCardsToolbar(toolbarCards);
 

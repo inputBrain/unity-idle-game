@@ -6,29 +6,43 @@ namespace Presentation.TotalStats
 {
     public class TotalCardStatsPresenter
     {
-        private TotalCardStatsView _view;
-        private List<CardModel> _cards;
+        private TotalCardStatsView          _view;
+        private List<CardModel>             _cards;
+        private TotalToolbarStatsViewModel  _model;
+        private float                       _lastTeamHp;
         
-        public void Init(List<CardModel> cards, TotalCardStatsView view)
+        public void Init(List<CardModel> cards, TotalToolbarStatsViewModel model, TotalCardStatsView view)
         {
             _cards = cards;
-            _view = view;
+            _view  = view;
+            _model = model;
             
             InitTotalStats();
     
             foreach (var card in _cards)
             {
-                card.CurrentHp.OnValueChanged += _ =>       _view.SetTotalHp((int)_cards.Sum(x => x.CurrentHp));
-                card.HpRegeneration.OnValueChanged += _ =>  _view.SetTotalHPRegeneration((int)_cards.Sum(x => x.HpRegeneration));
-                card.Attack.OnValueChanged += _ =>          _view.SetTotalAttack((int)_cards.Sum(x => x.Attack));
-                card.Crit.OnValueChanged += _ =>            _view.SetTotalCrit((int)_cards.Sum(x => x.Crit));
-                card.CritDmg.OnValueChanged += _ =>         _view.SetTotalCritDmg((int)_cards.Sum(x => x.CritDmg));
-                card.Block.OnValueChanged += _ =>           _view.SetTotalBlock((int)_cards.Sum(x => x.Block));
-                card.BlockPower.OnValueChanged += _ =>      _view.SetTotalBlockPower((int)_cards.Sum(x => x.BlockPower));
-                card.Evade.OnValueChanged += _ =>           _view.SetTotalEvade((int)_cards.Sum(x => x.Evade));
-                card.CurrentHp.OnValueChanged += _ =>       _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
-                card.MaxHp.OnValueChanged += _ =>           _view.SetSliderHp((int) _cards.Sum(x => x.MaxHp), (int) _cards.Sum(x => x.CurrentHp));
+                card.CurrentHp.OnValueChanged += _ =>
+                    HandleTeamHpChanged(_cards.Sum(x => x.MaxHp.Value), _cards.Sum(x => x.CurrentHp.Value));
+                card.HpRegeneration.OnValueChanged += _ =>
+                    _view.SetTotalHPRegeneration((int)_cards.Sum(x => x.HpRegeneration));
+                card.Attack.OnValueChanged += _ =>
+                    _view.SetTotalAttack((int)_cards.Sum(x => x.Attack));
+                card.Crit.OnValueChanged += _ =>
+                    _view.SetTotalCrit((int)_cards.Sum(x => x.Crit));
+                card.CritDmg.OnValueChanged += _ =>
+                    _view.SetTotalCritDmg((int)_cards.Sum(x => x.CritDmg));
+                card.Block.OnValueChanged += _ =>
+                    _view.SetTotalBlock((int)_cards.Sum(x => x.Block));
+                card.BlockPower.OnValueChanged += _ =>
+                    _view.SetTotalBlockPower((int)_cards.Sum(x => x.BlockPower));
+                card.Evade.OnValueChanged += _ =>
+                    _view.SetTotalEvade((int)_cards.Sum(x => x.Evade));
+                card.MaxHp.OnValueChanged += _ =>
+                    HandleTeamHpChanged(_cards.Sum(x => x.MaxHp.Value), _cards.Sum(x => x.CurrentHp.Value));
             }
+
+            _lastTeamHp = _cards.Sum(x => x.CurrentHp.Value);
+            _model.OnTeamHpChanged += HandleTeamHpChanged;
         }
 
 
@@ -64,6 +78,15 @@ namespace Presentation.TotalStats
             _view.SetTotalEvade(totalEvade);
 
             _view.SetSliderHp(totalTeamMaxHp, totalTeamHp);
+        }
+
+        private void HandleTeamHpChanged(float totalMaxHp, float totalCurrentHp)
+        {
+            var duration = totalCurrentHp > _lastTeamHp ? 1f : 0.5f;
+            _lastTeamHp = totalCurrentHp;
+
+            _view.SetTotalHp((int)totalCurrentHp);
+            _view.SetSliderHp((int)totalMaxHp, (int)totalCurrentHp, duration);
         }
     }
 }

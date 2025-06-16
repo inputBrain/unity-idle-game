@@ -30,31 +30,39 @@ namespace Presentation.TotalStats
         public TMP_Text HpOnSlider;
 
         [SerializeField]
-        private float _sliderAnimDuration = 1f;
+        private float _sliderAnimDuration = 0.5f;
+
+        public float SliderAnimDuration
+        {
+            get => _sliderAnimDuration;
+            set => _sliderAnimDuration = value;
+        }
 
         private Coroutine _sliderRoutine;
 
-        public void SetSliderHp(float teamMaxHp, float teamCurrentHp)
+        public void SetSliderHp(float teamMaxHp, float teamCurrentHp, float? duration = null)
         {
-            var target = teamCurrentHp / teamMaxHp;
-
-            HpOnSlider.text = teamCurrentHp.ToString(CultureInfo.InvariantCulture);
+            HpOnSlider.text = ((int)teamCurrentHp).ToString(CultureInfo.InvariantCulture);
 
             if (_sliderRoutine != null)
                 StopCoroutine(_sliderRoutine);
 
-            _sliderRoutine = StartCoroutine(AnimateSlider(target));
+            Slider.minValue = 0f;
+            Slider.maxValue = teamMaxHp;
+
+            var animTime = duration ?? _sliderAnimDuration;
+            _sliderRoutine = StartCoroutine(AnimateSlider(teamCurrentHp, animTime));
         }
 
-        private IEnumerator AnimateSlider(float target)
+        private IEnumerator AnimateSlider(float target, float duration)
         {
             var start = Slider.value;
-            var time = 0f;
+            var time  = 0f;
 
-            while (time < _sliderAnimDuration)
+            while (time < duration)
             {
                 time += Time.deltaTime;
-                Slider.value = Mathf.Lerp(start, target, time / _sliderAnimDuration);
+                Slider.value = Mathf.Lerp(start, target, time / duration);
                 yield return null;
             }
 
