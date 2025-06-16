@@ -52,6 +52,7 @@ namespace Presentation.TotalStats
 
             var animTime = duration ?? _sliderAnimDuration;
             _sliderRoutine = StartCoroutine(AnimateSlider(teamCurrentHp, animTime));
+
         }
 
         private IEnumerator AnimateSlider(float target, float duration)
