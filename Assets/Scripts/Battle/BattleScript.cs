@@ -62,6 +62,9 @@ namespace Battle
             if (_stats.Cards == null || _stats.Cards.Count == 0)
                 return;
 
+            if (_stats.Hp < _bossModel.Attack.Value)
+                return;
+
             var totalDamage = _stats.Cards.Sum(card => card.Attack.Value);
 
             // Critical attack case TODO:
@@ -122,11 +125,7 @@ namespace Battle
         
         private void OnEnemyWin()
         {
-            _zoneModel.CurrentZone.Value--;
-            if (_zoneModel.CurrentZone <= 0)
-            {
-                _zoneModel.CurrentZone.Value = 1;
-            }
+            _zoneModel.CurrentZone.Value = Mathf.Max(1, _zoneModel.CurrentZone.Value - 1);
             
             // Boss.Attack -= 100f;
 
