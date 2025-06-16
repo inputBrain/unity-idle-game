@@ -30,11 +30,17 @@ namespace Presentation.TotalStats
         public TMP_Text HpOnSlider;
 
         [SerializeField]
-        private float _sliderAnimDuration = 1f;
+        private float _sliderAnimDuration = 0.5f;
+
+        public float SliderAnimDuration
+        {
+            get => _sliderAnimDuration;
+            set => _sliderAnimDuration = value;
+        }
 
         private Coroutine _sliderRoutine;
 
-        public void SetSliderHp(float teamMaxHp, float teamCurrentHp)
+        public void SetSliderHp(float teamMaxHp, float teamCurrentHp, float? duration = null)
         {
             HpOnSlider.text = ((int)teamCurrentHp).ToString(CultureInfo.InvariantCulture);
 
@@ -44,18 +50,20 @@ namespace Presentation.TotalStats
             Slider.minValue = 0f;
             Slider.maxValue = teamMaxHp;
 
-            _sliderRoutine = StartCoroutine(AnimateSlider(teamCurrentHp));
+            var animTime = duration ?? _sliderAnimDuration;
+            _sliderRoutine = StartCoroutine(AnimateSlider(teamCurrentHp, animTime));
+
         }
 
-        private IEnumerator AnimateSlider(float target)
+        private IEnumerator AnimateSlider(float target, float duration)
         {
             var start = Slider.value;
             var time  = 0f;
 
-            while (time < _sliderAnimDuration)
+            while (time < duration)
             {
                 time += Time.deltaTime;
-                Slider.value = Mathf.Lerp(start, target, time / _sliderAnimDuration);
+                Slider.value = Mathf.Lerp(start, target, time / duration);
                 yield return null;
             }
 
