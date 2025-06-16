@@ -36,20 +36,21 @@ namespace Presentation.TotalStats
 
         public void SetSliderHp(float teamMaxHp, float teamCurrentHp)
         {
-            var target = teamCurrentHp / teamMaxHp;
-
-            HpOnSlider.text = teamCurrentHp.ToString(CultureInfo.InvariantCulture);
+            HpOnSlider.text = ((int)teamCurrentHp).ToString(CultureInfo.InvariantCulture);
 
             if (_sliderRoutine != null)
                 StopCoroutine(_sliderRoutine);
 
-            _sliderRoutine = StartCoroutine(AnimateSlider(target));
+            Slider.minValue = 0f;
+            Slider.maxValue = teamMaxHp;
+
+            _sliderRoutine = StartCoroutine(AnimateSlider(teamCurrentHp));
         }
 
         private IEnumerator AnimateSlider(float target)
         {
             var start = Slider.value;
-            var time = 0f;
+            var time  = 0f;
 
             while (time < _sliderAnimDuration)
             {

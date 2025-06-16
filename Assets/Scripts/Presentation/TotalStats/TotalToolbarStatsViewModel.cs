@@ -45,9 +45,9 @@ namespace Presentation.TotalStats
         {
             foreach (var card in Cards)
             {
-                card.CurrentHp.Value = Mathf.Min(
-                card.CurrentHp.Value + card.HpRegeneration.Value * deltaTime,
-                card.MaxHp.Value);
+                var target = card.MaxHp.Value;
+                var step   = card.HpRegeneration.Value * deltaTime;
+                card.CurrentHp.Value = Mathf.MoveTowards(card.CurrentHp.Value, target, step);
             }
         }
     }
