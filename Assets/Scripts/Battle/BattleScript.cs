@@ -33,9 +33,9 @@ namespace Battle
             _dropService        = new CardDropService(allDomainCards);
         }
         
-        public void BattleUpdate(float deltaTime)
+        public void BattleUpdate()
         {
-            HpRegeneration(deltaTime);
+            HpRegeneration();
 
             DealDamageToBoss();
             DealDamageToTeam();
@@ -48,12 +48,23 @@ namespace Battle
         }
 
 
-        private void HpRegeneration(float deltaTime)
+        private void HpRegeneration()
         {
             if (_stats.Cards == null || _stats.Cards.Count == 0)
                 return;
 
-            _stats.RegenerateHp(deltaTime);
+
+            foreach (var card in _stats.Cards)
+            {
+                var calculatedHp = card.CurrentHp.Value + card.HpRegeneration;
+                if (calculatedHp > _stats.TotalFullHp)
+                {
+                    return;
+                }
+                card.CurrentHp.Value += card.HpRegeneration.Value;
+            }
+
+            // _stats.RegenerateHp(deltaTime);
         }
      
         
@@ -158,6 +169,7 @@ namespace Battle
                     card.Evade.Value      += 1.1f;
                     card.Block.Value      += 1.1f;
                     card.BlockPower.Value += 1.1f;
+                    card.HpRegeneration.Value += 1.1f;
 
                     card.ExpToNextLevel.Value = CalculateExpToNextLevel(card);
 

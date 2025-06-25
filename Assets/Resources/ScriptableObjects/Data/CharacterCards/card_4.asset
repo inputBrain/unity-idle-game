@@ -15,11 +15,12 @@ MonoBehaviour:
   Id: 4
   Title: 'card 4 '
   Level: 1
+  Rank: 1
   ExpCurrent: 0
   ExpToNextLevel: 1000
   StartBaseExp: 1000
   Hp: 12
-  HpRegeneration: 0
+  HpRegeneration: 10
   Attack: 10
   Crit: 5
   CritDmg: 5

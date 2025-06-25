@@ -12,6 +12,7 @@ namespace Presentation.TotalStats
     {
         public IList<CardModel> Cards = new List<CardModel>();
         public float Hp => Cards.Sum(card => card.CurrentHp);
+        public float TotalFullHp => Cards.Sum(card => card.MaxHp);
         public float HpRegeneration => Cards.Sum(card => card.HpRegeneration);
         public float Attack => Cards.Sum(card => card.Attack);
         public float Crit => Cards.Sum(card => card.Crit);
@@ -26,7 +27,7 @@ namespace Presentation.TotalStats
             if (Cards == null || Cards.Count == 0)
                 return;
 
-            if (Cards.Sum(c => c.CurrentHp) - damage < 0)
+            if (Hp - damage < 0)
             {
                 foreach (var c in Cards)
                 {

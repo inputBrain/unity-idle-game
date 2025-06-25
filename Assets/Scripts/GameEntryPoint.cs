@@ -153,7 +153,7 @@ public class GameEntryPoint : MonoBehaviour
         const float tick = 1f;
         while (true)
         {
-            battleScript.BattleUpdate(tick);
+            battleScript.BattleUpdate();
             yield return new WaitForSeconds(tick);
         }
     }

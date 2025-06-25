@@ -15,11 +15,12 @@ MonoBehaviour:
   Id: 6
   Title: Card six
   Level: 1
+  Rank: 1
   ExpCurrent: 0
   ExpToNextLevel: 1000
   StartBaseExp: 1000
   Hp: 123
-  HpRegeneration: 0
+  HpRegeneration: 5
   Attack: 5
   Crit: 5
   CritDmg: 5
