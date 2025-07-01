@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace Presentation.Card
 {
@@ -35,7 +36,7 @@ namespace Presentation.Card
 
         public void SetRank(int rank)
         {
-            Rank.text = "Rank: " + rank;
+            Rank.text = $"Rank: {RomanNumeralUtils.ToRoman(rank)}";
         }
 
         public void SetSliderCurrentExp(float currentExp)
