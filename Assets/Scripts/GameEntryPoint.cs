@@ -150,7 +150,7 @@ public class GameEntryPoint : MonoBehaviour
 
     private IEnumerator StartBattleLoop(BattleScript battleScript)
     {
-        const float tick = 1f;
+        const float tick = 0.1f;
         while (true)
         {
             battleScript.BattleUpdate(tick);
