@@ -3,6 +3,7 @@ using Model.Card;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace Presentation.Tooltip
 {
@@ -17,6 +18,7 @@ namespace Presentation.Tooltip
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private TMP_Text rankText;
         [SerializeField] private TMP_Text hpText;
+        [SerializeField] private TMP_Text hpSText;
         [SerializeField] private TMP_Text attackText;
         [SerializeField] private TMP_Text critText;
         [SerializeField] private TMP_Text critDmgText;
@@ -52,8 +54,9 @@ namespace Presentation.Tooltip
 
             if (titleText != null) titleText.text = card.Title;
             if (levelText != null) levelText.text = $"Lvl: {card.Level.Value}";
-            if (rankText != null) rankText.text = $"{{RomanNumeralUtils.ToRoman(card.Rank.Value)}}";
+            if (rankText != null) rankText.text = $"Rank: {RomanNumeralUtils.ToRoman(card.Rank.Value)}";
             if (hpText != null) hpText.text = $"HP: {(int)card.CurrentHp.Value} / {(int)card.MaxHp.Value}";
+            if (hpSText != null) hpSText.text = $"HP/s: {(int)card.HpRegeneration.Value}";
             if (attackText != null) attackText.text = $"Atk: {(int)card.Attack.Value}";
             if (critText != null) critText.text = $"Crit: {(int)card.Crit.Value}%";
             if (critDmgText != null) critDmgText.text = $"CritDmg: +{(int)card.CritDmg.Value}%";

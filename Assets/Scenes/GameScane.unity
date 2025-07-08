@@ -878,7 +878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &826179532
 RectTransform:
   m_ObjectHideFlags: 0
@@ -979,6 +979,7 @@ MonoBehaviour:
   levelText: {fileID: 1825919121}
   rankText: {fileID: 385242295}
   hpText: {fileID: 17479352}
+  hpSText: {fileID: 239625432}
   attackText: {fileID: 1831040620}
   critText: {fileID: 1754309726}
   critDmgText: {fileID: 1794946601}
