@@ -36,7 +36,7 @@ namespace Presentation.Card
 
         public void SetRank(int rank)
         {
-            Rank.text = $"Rank: {RomanNumeralUtils.ToRoman(rank)}";
+            Rank.text = $"{RomanNumeralUtils.ToRoman(rank)}";
         }
 
         public void SetSliderCurrentExp(float currentExp)

@@ -52,7 +52,7 @@ namespace Presentation.Tooltip
 
             if (titleText != null) titleText.text = card.Title;
             if (levelText != null) levelText.text = $"Lvl: {card.Level.Value}";
-            if (rankText != null) rankText.text = $"Rank: {{RomanNumeralUtils.ToRoman(card.Rank.Value)}}";
+            if (rankText != null) rankText.text = $"{{RomanNumeralUtils.ToRoman(card.Rank.Value)}}";
             if (hpText != null) hpText.text = $"HP: {(int)card.CurrentHp.Value} / {(int)card.MaxHp.Value}";
             if (attackText != null) attackText.text = $"Atk: {(int)card.Attack.Value}";
             if (critText != null) critText.text = $"Crit: {(int)card.Crit.Value}%";
