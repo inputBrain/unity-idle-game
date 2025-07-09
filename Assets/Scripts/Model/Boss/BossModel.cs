@@ -5,6 +5,8 @@
         public float BaseHp { get; set; }
         public float BaseAttack { get; set; }
 
+        public ReactiveProperty<string> IconResourcesPath { get; } = new();
+        
         public ReactiveProperty<float> CurrentHp { get; } = new();
         public ReactiveProperty<float> MaxHp { get; } = new();
         public ReactiveProperty<float> Attack { get; } = new();

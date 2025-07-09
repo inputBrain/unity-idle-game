@@ -409,6 +409,7 @@ MonoBehaviour:
   audioSource: {fileID: 191652952}
   musicClips:
   - {fileID: 8300000, guid: 205a6b4b985635c46b2eb1363b0694ec, type: 3}
+  - {fileID: 8300000, guid: 850a1bf0ed2b74b42a0665d5d7167ea2, type: 3}
 --- !u!4 &191652951
 Transform:
   m_ObjectHideFlags: 0
@@ -1318,6 +1319,7 @@ MonoBehaviour:
   totalCardStatsView: {fileID: 754386039657464746}
   bossView: {fileID: 1573589485665451603}
   zoneView: {fileID: 8339082034345045562}
+  bossStatsView: {fileID: 3297440216315590760}
   inventoryView: {fileID: 1248183277}
   entityView: {fileID: 4695308413792187463, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
   toolbarCardPrefab: {fileID: 4695308413792187463, guid: ccb6347c0ecab1f4ab6fc2bf14cb8e34, type: 3}
@@ -3438,6 +3440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3297440216315590759}
   - component: {fileID: 1573589485665451603}
+  - component: {fileID: 3297440216315590760}
   m_Layer: 5
   m_Name: -- Boss View --
   m_TagString: Untagged
@@ -4386,6 +4389,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3297440216315590760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235725741855971774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 715f910f5c3448e092d0b8a675f9ef06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Attack: {fileID: 2881588605547363840}
+  ExperienceReward: {fileID: 8981191867476231109}
+  GoldReward: {fileID: 8635499609375271787}
+  BossImage: {fileID: 1415226438412929452}
 --- !u!222 &3536241015975050175
 CanvasRenderer:
   m_ObjectHideFlags: 0

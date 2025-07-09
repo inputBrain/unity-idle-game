@@ -13,6 +13,7 @@ using Presentation.TotalStats;
 using Presentation.Zone;
 using UnityEngine;
 using API;
+using Presentation.BossStats;
 using Presentation.Card;
 using Services;
 
@@ -27,6 +28,9 @@ public class GameEntryPoint : MonoBehaviour
 
     [SerializeField]
     private ZoneView zoneView;
+    
+    [SerializeField]
+    private BossStatsView bossStatsView;
 
     [SerializeField]
     private InventoryView inventoryView;
@@ -80,6 +84,8 @@ public class GameEntryPoint : MonoBehaviour
 
         new BossPresenter().Init(_bossModel, bossView);
         new ZonePresenter().Init(_zoneModel, zoneView);
+        
+        new BossStatsPresenter().Init(_bossModel, bossStatsView);
         
         _cardLoaderService = new CardLoaderService();
         _userService       = new FakeUserService();
