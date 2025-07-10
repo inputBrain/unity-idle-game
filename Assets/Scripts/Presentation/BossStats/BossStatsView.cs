@@ -20,12 +20,12 @@ namespace Presentation.BossStats
             Attack.text = "Attack: " + value;
         }
 
-        public void SetExperienceReward(int value)
+        public void SetExperienceReward(float value)
         {
             ExperienceReward.text = "Experience: " + value;
         }
         
-        public void SetGoldReward(int value)
+        public void SetGoldReward(float value)
         {
             GoldReward.text = "Gold: " + value;
         }

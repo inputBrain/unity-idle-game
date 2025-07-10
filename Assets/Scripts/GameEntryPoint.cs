@@ -52,6 +52,7 @@ public class GameEntryPoint : MonoBehaviour
     private ZoneModel                      _zoneModel;
     private BossModel                      _bossModel;
     private CardLoaderService              _cardLoaderService;
+    private BossLoaderService              _bossLoaderService;
 
 
     private TotalToolbarStatsViewModel     _statsModel;
@@ -68,24 +69,34 @@ public class GameEntryPoint : MonoBehaviour
     private void Awake()
     {
         _zoneModel = new ZoneModel {CurrentZone = {Value = 1}};
-        _bossModel = new BossModel
-        {
-            BaseHp = 200f,
-            BaseAttack = 100f,
-            MaxHp = {Value = 200f},
-            CurrentHp = {Value = 200f},
-            Attack = { Value = 10f},
-            ExpReward = { Value = 20},
-            GoldReward = { Value = 5}
-        };
+        _bossLoaderService = new BossLoaderService();
+
+
+        var allBosses = _bossLoaderService.GetAllBosses();
+        if (allBosses == null || allBosses.Count == 0)
+            return;
+        int randomIndex = UnityEngine.Random.Range(0, allBosses.Count);
+        var randomBossModel = allBosses[randomIndex];
         
+        
+        // _bossModel = new BossModel
+        // {
+        //     BaseHp = 200f,
+        //     BaseAttack = 100f,
+        //     MaxHp = {Value = 200f},
+        //     CurrentHp = {Value = 200f},
+        //     Attack = { Value = 10f},
+        //     ExpReward = { Value = 20},
+        //     GoldReward = { Value = 5}
+        // };
+        //
         _inventoryModel = new InventoryModel();
         _inventoryPresenter = new InventoryPresenter(_inventoryModel, inventoryView);
 
-        new BossPresenter().Init(_bossModel, bossView);
+        new BossPresenter().Init(randomBossModel, bossView);
         new ZonePresenter().Init(_zoneModel, zoneView);
         
-        new BossStatsPresenter().Init(_bossModel, bossStatsView);
+        new BossStatsPresenter().Init(randomBossModel, bossStatsView);
         
         _cardLoaderService = new CardLoaderService();
         _userService       = new FakeUserService();

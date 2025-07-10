@@ -14,7 +14,7 @@ namespace Presentation.Boss
             _bossModel = bossModel;
             _bossView = bossView;
 
-            UpdateSlider(_bossModel.MaxHp.Value, bossModel.CurrentHp.Value);
+            UpdateSlider(_bossModel.MaxHp.Value, _bossModel.CurrentHp.Value);
 
             _bossModel.CurrentHp.OnValueChanged += _ => UpdateSlider();
             _bossModel.MaxHp.OnValueChanged += _ => UpdateSlider();
